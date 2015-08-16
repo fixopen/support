@@ -1,0 +1,89 @@
+公共接口：
+登录、登出
+证书接口：
+申请、撤销、查询
+媒体接口：
+上传、下载
+业务接口：
+版权登记、版权撤销、权力交易、权力交易查询、许可证获取
+
+按照交互的系统可以分为：
+上传工具
+管理平台
+发行平台
+资产平台
+管理系统
+
+上传工具接口汇总：
+登录、上传、登出 以及 申请、查询
+
+管理平台接口汇总：
+登录、版权登记、版权撤销、登出 以及 申请、查询
+
+发行平台接口汇总：
+登录、权力交易、登出 以及 申请、查询
+
+资产平台接口汇总：
+登录、许可证获取、下载、登出 以及 申请、查询
+
+管理系统接口汇总：
+登录、权力交易查询、撤销、登出
+
+接口采用基于HTTP的REST式风格，来往的信息采用JSON表示，以Unicode字符集和UTF-8编码表示
+基础是用名词表达的资源，HTTP的method分别映射到新建、修改、删除和查询上面，现在仅采用GET、POST、PUT和DELETE这四个method。
+针对登录、登出的公共接口，提供/api/sessions这个资源，以POST和DELETE表示登录和登录，登录时提供用户证据信息，内容如下所示：
+{"type": "登录类型，个人还是组织", "loginName": "登录名称", "password": "登录密码"}
+
+针对申请、撤销、查询的证书接口，提供/api/certificates这个资源（以及相关的子资源），以POST、DELETE和GET表示申请、撤销和查询
+
+针对上传、下载的媒体接口，提供/api/resources(以及相关子资源)，以POST、GET表示上传和下载
+
+针对版权登记、版权撤销、权力交易、权力交易查询、许可证获取的业务接口，提供数个资源，分别是/api/copyrights、/api/rights、/api/licenses
+/api/copyrights的POST和GET分别表示版权登记和版权撤销
+/api/rights的POST和GET分别表示权力交易和权力交易查询
+/api/licenses的GET表示许可证获取
+
+下面通过举例把所有的细节综合起来：
+登录举例：
+客户发送至服务器请求如下：
+POST /api/sessions HTTP/1.1
+... //other header if need
+Host: server.domain.name[:port]
+Accept: application/json
+Content-Type: application/json
+Content-Length: 74
+... //other header if need
+
+{"type": "organization", "loginName": "resource", "password": "pAssw0rd"}
+
+服务器发送至客户响应如下：
+HTTP/1.1 200 Ok
+... //other header if need
+Cookie: sessionId=1234nswlerwstwerweq;path=/api/*
+Content-Type: application/json
+Content-Length:
+... //other header if need
+
+{"id": 34134534553, "name": "上沙中学", .../*这儿就是登录者的详细信息*/}
+
+这样，一个完整的请求响应序列就完成了。
+
+需要注意的是：有很多请求和响应是没有body部分的，而有body部分的请求和响应大多数都是JSON格式编码的，除非通过Content-Type头明确指定类型，这在媒体的上传下载中用到
+
+媒体的上传下载分为两部分，一部分是媒体的元信息上传下载，一部分是媒体的内容上传下载，就是通过Content-Type（和Accept【这是针对GET的下载请求的，因为GET没有body】）区分出来的
+
+上面所有的POST请求，都是直接使用规定好的资源URI，而对于DELETE请求，则在URI后面加上/{id}，其中{id}表示要被删除的资源ID。对于GET请求，一种是可以加ID，一种是加上filter，orderBy，offset和count这四个参数，filter不存在的话，表明获取所有相关的资源，如果有offset和count，则必须有orderBy，这三个用来完成分页
+
+现举例说明如下：
+
+GET /api/licenses/34256
+--or--
+GET /api/certificates?filter={condition}
+--or--
+GET /api/resources?filter={condition}&offset=0&count=24&orderBy={orderInfo}
+
+其中{condition}和{orderInfo}都是URLEncoding的Unicode字符集UTF-8编码的JSON格式的数据
+
+{condition}的数据以字段名和字段值对形成的map，比如：{"name": "张三", "sex": false}，表示以姓名为张三，性别为false为条件来过滤数据
+
+{orderInfo}的数据以字段名和asc|desc对形成的map，比如：{"age": "desc"}，表示以年龄的降序排列
