@@ -9,7 +9,7 @@ import java.security.NoSuchAlgorithmException;
  * Created by fixopen on 3/6/15.
  */
 public class Digestor {
-    byte[] digest(String data) {
+    public byte[] digest(String data) {
         byte[] result = null;
         try {
             MessageDigest d = MessageDigest.getInstance("SHA-256");
@@ -21,7 +21,7 @@ public class Digestor {
         return result;
     }
 
-    byte[] digest(InputStream inputStream) {
+    public byte[] digest(InputStream inputStream) {
         byte[] result = null;
         try {
             MessageDigest d = MessageDigest.getInstance("SHA-256");

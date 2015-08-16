@@ -8,7 +8,7 @@ import java.security.NoSuchAlgorithmException;
  * Created by fixopen on 3/6/15.
  */
 public class KeyPairGenerator {
-    KeyPair generate() {
+    public KeyPair generate() {
         KeyPair result = null;
         try {
             java.security.KeyPairGenerator gen = java.security.KeyPairGenerator.getInstance("RSA");
