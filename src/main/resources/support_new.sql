@@ -42,19 +42,17 @@ SET default_tablespace = '';
 SET default_with_oids = false;
 
 --
--- Name: account_certificate_maps; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+-- Name: account_resource_maps; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
-CREATE TABLE account_certificate_maps (
+CREATE TABLE account_resource_maps (
     id bigint NOT NULL,
     account_id bigint NOT NULL,
-    certificate character varying(8192) NOT NULL,
-    start_time timestamp(0) without time zone NOT NULL,
-    stop_time timestamp(0) without time zone NOT NULL
+    resource_id bigint NOT NULL
 );
 
 
-ALTER TABLE account_certificate_maps OWNER TO postgres;
+ALTER TABLE account_resource_maps OWNER TO postgres;
 
 --
 -- Name: accounts; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
@@ -162,8 +160,7 @@ CREATE TABLE configs (
     id bigint NOT NULL,
     name name NOT NULL,
     value character varying(255),
-    type_id bigint NOT NULL,
-    owner_id bigint
+    type_id bigint NOT NULL
 );
 
 
@@ -177,7 +174,6 @@ CREATE TABLE copyrights (
     id bigint NOT NULL,
     no name NOT NULL,
     resource_id bigint,
-    version integer,
     owner_id bigint NOT NULL,
     author_id bigint NOT NULL,
     expiration timestamp(0) without time zone,
@@ -193,8 +189,6 @@ ALTER TABLE copyrights OWNER TO postgres;
 
 CREATE TABLE devices (
     id bigint NOT NULL,
-    subject_type subjecttype NOT NULL,
-    subject_id bigint NOT NULL,
     account_id bigint,
     active integer,
     type integer DEFAULT 0 NOT NULL,
@@ -216,6 +210,7 @@ CREATE TABLE logs (
     id bigint NOT NULL,
     kind integer DEFAULT 0 NOT NULL,
     account_id bigint NOT NULL,
+    device_id bigint,
     name name NOT NULL,
     comment text NOT NULL,
     level integer NOT NULL,
@@ -239,19 +234,6 @@ CREATE TABLE markups (
 
 
 ALTER TABLE markups OWNER TO postgres;
-
---
--- Name: organization_resource_maps; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
---
-
-CREATE TABLE organization_resource_maps (
-    id bigint NOT NULL,
-    organization_id bigint NOT NULL,
-    resource_id bigint NOT NULL
-);
-
-
-ALTER TABLE organization_resource_maps OWNER TO postgres;
 
 --
 -- Name: organization_types; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
@@ -288,8 +270,7 @@ ALTER TABLE organizations OWNER TO postgres;
 CREATE TABLE resource_last_transfer_logs (
     id bigint NOT NULL,
     resource_last_transfer_id bigint NOT NULL,
-    receiver_id bigint NOT NULL,
-    receiver_signatrue character varying(255) NOT NULL
+    "time" timestamp(0) without time zone
 );
 
 
@@ -302,7 +283,7 @@ ALTER TABLE resource_last_transfer_logs OWNER TO postgres;
 CREATE TABLE resource_last_transfers (
     id bigint NOT NULL,
     resource_transfer_id bigint NOT NULL,
-    resource_path character varying(255) NOT NULL,
+    license_path character varying(255) NOT NULL,
     watermark_content character varying(255)
 );
 
@@ -331,10 +312,12 @@ CREATE TABLE resource_transfers (
     no name,
     resource_id bigint NOT NULL,
     right_transfer_id bigint,
+    "time" timestamp(0) without time zone,
     sender_id bigint NOT NULL,
+    sender_device_id bigint NOT NULL,
     sender_signatrue character varying(255) NOT NULL,
-    device_id bigint NOT NULL,
     receiver_id bigint NOT NULL,
+    receiver_device_id bigint NOT NULL,
     receiver_signatrue character varying(255) NOT NULL,
     key character varying(1024) NOT NULL
 );
@@ -374,8 +357,7 @@ CREATE TABLE resources (
     file_path name,
     cover name,
     language bigint,
-    intro text,
-    author name
+    intro text
 );
 
 
@@ -423,9 +405,7 @@ CREATE TABLE rights (
     expiration timestamp(0) without time zone,
     amount integer NOT NULL,
     owner_type subjecttype NOT NULL,
-    owner_id bigint NOT NULL,
-    expense_amount integer NOT NULL,
-    status integer DEFAULT 0 NOT NULL
+    owner_id bigint NOT NULL
 );
 
 
@@ -461,19 +441,6 @@ CREATE TABLE trees (
 ALTER TABLE trees OWNER TO postgres;
 
 --
--- Name: user_resource_maps; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
---
-
-CREATE TABLE user_resource_maps (
-    id bigint NOT NULL,
-    user_id bigint NOT NULL,
-    resource_id bigint NOT NULL
-);
-
-
-ALTER TABLE user_resource_maps OWNER TO postgres;
-
---
 -- Name: users; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -494,7 +461,7 @@ CREATE TABLE users (
 ALTER TABLE users OWNER TO postgres;
 
 --
--- Data for Name: account_certificate_maps; Type: TABLE DATA; Schema: public; Owner: postgres
+-- Data for Name: account_resource_maps; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 
@@ -555,12 +522,6 @@ ALTER TABLE users OWNER TO postgres;
 
 --
 -- Data for Name: markups; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-
-
---
--- Data for Name: organization_resource_maps; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 
@@ -639,12 +600,6 @@ ALTER TABLE users OWNER TO postgres;
 
 --
 -- Data for Name: trees; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-
-
---
--- Data for Name: user_resource_maps; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 
@@ -752,14 +707,6 @@ ALTER TABLE ONLY organizations
 
 
 --
--- Name: organization_resource_map__pk; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
---
-
-ALTER TABLE ONLY organization_resource_maps
-    ADD CONSTRAINT organization_resource_map__pk PRIMARY KEY (id);
-
-
---
 -- Name: organization_type__pk; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -845,14 +792,6 @@ ALTER TABLE ONLY users
 
 ALTER TABLE ONLY users
     ADD CONSTRAINT user__pk PRIMARY KEY (id);
-
-
---
--- Name: user_resource_map__pk; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
---
-
-ALTER TABLE ONLY user_resource_maps
-    ADD CONSTRAINT user_resource_map__pk PRIMARY KEY (id);
 
 
 --
