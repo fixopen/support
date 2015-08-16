@@ -50,16 +50,7 @@ CREATE TABLE account_certificate_maps (
     account_id bigint NOT NULL,
     certificate character varying(8192) NOT NULL,
     start_time timestamp(0) without time zone NOT NULL,
-    stop_time timestamp(0) without time zone NOT NULL,
-    instance_id bigint DEFAULT 0 NOT NULL,
-    creator_id bigint NOT NULL,
-    create_time timestamp(0) without time zone NOT NULL,
-    create_version bigint NOT NULL,
-    updater_id bigint NOT NULL,
-    update_time timestamp(0) without time zone NOT NULL,
-    update_version bigint NOT NULL,
-    row_state integer NOT NULL,
-    row_version integer NOT NULL
+    stop_time timestamp(0) without time zone NOT NULL
 );
 
 
@@ -298,7 +289,6 @@ CREATE TABLE resource_last_transfer_logs (
     id bigint NOT NULL,
     resource_last_transfer_id bigint NOT NULL,
     receiver_id bigint NOT NULL,
-    device_id bigint NOT NULL,
     receiver_signatrue character varying(255) NOT NULL
 );
 
@@ -343,6 +333,7 @@ CREATE TABLE resource_transfers (
     right_transfer_id bigint,
     sender_id bigint NOT NULL,
     sender_signatrue character varying(255) NOT NULL,
+    device_id bigint NOT NULL,
     receiver_id bigint NOT NULL,
     receiver_signatrue character varying(255) NOT NULL,
     key character varying(1024) NOT NULL
