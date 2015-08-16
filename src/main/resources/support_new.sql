@@ -60,7 +60,7 @@ ALTER TABLE account_resource_maps OWNER TO postgres;
 
 CREATE TABLE accounts (
     id bigint NOT NULL,
-    subject_type subjecttype NOT NULL,
+    subject_type name NOT NULL,
     subject_id bigint NOT NULL,
     active integer,
     type integer DEFAULT 0 NOT NULL,
@@ -310,7 +310,6 @@ ALTER TABLE resource_subjects OWNER TO postgres;
 
 CREATE TABLE resource_transfers (
     id bigint NOT NULL,
-    no name,
     resource_id bigint NOT NULL,
     right_transfer_id bigint,
     "time" timestamp(0) without time zone,
@@ -347,18 +346,33 @@ CREATE TABLE resources (
     id bigint NOT NULL,
     no name NOT NULL,
     name name NOT NULL,
-    version integer,
+    chiefeditor name,
+    associateeditor name,
+    usenumber name,
+    grade name,
+    stage name,
+    type name,
     type_id bigint,
-    digest character varying(256),
+    publisher name,
+    publisher_address name,
+    subject name,
     subject_id bigint,
-    owner_type subjecttype,
+    classifier name,
+    version name,
+    coursetype name,
+    intro text,
+    file_path name,
+    file_ext name,
+    cover name,
+    price name,
+    edition name,
+    reversion name,
+    digest character varying(256),
+    owner_type name,
     owner_id bigint,
     author_id bigint,
     isbn name,
-    file_path name,
-    cover name,
-    language bigint,
-    intro text
+    language bigint
 );
 
 
@@ -371,7 +385,9 @@ ALTER TABLE resources OWNER TO postgres;
 CREATE TABLE right_transfers (
     id bigint NOT NULL,
     no name NOT NULL,
-    right_id bigint NOT NULL,
+    "time" timestamp(0) without time zone,
+    copyright_id bigint NOT NULL,
+    right_type_id bigint NOT NULL,
     from_id bigint NOT NULL,
     to_id bigint NOT NULL,
     amount integer NOT NULL,
@@ -393,24 +409,6 @@ CREATE TABLE right_types (
 
 
 ALTER TABLE right_types OWNER TO postgres;
-
---
--- Name: rights; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
---
-
-CREATE TABLE rights (
-    id bigint NOT NULL,
-    no name NOT NULL,
-    copyright_id bigint NOT NULL,
-    type_id bigint NOT NULL,
-    expiration timestamp(0) without time zone,
-    amount integer NOT NULL,
-    owner_type subjecttype NOT NULL,
-    owner_id bigint NOT NULL
-);
-
-
-ALTER TABLE rights OWNER TO postgres;
 
 --
 -- Name: tree_types; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
@@ -588,12 +586,6 @@ ALTER TABLE users OWNER TO postgres;
 
 
 --
--- Data for Name: rights; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-
-
---
 -- Data for Name: tree_types; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -745,14 +737,6 @@ ALTER TABLE ONLY resource_last_transfer_logs
 
 ALTER TABLE ONLY resource_transfers
     ADD CONSTRAINT resource_transfer__pk PRIMARY KEY (id);
-
-
---
--- Name: right__pk; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
---
-
-ALTER TABLE ONLY rights
-    ADD CONSTRAINT right__pk PRIMARY KEY (id);
 
 
 --

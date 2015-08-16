@@ -2,11 +2,13 @@ package com.baremind;
 
 import com.baremind.data.Resource;
 
+import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.io.File;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,11 +50,48 @@ public class Resources {
     @POST
     @FormParam("uploadedFile")
     @Consumes({"application/octet-stream", "application/zip", "application/x-compressed"}) //MediaType.APPLICATION_OCTET_STREAM_TYPE
+    @Produces(MediaType.APPLICATION_JSON)
     public Resource postZip(@Context HttpServletRequest request) {
         //FileItemFactory factory = new DiskFileItemFactory();
         //ServletFileUpload upload = new ServletFileUpload(factory);
+        try {
+            int length = request.getContentLength();
+            byte[] buffer = new byte[length];
+            ServletInputStream servletInputStream = request.getInputStream();
+            servletInputStream.read(buffer);
+
+            File zipFile = File.createTempFile();
+            FileOutputStream w = new FileOutputStream(zipFile);
+            w.write(buffer);
+
+            //insert record to table[id, time, uploader_id, file_path, status: 0(received) 1(processing) 2(processed)]
+
+            //thread:
+
+            // set state to processing
+            // uncompress zip
+            // get _meta.json
+            // parse it
+            // insert to resource-table
+            // move cover & content file to spec folder
+            // calc content file digest
+            // crypto content file -- options
+            // set state to processed
+
+            // copyright insert
+            // right transfer insert
+            // resource transfer insert
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return new Resource();
     }
+
+//    @GET
+//    @Path("{stateId}")
+//    public ResourceUploadState queryState(@PathParam("stateId") Long id) {
+//    }
 
 //    @POST
 //    @Consumes("multipart/form-data")
