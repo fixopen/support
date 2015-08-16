@@ -16,4 +16,17 @@ public enum SubjectType {
             return "Personal";
         }
     };
+
+//    public static SubjectType valueOf(String s) {
+//        SubjectType result = null;
+//        switch (s) {
+//            case "Organization":
+//                result = Organization;
+//                break;
+//            case "Personal":
+//                result = Personal;
+//                break;
+//        }
+//        return result;
+//    }
 }

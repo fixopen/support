@@ -3,6 +3,7 @@ package com.baremind;
 import com.baremind.algorithm.Securities;
 import com.baremind.data.Account;
 import com.baremind.data.Organization;
+import com.baremind.data.SubjectType;
 import com.baremind.data.User;
 import com.baremind.utils.Hex;
 import com.google.gson.Gson;
@@ -32,6 +33,7 @@ public class Sessions{
     @Produces(MediaType.TEXT_PLAIN)
     public Response login(Account account) {
         Response response = null;
+        account.setSubjectType(SubjectType.valueOf(account.getSubjectTypeString()));
         factory = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME);
         EntityManager em = factory.createEntityManager();
         String jpql = "SELECT a FROM Account a WHERE a.subjectType = :subjectType AND a.loginName = :loginName AND a.password = :password";
