@@ -1,7 +1,8 @@
 package com.baremind.algorithm;
 
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
+
 import com.baremind.utils.ConfigManager;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 import java.security.Security;
 

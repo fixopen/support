@@ -13,6 +13,7 @@ import java.sql.Date;
 @Table(name="accounts")
 public class Account {
     @Id
+    @Column(name="id")
     private Long id;
 
     @Column(name="subject_type")
@@ -30,7 +31,7 @@ public class Account {
     @Column(name="begin")
     private Date begin;
 
-    @Column(name="end")
+    @Column(name="\"end\"")
     private Date end;
 
     @Column(name="login_name")
