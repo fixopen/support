@@ -54,7 +54,7 @@ Content-Type: application/json
 Content-Length: 74
 ... //other header if need
 
-{"type": "organization", "loginName": "resource", "password": "pAssw0rd"}
+{"subjectType": "Organization|Personal", "loginName": "resource", "password": "pAssw0rd"}
 
 服务器发送至客户响应如下：
 HTTP/1.1 200 Ok

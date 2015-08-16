@@ -1,6 +1,7 @@
 package com.baremind;
 
 import javax.security.cert.Certificate;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 
 /**
@@ -8,6 +9,7 @@ import javax.ws.rs.Path;
  */
 @Path("certificates")
 public class Certificates {
+    @POST
     public Certificate grant() {
         return null;
     }

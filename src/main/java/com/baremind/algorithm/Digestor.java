@@ -9,6 +9,18 @@ import java.security.NoSuchAlgorithmException;
  * Created by fixopen on 3/6/15.
  */
 public class Digestor {
+    byte[] digest(String data) {
+        byte[] result = null;
+        try {
+            MessageDigest d = MessageDigest.getInstance("SHA-256");
+            d.update(data.getBytes());
+            result = d.digest();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
     byte[] digest(InputStream inputStream) {
         byte[] result = null;
         try {
