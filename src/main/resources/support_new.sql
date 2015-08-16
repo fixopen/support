@@ -77,7 +77,8 @@ CREATE TABLE accounts (
     login_count integer DEFAULT 0 NOT NULL,
     password_failed_count integer DEFAULT 0 NOT NULL,
     current_certificate character varying(8192),
-    session_id character(256)
+    session_id character(256),
+    last_opereation_time timestamp(0) without time zone
 );
 
 

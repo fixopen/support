@@ -1,5 +1,6 @@
 package com.baremind.data;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -12,6 +13,9 @@ import javax.persistence.Table;
 public class Resource {
     @Id
     private Long id = 42l;
+
+    @Column(name="owner_id")
+    private Long ownerId;
 
     private String name = "dup";
 
