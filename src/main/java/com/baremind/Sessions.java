@@ -13,10 +13,11 @@ import javax.persistence.Persistence;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.*;
-import java.lang.annotation.Annotation;
-import java.net.URI;
-import java.util.*;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.NewCookie;
+import javax.ws.rs.core.Response;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Created by fixopen on 16/8/15.
@@ -33,12 +34,9 @@ public class Sessions{
         Response response = null;
         factory = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME);
         EntityManager em = factory.createEntityManager();
-//        Query q = em.createQuery("SELECT a FROM accounts a " +
-//                "WHERE subject_type = :subjectType AND login_name = :loginName " +
-//                "AND password = :password", account.getSubjectType(), account.getLoginName(), account.getPassword());
         String jpql = "SELECT a FROM Account a WHERE a.subjectType = :subjectType AND a.loginName = :loginName AND a.password = :password";
         List<Account> accounts = em.createQuery(jpql,Account.class)
-                .setParameter("subjectType", account.getSubjectType())
+                .setParameter("subjectType", account.getSubjectType().toString())
                 .setParameter("loginName", account.getLoginName())
                 .setParameter("password", account.getPassword()).getResultList();
         int count = accounts.size();
