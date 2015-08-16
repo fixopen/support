@@ -7,6 +7,8 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.NewCookie;
+import javax.ws.rs.core.Response;
 
 /**
  * Root resource (exposed at "myresource" path)
@@ -43,6 +45,9 @@ public class MyResource {
 
         factory = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME);
         EntityManager em = factory.createEntityManager();
+
+        NewCookie cookie = new NewCookie("sessionId", "xyazdfas", "/api/", null, null, -1, false);
+        Response response = Response.ok().header("Set-Cookie", cookie.toString()+ ";HttpOnly").entity("body").build();
 
 //        // read the existing entries and write to console
 //        Query q = em.createQuery("select t from Todo t");
