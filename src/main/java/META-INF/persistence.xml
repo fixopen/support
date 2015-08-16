@@ -3,7 +3,32 @@
              xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
              version="2.0" xmlns="http://java.sun.com/xml/ns/persistence">
     <persistence-unit name="sd" transaction-type="RESOURCE_LOCAL">
+        <class>com.baremind.data.Account</class>
+        <class>com.baremind.data.AccountCertificateMap</class>
+        <class>com.baremind.data.AccountResourceMap</class>
+        <class>com.baremind.data.Certificate</class>
+        <class>com.baremind.data.CertificateCreateLog</class>
+        <class>com.baremind.data.CertificateRevokeLog</class>
+        <class>com.baremind.data.Config</class>
+        <class>com.baremind.data.ConfigType</class>
+        <class>com.baremind.data.Copyright</class>
+        <class>com.baremind.data.Device</class>
+        <class>com.baremind.data.Log</class>
+        <class>com.baremind.data.Markup</class>
+        <class>com.baremind.data.Organization</class>
+        <class>com.baremind.data.OrganizationType</class>
         <class>com.baremind.data.Resource</class>
+        <class>com.baremind.data.ResourceLastTransfer</class>
+        <class>com.baremind.data.ResourceLastTransferLog</class>
+        <class>com.baremind.data.ResourceSubject</class>
+        <class>com.baremind.data.ResourceType</class>
+        <class>com.baremind.data.ResourceTransfer</class>
+        <class>com.baremind.data.Right</class>
+        <class>com.baremind.data.RightTransfer</class>
+        <class>com.baremind.data.RightType</class>
+        <class>com.baremind.data.Tree</class>
+        <class>com.baremind.data.TreeType</class>
+        <class>com.baremind.data.User</class>
         <properties>
             <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver" />
             <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/support_new" />
