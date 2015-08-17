@@ -103,6 +103,7 @@ public class Resources {
             File zipFile = File.createTempFile();
             FileOutputStream w = new FileOutputStream(zipFile);
             w.write(buffer);
+            w.close();
 
             //insert record to table[id, time, uploader_id, file_path, status: 0(received) 1(processing) 2(processed)]
             factory = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME);
