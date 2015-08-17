@@ -440,6 +440,21 @@ CREATE TABLE trees (
 ALTER TABLE trees OWNER TO postgres;
 
 --
+-- Name: upload_logs; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE upload_logs (
+    id bigint NOT NULL,
+    "time" timestamp(0) without time zone,
+    uploader_id bigint NOT NULL,
+    file_path bigint NOT NULL,
+    state bigint NOT NULL
+);
+
+
+ALTER TABLE upload_logs OWNER TO postgres;
+
+--
 -- Name: users; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -593,6 +608,12 @@ ALTER TABLE users OWNER TO postgres;
 
 --
 -- Data for Name: trees; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+
+
+--
+-- Data for Name: upload_logs; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 
@@ -761,6 +782,14 @@ ALTER TABLE ONLY right_types
 
 ALTER TABLE ONLY resource_subjects
     ADD CONSTRAINT subject__pk PRIMARY KEY (id);
+
+
+--
+-- Name: upload_log__pk; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY upload_logs
+    ADD CONSTRAINT upload_log__pk PRIMARY KEY (id);
 
 
 --

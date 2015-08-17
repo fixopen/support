@@ -1,7 +1,5 @@
 package com.baremind;
 
-import com.baremind.data.Right;
-
 import javax.ws.rs.Path;
 import java.util.ArrayList;
 import java.util.List;

@@ -1,14 +1,21 @@
 package com.baremind;
 
 import com.baremind.data.Resource;
+import com.baremind.data.SubjectType;
+import com.baremind.data.UploadLog;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,6 +24,9 @@ import java.util.List;
  */
 @Path("resources")
 public class Resources {
+    private static final String PERSISTENCE_UNIT_NAME = "sd";
+    private static EntityManagerFactory factory;
+
     @POST
     public Resource post(@CookieParam("sessionId") String sessionId, Resource resource) {
         //find account from accounts-table by sessionId
@@ -47,6 +57,36 @@ public class Resources {
         return new Resource();
     }
 
+    private static class UploadPostProcessor extends Thread {
+        public UploadPostProcessor(UploadLog uploadLog, EntityManager em) {
+            this.uploadLog = uploadLog;
+            this.em = em;
+        }
+
+        @Override
+        int run() {
+            //thread:
+
+            // set state to processing
+            // uncompress zip
+            // get _meta.json
+            // parse it
+            // insert to resource-table
+            // move cover & content file to spec folder
+            // calc content file digest
+            // crypto content file -- options
+            // set state to processed
+
+            // copyright insert
+            // right transfer insert
+            // resource transfer insert
+            return 0;
+        }
+
+        UploadLog uploadLog;
+        EntityManager em;
+    }
+
     @POST
     @FormParam("uploadedFile")
     @Consumes({"application/octet-stream", "application/zip", "application/x-compressed"}) //MediaType.APPLICATION_OCTET_STREAM_TYPE
@@ -65,23 +105,14 @@ public class Resources {
             w.write(buffer);
 
             //insert record to table[id, time, uploader_id, file_path, status: 0(received) 1(processing) 2(processed)]
+            factory = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME);
+            EntityManager em = factory.createEntityManager();
+            UploadLog uploadLog = new UploadLog();
+            //uploadLog
+            //...
+            em.persist(uploadLog);
 
-            //thread:
-
-            // set state to processing
-            // uncompress zip
-            // get _meta.json
-            // parse it
-            // insert to resource-table
-            // move cover & content file to spec folder
-            // calc content file digest
-            // crypto content file -- options
-            // set state to processed
-
-            // copyright insert
-            // right transfer insert
-            // resource transfer insert
-
+            new UploadPostProcessor(uploadLog, em).start();
         } catch (IOException e) {
             e.printStackTrace();
         }
