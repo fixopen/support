@@ -13,7 +13,7 @@ import javax.persistence.Table;
 public class Resource {
     public Resource(UploadMeta meta) {
         id = meta.getId();
-        ...
+        //...
     }
 
     @Id

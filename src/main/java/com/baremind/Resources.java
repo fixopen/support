@@ -3,7 +3,9 @@ package com.baremind;
 import com.baremind.algorithm.Securities;
 import com.baremind.data.Resource;
 import com.baremind.data.UploadLog;
+import com.baremind.data.UploadMeta;
 import com.baremind.utils.Hex;
+import com.google.gson.Gson;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -72,6 +74,9 @@ public class Resources {
             // uncompress zip
             // get _meta.json
             // parse it
+            Gson json = new Gson();
+            Reader reader = new InputStreamReader(new FileInputStream(file));
+            UploadMeta meta = json.fromJson(reader, UploadMeta.class);
             // insert to resource-table
             // move cover & content file to spec folder
             // calc content file digest
