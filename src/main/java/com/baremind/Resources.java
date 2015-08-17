@@ -100,8 +100,11 @@ public class Resources {
     @POST
     @FormParam("uploadedFile")
     @Consumes({"application/octet-stream", "application/zip", "application/x-compressed"}) //MediaType.APPLICATION_OCTET_STREAM_TYPE
-    @Produces(MediaType.APPLICATION_JSON)
-    public Resource postZip(@Context HttpServletRequest request) {
+    public Response postZip(@Context HttpServletRequest request) {
+        Response result = null;
+
+        //{"metaInfo":{"message":"upload success","code":0},"data":"15"}
+
         //FileItemFactory factory = new DiskFileItemFactory();
         //ServletFileUpload upload = new ServletFileUpload(factory);
         try {
@@ -127,13 +130,16 @@ public class Resources {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return new Resource();
+        return result;
     }
 
-//    @GET
-//    @Path("{stateId}")
-//    public ResourceUploadState queryState(@PathParam("stateId") Long id) {
-//    }
+    @GET
+    @Path("{stateId}")
+    public Response queryState(@PathParam("stateId") Long id) {
+        Response result = null;
+        //{"metaInfo":{"message":"鏌ヨ鎴愬姛","code":0},"data":9}
+        return result;
+    }
 
 //    @POST
 //    @Consumes("multipart/form-data")

@@ -9,6 +9,15 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.core.Response;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.CopyOption;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+//import java.net.URI;
+//import java.nio.file.*;
+//import java.util.Iterator;
 
 /**
  * Root resource (exposed at "myresource" path)
@@ -67,6 +76,75 @@ public class MyResource {
 
         em.close();
         //insert to database
+
+        //java.nio.file.Files.copy(Path source, Path target, CopyOption... options)；
+
+        try {
+            CopyOption[] options = new CopyOption[]{
+                StandardCopyOption.REPLACE_EXISTING,
+                StandardCopyOption.COPY_ATTRIBUTES
+            };
+            Files.move(Paths.get("source"), Paths.get("destination"), options);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        File source = new File("D:\\polo\\");
+        File desc = new File("E:\\polo2\\");
+        try {
+            FileUtils.copyDirectory(source, desc);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try{
+
+            File source = new File("D:\\polo\\");
+            File desc = new File("E:\\polo2\\");
+
+            if(source .renameTo(new File("E:\\polo2\\" + afile.getName()))){
+                System.out.println("File is moved successful!");
+            }else{
+                System.out.println("File is failed to move!");
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+
+        File source = new File("D:\\polo\\fileold");
+        File desc = new File("E:\\polo2\\filenew");
+        IOUtils.copy(source, desc);
+
+        File[] reviews = null;
+        for(File sortedRevDir : sortedRevDirs) {
+            reviews = sortedRevDir.listFiles();
+            int numFiles = 90;
+            int numTwoThirds = 60;
+            int numOneThirds = numFiles - numTwoThirds;
+
+            String trainingDir = sortedRevDir.getAbsolutePath() + "/trainingData";
+            File trDir = new File(trainingDir);
+            trDir.mkdir();
+            String testDir = sortedRevDir.getAbsolutePath() + "/testData";
+            File tsDir = new File(testDir);
+            tsDir.mkdir();
+
+            for(int i = 0; i < numTwoThirds; i++) {
+                File review = reviews[i];
+                if(!review.isDirectory()) {
+                    File reviewCopied = new File(trDir + "/" + review.getName());
+                    review.renameTo(reviewCopied);
+                }
+            }
+            for(int j = 0; j < numOneThird; j++) {
+                File review = reviews[j];
+                if(!review.isDirectory()) {
+                    File reviewCopied = new File(tsDir + "/" + review.getName());
+                    review.renameTo(reviewCopied);
+                }
+            }
+        }
+
         return post;
     }
 }
