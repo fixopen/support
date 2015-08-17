@@ -11,6 +11,11 @@ import javax.persistence.Table;
 @Entity
 @Table(name="resources")
 public class Resource {
+    public Resource(UploadMeta meta) {
+        id = meta.getId();
+        ...
+    }
+
     @Id
     private Long id = 42l;
 

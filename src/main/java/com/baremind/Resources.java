@@ -1,8 +1,9 @@
 package com.baremind;
 
+import com.baremind.algorithm.Securities;
 import com.baremind.data.Resource;
-import com.baremind.data.SubjectType;
 import com.baremind.data.UploadLog;
+import com.baremind.utils.Hex;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -13,9 +14,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -64,23 +63,29 @@ public class Resources {
         }
 
         @Override
-        int run() {
+        public void run() {
             //thread:
 
             // set state to processing
+            uploadLog.setState(1);
+            em.persist(uploadLog);
             // uncompress zip
             // get _meta.json
             // parse it
             // insert to resource-table
             // move cover & content file to spec folder
             // calc content file digest
+            InputStream inputStream = new FileInputStream(mediaFile);
+            String d = Hex.bytesToHex(Securities.digestor.digest(inputStream));
+            resource.digest = d;
             // crypto content file -- options
             // set state to processed
+            uploadLog.setState(2);
+            em.persist(uploadLog);
 
             // copyright insert
             // right transfer insert
             // resource transfer insert
-            return 0;
         }
 
         UploadLog uploadLog;
@@ -100,7 +105,7 @@ public class Resources {
             ServletInputStream servletInputStream = request.getInputStream();
             servletInputStream.read(buffer);
 
-            File zipFile = File.createTempFile();
+            File zipFile = File.createTempFile("prefix", ".zip");
             FileOutputStream w = new FileOutputStream(zipFile);
             w.write(buffer);
             w.close();
