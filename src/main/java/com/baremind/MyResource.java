@@ -33,9 +33,9 @@ public class MyResource {
     @GET
     @Path("{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Resource getById(@PathParam("id") Long id) {
-        Resource result = new Resource();
-        return result;
+    public void getById(@PathParam("id") Long id) {
+//        Resource result = new Resource();
+//        return result;
     }
 
     @POST

@@ -446,9 +446,9 @@ ALTER TABLE trees OWNER TO postgres;
 CREATE TABLE upload_logs (
     id bigint NOT NULL,
     "time" timestamp(0) without time zone,
-    uploader_id bigint NOT NULL,
+    uploader_id bigint,
     file_path name NOT NULL,
-    state integer NOT NULL
+    state bigint NOT NULL
 );
 
 

@@ -23,7 +23,7 @@
         <class>com.baremind.data.ResourceSubject</class>
         <class>com.baremind.data.ResourceType</class>
         <class>com.baremind.data.ResourceTransfer</class>
-        <class>com.baremind.data.Right</class>
+        <class>com.baremind.data.UploadLog</class>
         <class>com.baremind.data.RightTransfer</class>
         <class>com.baremind.data.RightType</class>
         <class>com.baremind.data.Tree</class>
