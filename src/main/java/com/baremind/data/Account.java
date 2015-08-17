@@ -1,7 +1,7 @@
 package com.baremind.data;
 
 import javax.persistence.*;
-import java.sql.Date;
+import java.util.Date;
 
 /**
  * Created by fixopen on 16/8/15.
@@ -14,7 +14,7 @@ public class Account {
     private Long id;
 
     @Column(name="subject_type")
-    private SubjectType subjectType;
+    private String subjectType;
 
     @Transient
     private String subjectTypeString;
@@ -81,11 +81,11 @@ public class Account {
         this.id = id;
     }
 
-    public SubjectType getSubjectType() {
+    public String getSubjectType() {
         return subjectType;
     }
 
-    public void setSubjectType(SubjectType subjectType) {
+    public void setSubjectType(String subjectType) {
         this.subjectType = subjectType;
     }
 

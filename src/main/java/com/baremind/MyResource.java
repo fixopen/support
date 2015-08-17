@@ -9,7 +9,6 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.core.Response;
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.CopyOption;
 import java.nio.file.Files;
@@ -42,9 +41,9 @@ public class MyResource {
     @GET
     @Path("{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Resource getById(@PathParam("id") Long id) {
-        Resource result = new Resource();
-        return result;
+    public void getById(@PathParam("id") Long id) {
+//        Resource result = new Resource();
+//        return result;
     }
 
     @POST
@@ -89,61 +88,61 @@ public class MyResource {
             e.printStackTrace();
         }
 
-        File source = new File("D:\\polo\\");
-        File desc = new File("E:\\polo2\\");
-        try {
-            FileUtils.copyDirectory(source, desc);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        File source = new File("D:\\polo\\");
+//        File desc = new File("E:\\polo2\\");
+//        try {
+//            FileUtils.copyDirectory(source, desc);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
 
-        try{
+//        try{
+//
+//            File source = new File("D:\\polo\\");
+//            File desc = new File("E:\\polo2\\");
+//
+//            if(source .renameTo(new File("E:\\polo2\\" + afile.getName()))){
+//                System.out.println("File is moved successful!");
+//            }else{
+//                System.out.println("File is failed to move!");
+//            }
+//        }catch(Exception e){
+//            e.printStackTrace();
+//        }
 
-            File source = new File("D:\\polo\\");
-            File desc = new File("E:\\polo2\\");
+//        File source = new File("D:\\polo\\fileold");
+//        File desc = new File("E:\\polo2\\filenew");
+//        IOUtils.copy(source, desc);
 
-            if(source .renameTo(new File("E:\\polo2\\" + afile.getName()))){
-                System.out.println("File is moved successful!");
-            }else{
-                System.out.println("File is failed to move!");
-            }
-        }catch(Exception e){
-            e.printStackTrace();
-        }
-
-        File source = new File("D:\\polo\\fileold");
-        File desc = new File("E:\\polo2\\filenew");
-        IOUtils.copy(source, desc);
-
-        File[] reviews = null;
-        for(File sortedRevDir : sortedRevDirs) {
-            reviews = sortedRevDir.listFiles();
-            int numFiles = 90;
-            int numTwoThirds = 60;
-            int numOneThirds = numFiles - numTwoThirds;
-
-            String trainingDir = sortedRevDir.getAbsolutePath() + "/trainingData";
-            File trDir = new File(trainingDir);
-            trDir.mkdir();
-            String testDir = sortedRevDir.getAbsolutePath() + "/testData";
-            File tsDir = new File(testDir);
-            tsDir.mkdir();
-
-            for(int i = 0; i < numTwoThirds; i++) {
-                File review = reviews[i];
-                if(!review.isDirectory()) {
-                    File reviewCopied = new File(trDir + "/" + review.getName());
-                    review.renameTo(reviewCopied);
-                }
-            }
-            for(int j = 0; j < numOneThird; j++) {
-                File review = reviews[j];
-                if(!review.isDirectory()) {
-                    File reviewCopied = new File(tsDir + "/" + review.getName());
-                    review.renameTo(reviewCopied);
-                }
-            }
-        }
+//        File[] reviews = null;
+//        for(File sortedRevDir : sortedRevDirs) {
+//            reviews = sortedRevDir.listFiles();
+//            int numFiles = 90;
+//            int numTwoThirds = 60;
+//            int numOneThirds = numFiles - numTwoThirds;
+//
+//            String trainingDir = sortedRevDir.getAbsolutePath() + "/trainingData";
+//            File trDir = new File(trainingDir);
+//            trDir.mkdir();
+//            String testDir = sortedRevDir.getAbsolutePath() + "/testData";
+//            File tsDir = new File(testDir);
+//            tsDir.mkdir();
+//
+//            for(int i = 0; i < numTwoThirds; i++) {
+//                File review = reviews[i];
+//                if(!review.isDirectory()) {
+//                    File reviewCopied = new File(trDir + "/" + review.getName());
+//                    review.renameTo(reviewCopied);
+//                }
+//            }
+//            for(int j = 0; j < numOneThird; j++) {
+//                File review = reviews[j];
+//                if(!review.isDirectory()) {
+//                    File reviewCopied = new File(tsDir + "/" + review.getName());
+//                    review.renameTo(reviewCopied);
+//                }
+//            }
+//        }
 
         return post;
     }

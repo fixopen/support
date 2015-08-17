@@ -143,9 +143,9 @@ public class Zip {
         }
     }
 
-    static {
-        System.loadLibrary("crypto");
-    }
+//    static {
+//        System.loadLibrary("crypto");
+//    }
 
     private native int Compress(String folderName, String zipFileName);
 
