@@ -1,5 +1,6 @@
 package com.baremind;
 
+import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 
 /**
@@ -7,6 +8,7 @@ import javax.ws.rs.Path;
  */
 @Path("licenses")
 public class Licenses {
+    @GET
     public String get() {
         return "";
     }
