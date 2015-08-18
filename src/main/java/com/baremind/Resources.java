@@ -7,11 +7,10 @@ import com.baremind.data.UploadLog;
 import com.baremind.data.UploadMeta;
 import com.baremind.utils.Hex;
 import com.baremind.utils.IdGenerator;
+import com.baremind.utils.JPAEntry;
 import com.google.gson.Gson;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
@@ -32,9 +31,6 @@ import java.util.List;
  */
 @Path("resources")
 public class Resources {
-    private static final String PERSISTENCE_UNIT_NAME = "sd";
-    private static EntityManagerFactory factory;
-
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Resource post(@CookieParam("sessionId") String sessionId, Resource resource) {
@@ -134,8 +130,7 @@ public class Resources {
     @Produces(MediaType.APPLICATION_JSON)
     public Response postZip(@Context HttpServletRequest request, @CookieParam("sessionId") String sessionId) {
         Response result = null;
-        factory = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME);
-        EntityManager em = factory.createEntityManager();
+        EntityManager em = JPAEntry.getEntityManager();
         String sql = "SELECT a FROM Account a WHERE a.sessionId=:sessionId";
         Account accounts = em.createQuery(sql,Account.class).setParameter("sessionId", sessionId).getSingleResult();
 //        Date date = new Date();
@@ -182,8 +177,7 @@ public class Resources {
     public Response queryState(@PathParam("id") Long id) {
         Response result = null;
         //{"metaInfo":{"message":"鏌ヨ鎴愬姛","code":0},"data":9}
-        factory = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME);
-        EntityManager em = factory.createEntityManager();
+        EntityManager em = JPAEntry.getEntityManager();
         String sql = "SELECT l FROM UploadLog l WHERE l.id=:id";
         UploadLog uploadLog = em.createQuery(sql, UploadLog.class).setParameter("id", id).getSingleResult();
         return result;
