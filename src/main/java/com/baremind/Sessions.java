@@ -9,7 +9,6 @@ import com.baremind.utils.JPAEntry;
 import com.google.gson.Gson;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 import javax.ws.rs.*;
 import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.core.Response;

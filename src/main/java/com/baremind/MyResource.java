@@ -1,6 +1,9 @@
 package com.baremind;
 
 import com.baremind.data.Resource;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -14,6 +17,8 @@ import java.nio.file.CopyOption;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.Map;
+import java.util.Set;
 //import java.net.URI;
 //import java.nio.file.*;
 //import java.util.Iterator;
@@ -42,6 +47,16 @@ public class MyResource {
     @Path("{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public void getById(@PathParam("id") Long id) {
+        JsonParser parser = new JsonParser();
+        JsonObject jo = parser.parse("{\"no\": 3, \"name\": \"zhangsan\"}").getAsJsonObject();
+        Set<Map.Entry<String, JsonElement>> properties = jo.entrySet();
+        for (Map.Entry<String, JsonElement> entry : properties) {
+            String key = entry.getKey();
+            JsonElement value = entry.getValue();
+            //
+            int iv = value.getAsInt();
+            String sv = value.getAsString();
+        }
 //        Resource result = new Resource();
 //        return result;
     }

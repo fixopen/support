@@ -12,14 +12,14 @@ public class IdGenerator {
     public static long getNewId() {
         long result = (long)instanceId << 48;
         Date now = new Date();
-        int timestamp = (int)now.getTime();
+        int timestamp = (int)(now.getTime() / 1000);
         if (timestamp == previousTimestamp) {
             serialNo++;
         } else {
             previousTimestamp = timestamp;
             serialNo = 0;
         }
-        result |= timestamp << 16;
+        result |= ((long)timestamp << 16) & 0x0000FFFFFFFF0000l;
         result |= serialNo;
         return result;
     }
