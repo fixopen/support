@@ -1,16 +1,15 @@
 package com.baremind;
 
 import com.baremind.algorithm.Securities;
-import com.baremind.data.Account;
-import com.baremind.data.Resource;
-import com.baremind.data.UploadLog;
-import com.baremind.data.UploadMeta;
+import com.baremind.data.*;
 import com.baremind.utils.Hex;
 import com.baremind.utils.IdGenerator;
 import com.baremind.utils.JPAEntry;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
@@ -18,13 +17,8 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.*;
-import java.nio.file.CopyOption;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.net.URLDecoder;
+import java.util.*;
 
 /**
  * Created by fixopen on 16/8/15.
@@ -42,12 +36,44 @@ public class Resources {
     }
 
     @GET
-    public List<Resource> get() {
-        return new ArrayList<Resource>();
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<Resource> get(@CookieParam("sessionId") String sessionId,@QueryParam("filter")@DefaultValue("") String filter) {
+        List<Resource> result = new ArrayList<Resource>();
+        if (JPAEntry.isLogining(sessionId, (Account a) -> {})) {
+            if(filter != ""){
+                String rawFilter = URLDecoder.decode(filter);
+                Map<String,Object> filterObject = new Gson().fromJson(rawFilter, new TypeToken<Map<String,Object>>() {
+                }.getType());
+//                Resource filterObject = new Gson().fromJson(rawFilter);
+                String sql = "SELECT r FROM Resource r WHERE 1=1";
+                if(filterObject != null){
+                    Iterator it = filterObject.entrySet().iterator();
+                    while(it.hasNext()){
+                        Map.Entry entry = (Map.Entry)it.next();
+                        String key = entry.getKey().toString();
+//                    Object value = entry.getValue();
+                        sql += " AND r."+entry.getKey().toString()+"= '"+entry.getValue()+"'";
+                    }
+                }
+                EntityManager em = JPAEntry.getEntityManager();
+//                Query q = em.createQuery(sql,Resource.class);
+//                while(it.hasNext()) {
+//                    Map.Entry entry = (Map.Entry)it.next();
+//                    Object value = entry.getValue();
+//                    q.setParameter(entry.getKey().toString(),entry.getValue());
+//                }
+                List<Resource> list = em.createQuery(sql,Resource.class).getResultList();
+                result = list;
+            }
+        }else{
+            return new ArrayList<Resource>();
+        }
+        return result;
     }
 
     @GET
     @Path("{id}")
+    @Produces(MediaType.APPLICATION_JSON)
     public Resource getById(@CookieParam("sessionId") String sessionId, @PathParam("id") Long id) {
         return new Resource();
     }
@@ -76,7 +102,7 @@ public class Resources {
 
             // set state to processing
             em.getTransaction().begin();
-            uploadLog.setState(1);
+            uploadLog.setState(3);
             em.persist(uploadLog);
             em.getTransaction().commit();
 
@@ -86,26 +112,51 @@ public class Resources {
             Gson json = new Gson();
             Reader reader = null;
             try {
-                reader = new InputStreamReader(new FileInputStream("D:\\var\\zipFiles\\"+"_meta.json"));
+                reader = new InputStreamReader(new FileInputStream("D:\\var\\zipFiles\\"+"__meta.json"));
                 UploadMeta meta = json.fromJson(reader, UploadMeta.class);
                 Resource resource = new Resource(meta);
-                em.getTransaction().begin();
-                CopyOption[] options = new CopyOption[]{
-                        StandardCopyOption.REPLACE_EXISTING,
-                        StandardCopyOption.COPY_ATTRIBUTES
-                };
-                Files.move(Paths.get("D:\\var\\zipFiles\\"+resource.getFilePath()), Paths.get("D:\\var\\zipFilesSave\\"+resource.getFilePath()),options);
-                Files.move(Paths.get("D:\\var\\zipFiles\\"+resource.getCover()), Paths.get("D:\\var\\zipFilesSave\\"+resource.getCover()),options);
+                resource.setId(IdGenerator.getNewId());
+//                CopyOption[] options = new CopyOption[]{
+//                        StandardCopyOption.REPLACE_EXISTING,
+//                        StandardCopyOption.COPY_ATTRIBUTES
+//                };
+//                Files.move(Paths.get("D:\\var\\zipFiles\\"+resource.getFilePath()), Paths.get("D:\\var\\zipFilesSave\\"+resource.getFilePath()),options);
+//                Files.move(Paths.get("D:\\var\\zipFiles\\"+resource.getCover()), Paths.get("D:\\var\\zipFilesSave\\"+resource.getCover()),options);
 
-                InputStream inputStream = new FileInputStream("D:\\var\\zipFilesSave\\"+resource.getFilePath());
+                File source = new File("D:\\var\\zipFiles\\"+resource.getFilePath());
+                File desc = new File("D:\\var\\zipFiles\\"+resource.getCover());
+
+                if(source.renameTo(new File("D:\\var\\file\\books\\" + resource.getFilePath()))){
+                    if(desc.renameTo(new File("D:\\var\\file\\covers\\" + resource.getCover()))){
+                        System.out.println("File is moved successful!");
+                    }else{
+                        System.out.println("File is failed to move!");
+                    }
+                }else{
+                    System.out.println("File is failed to move!");
+                }
+
+                InputStream inputStream = new FileInputStream("D:\\var\\file\\books\\"+resource.getFilePath());
                 String d = Hex.bytesToHex(Securities.digestor.digest(inputStream));
                 resource.setDigest(d);
 
-                em.persist(resource);
-                em.getTransaction().commit();
-
+                Copyright copyRight = new Copyright();
+                copyRight.setId(IdGenerator.getNewId());
+                copyRight.setNo(resource.getNo());
+                copyRight.setResourceId(resource.getId());
+                copyRight.setOwnerId(10000L);
+                copyRight.setAuthorId(10000L);
+                copyRight.setStatus(1);
                 em.getTransaction().begin();
-                uploadLog.setState(2);
+                em.persist(resource);
+//                em.getTransaction().commit();
+
+//                em.getTransaction().begin();
+                em.persist(copyRight);
+//                em.getTransaction().commit();
+
+//                em.getTransaction().begin();
+                uploadLog.setState(9);
                 em.persist(uploadLog);
                 em.getTransaction().commit();
 
@@ -119,7 +170,7 @@ public class Resources {
             // set state to processed
 
             // copyright insert
-            // right transfer insert
+            // Rights transfer insert
             // resource transfer insert
         }
 
@@ -133,23 +184,21 @@ public class Resources {
         EntityManager em = JPAEntry.getEntityManager();
         String sql = "SELECT a FROM Account a WHERE a.sessionId=:sessionId";
         Account accounts = em.createQuery(sql,Account.class).setParameter("sessionId", sessionId).getSingleResult();
-//        Date date = new Date();
-//        String time = new Date().toString();
-//        Date date = new SimpleDateFormat("yyyy/mm/dd hh:MM:ss").parse(time);
-//
-//        Calendar cal= Calendar.getInstance();
-//        cal.setTime(date);
-//
-//        cal.add(Calendar.HOUR, -1);
-//        Date yesterday =cal.getTime();
         try {
             int length = request.getContentLength();
-            byte[] buffer = new byte[length];
-            ServletInputStream servletInputStream = request.getInputStream();
-            servletInputStream.read(buffer);
+            byte[] buffer = new byte[4*1024];
+
             File zipFile = new File("D:\\var\\files\\"+IdGenerator.getNewId()+".zip");
             FileOutputStream w = new FileOutputStream(zipFile);
-            w.write(buffer);
+            int receiveLength = 0;
+            ServletInputStream servletInputStream = request.getInputStream();
+            for (;;) {
+                receiveLength = servletInputStream.read(buffer);
+                if (receiveLength == -1) {
+                    break;
+                }
+                w.write(buffer, 0, receiveLength);
+            }
             w.close();
 
             //insert record to table[id, time, uploader_id, file_path, status: 0(received) 1(processing) 2(processed)]
@@ -173,13 +222,15 @@ public class Resources {
     }
 
     @GET
-    @Path("{id}")
+    @Path("uploadState/{id}")
     public Response queryState(@PathParam("id") Long id) {
         Response result = null;
         //{"metaInfo":{"message":"鏌ヨ鎴愬姛","code":0},"data":9}
         EntityManager em = JPAEntry.getEntityManager();
         String sql = "SELECT l FROM UploadLog l WHERE l.id=:id";
         UploadLog uploadLog = em.createQuery(sql, UploadLog.class).setParameter("id", id).getSingleResult();
+        result = Response.ok("{\"metaInfo\":{\"message\":\"\",\"code\":0},\"data\":" + uploadLog.getState() + "}").build();
+        //{"metaInfo":{"message":"","code":0},"data":}
         return result;
     }
 
@@ -192,10 +243,24 @@ public class Resources {
     private static final String FILE_PATH = "c:\\file.log";
 
     @GET
-    @Path("{id}")
+    @Path("{no}")
     @Produces({"application/pdf", "application/msword", "text/plain"})
-    public Response getFile() {
-        File file = new File(FILE_PATH);
-        return Response.ok(file).header("Content-Disposition", "attachment; filename=\"file_from_server.log\"").build();
+    public Response getFile(@CookieParam("sessionId") String sessionId,@PathParam("no") String no) {
+        Response response =Response.status(404).build();
+        if (JPAEntry.isLogining(sessionId, (Account a) -> {})) {
+            String sql = "SELECT r FROM Resource r WHERE r.no =:no";
+            EntityManager em = JPAEntry.getEntityManager();
+            Resource resource = em.createQuery(sql,Resource.class).setParameter("no", no).getSingleResult();
+            File file = null;
+            FileOutputStream fileOutput = null;
+            try {
+                file = new File("D:\\var\\file\\books\\"+resource.getFilePath());
+                fileOutput = new FileOutputStream(file);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+            response = Response.ok(fileOutput).header("Content-Disposition", "attachment; filename=\"file_from_server.log\"").build();
+        }
+        return response;
     }
 }
