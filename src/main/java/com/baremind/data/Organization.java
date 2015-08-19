@@ -20,8 +20,10 @@ public class Organization {
 
     @Column(name="name")
     private String name;
+
     @Column(name="type_id")
     private Long typeId;
+
     @Column(name="parent_id")
     private Long parentId;
 

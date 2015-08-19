@@ -20,18 +20,25 @@ public class User {
 
     @Column(name="name")
     private String name;
+
     @Column(name="organization_id")
     private Long organizationId;
+
     @Column(name="id_type")
     private String idType;
+
     @Column(name="id_no")
     private String idNo;
+
     @Column(name="company_name")
     private String companyName;
+
     @Column(name="company_no")
     private String companyNo;
+
     @Column(name="position")
     private String position;
+
     @Column(name="address")
     private String address;
 

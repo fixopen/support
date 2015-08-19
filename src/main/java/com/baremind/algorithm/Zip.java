@@ -19,7 +19,7 @@ public class Zip {
             ZipEntry zipEntry = null;
             byte[] buffer = new byte[256];
             while ((zipEntry = zipInputStream.getNextEntry()) != null) {
-                File fileItem = new File(folder.getAbsolutePath() + zipEntry.getName());
+                File fileItem = new File(folder.getAbsolutePath() + "\\" + zipEntry.getName());
                 File fileItemFolder = new File(fileItem.getParentFile().getPath());
                 if (zipEntry.isDirectory()) {
                     if (!fileItem.exists()) {

@@ -15,20 +15,28 @@ public class RightTransfer {
     @Id
     @Column(name="id")
     private Long id;
+
     @Column(name="no")
     private String no;
+
     @Column(name="time")
     private Date time;
+
     @Column(name="copyright_id")
     private Long copyrightId;
+
     @Column(name="right_type_id")
     private Long rightTypeId;
+
     @Column(name="from_id")
     private Long fromId;
+
     @Column(name="to_id")
     private Long toId;
+
     @Column(name="amount")
     private int amount;
+
     @Column(name="expiration")
     private Date expiration;
 
