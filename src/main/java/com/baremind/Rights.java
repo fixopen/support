@@ -1,6 +1,5 @@
 package com.baremind;
 
-import com.baremind.data.Account;
 import com.baremind.data.RightTransfer;
 import com.baremind.utils.IdGenerator;
 import com.baremind.utils.JPAEntry;
@@ -20,7 +19,7 @@ public class Rights {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public RightTransfer post(@CookieParam("sessionId") String sessionId, RightTransfer rightTransfer) {
-        if (JPAEntry.isLogining(sessionId, (Account a) -> {})) {
+        if (JPAEntry.isLogining(sessionId)) {
             rightTransfer.setId(IdGenerator.getNewId());
             EntityManager em = JPAEntry.getEntityManager();
             em.getTransaction().begin();

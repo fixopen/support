@@ -24,6 +24,10 @@ public class JPAEntry {
         return factory.createEntityManager();
     }
 
+    public static boolean isLogining(String sessionId) {
+        return isLogining(sessionId, (Account a) -> {});
+    }
+
     public static boolean isLogining(String sessionId, TouchFunction touchFunction) {
         boolean result = false;
         EntityManager em = getEntityManager();

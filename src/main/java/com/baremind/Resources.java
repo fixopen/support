@@ -42,7 +42,7 @@ public class Resources {
     @Produces(MediaType.APPLICATION_JSON)
     public List<Resource> get(@CookieParam("sessionId") String sessionId, @QueryParam("filter") @DefaultValue("") String filter) {
         List<Resource> result = new ArrayList<Resource>();
-        if (JPAEntry.isLogining(sessionId, (Account a) -> {})) {
+        if (JPAEntry.isLogining(sessionId)) {
             Map<String, Object> filterObject = null;
             if (filter != "") {
                 String rawFilter = URLDecoder.decode(filter);
@@ -160,7 +160,7 @@ public class Resources {
     @Produces(MediaType.APPLICATION_JSON)
     public Response postZip(@Context HttpServletRequest request, @CookieParam("sessionId") String sessionId) {
         Response result = null;
-        if (JPAEntry.isLogining(sessionId, (Account a) -> {})) {
+        if (JPAEntry.isLogining(sessionId)) {
             try {
                 byte[] buffer = new byte[4 * 1024];
 
@@ -204,7 +204,7 @@ public class Resources {
     @Path("uploadState/{id}")
     public Response queryState(@CookieParam("sessionId") String sessionId, @PathParam("id") Long id) {
         Response result = null;
-        if (JPAEntry.isLogining(sessionId, (Account a) -> {})) {
+        if (JPAEntry.isLogining(sessionId)) {
             EntityManager em = JPAEntry.getEntityManager();
             String sql = "SELECT l FROM UploadLog l WHERE l.id = :id";
             UploadLog uploadLog = em.createQuery(sql, UploadLog.class).setParameter("id", id).getSingleResult();
@@ -228,7 +228,7 @@ public class Resources {
     @Produces({"application/pdf", "application/msword", "text/plain"})
     public Response getFile(@CookieParam("sessionId") String sessionId, @PathParam("no") String no) {
         Response result = null;
-        if (JPAEntry.isLogining(sessionId, (Account a) -> {})) {
+        if (JPAEntry.isLogining(sessionId)) {
             String sql = "SELECT r FROM Resource r WHERE r.no = :no";
             EntityManager em = JPAEntry.getEntityManager();
             Resource resource = em.createQuery(sql, Resource.class).setParameter("no", no).getSingleResult();
