@@ -24,12 +24,8 @@ public class JPAEntry {
         return factory.createEntityManager();
     }
 
-    public static boolean isLogining(String sessionId) {
-        return isLogining(sessionId, (Account a) -> {});
-    }
-
-    public static boolean isLogining(String sessionId, TouchFunction touchFunction) {
-        boolean result = false;
+    public static Account getAccount(String sessionId) {
+        Account result = null;
         EntityManager em = getEntityManager();
         String jpql = "SELECT a FROM Account a WHERE a.sessionId = :sessionId ";
         List<Account> accounts = em.createQuery(jpql, Account.class)
@@ -38,20 +34,44 @@ public class JPAEntry {
         int count = accounts.size();
         switch (count) {
             case 1: //ok
-                Account account = accounts.get(0);
-                if (account.getActive() == 1) {
-                    Date now = new Date();
-                    Date lastOperationTime = account.getLastOpereationTime();
-                    if (now.getTime() - lastOperationTime.getTime() < 30 * 60 * 1000) {
-                        em.getTransaction().begin();
-                        account.setLastOpereationTime(now);
-                        touchFunction.touch(account);
-                        em.persist(account);
-                        em.getTransaction().commit();
-                        result = true;
-                    }
-                }
+                result = accounts.get(0);
                 break;
+
+        }
+        return result;
+    }
+
+    public static boolean isLogining(Account a) {
+        return isLogining(a, (Account account) -> {});
+    }
+
+    public static boolean isLogining(Account account, TouchFunction touchFunction) {
+        boolean result = false;
+        if (account.getActive() == 1) {
+            Date now = new Date();
+            Date lastOperationTime = account.getLastOpereationTime();
+            if (now.getTime() - lastOperationTime.getTime() < 30 * 60 * 1000) {
+                EntityManager em = getEntityManager();
+                em.getTransaction().begin();
+                account.setLastOpereationTime(now);
+                touchFunction.touch(account);
+                em.persist(account);
+                em.getTransaction().commit();
+                result = true;
+            }
+        }
+        return result;
+    }
+
+    public static boolean isLogining(String sessionId) {
+        return isLogining(sessionId, (Account a) -> {});
+    }
+
+    public static boolean isLogining(String sessionId, TouchFunction touchFunction) {
+        boolean result = false;
+        Account account = getAccount(sessionId);
+        if (account != null) {
+            result = isLogining(account, touchFunction);
         }
         return result;
     }

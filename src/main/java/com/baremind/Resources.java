@@ -31,10 +31,18 @@ public class Resources {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Resource post(@CookieParam("sessionId") String sessionId, Resource resource) {
-        //find account from accounts-table by sessionId
-        //and last operation time > now - 30min
-        //update last operation time
-        //store resource to resources-table
+        Account account = JPAEntry.getAccount(sessionId);
+        if (account != null) {
+            boolean isLogin = JPAEntry.isLogining(account);
+            if (isLogin) {
+                EntityManager em = JPAEntry.getEntityManager();
+                em.getTransaction().begin();
+                resource.setId(IdGenerator.getNewId());
+                resource.setOwnerId(account.getId());
+                em.persist(resource);
+                em.getTransaction().commit();
+            }
+        }
         return resource;
     }
 
