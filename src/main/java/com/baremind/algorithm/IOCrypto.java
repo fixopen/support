@@ -17,9 +17,9 @@ public class IOCrypto {
         return result;
     }
 
-    static {
-        System.loadLibrary("crypto");
-    }
+//    static {
+//        System.loadLibrary("crypto");
+//    }
 
     private native int Decrypt(String src, String dst);
 

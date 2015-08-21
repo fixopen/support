@@ -1,10 +1,7 @@
 package com.baremind.data;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import java.sql.Date;
+import javax.persistence.*;
+import java.util.Date;
 
 /**
  * Created by fixopen on 16/8/15.
@@ -17,7 +14,10 @@ public class Account {
     private Long id;
 
     @Column(name="subject_type")
-    private SubjectType subjectType;
+    private String subjectType;
+
+    @Transient
+    private String subjectTypeString;
 
     @Column(name="subject_id")
     private Long subjectId;
@@ -81,12 +81,20 @@ public class Account {
         this.id = id;
     }
 
-    public SubjectType getSubjectType() {
+    public String getSubjectType() {
         return subjectType;
     }
 
-    public void setSubjectType(SubjectType subjectType) {
+    public void setSubjectType(String subjectType) {
         this.subjectType = subjectType;
+    }
+
+    public String getSubjectTypeString() {
+        return subjectTypeString;
+    }
+
+    public void setSubjectTypeString(String subjectTypeString) {
+        this.subjectTypeString = subjectTypeString;
     }
 
     public Long getSubjectId() {
