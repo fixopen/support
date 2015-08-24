@@ -55,7 +55,7 @@ public class JPAEntry {
                 em.getTransaction().begin();
                 account.setLastOpereationTime(now);
                 touchFunction.touch(account);
-                em.persist(account);
+                em.merge(account);
                 em.getTransaction().commit();
                 result = true;
             }

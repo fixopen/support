@@ -7,7 +7,7 @@ public enum SubjectType {
     Organization {
         @Override
         public String toString() {
-            return "Organization";
+            return "OrganizationAct";
         }
     },
     Personal {
@@ -20,8 +20,8 @@ public enum SubjectType {
 //    public static SubjectType valueOf(String s) {
 //        SubjectType result = null;
 //        switch (s) {
-//            case "Organization":
-//                result = Organization;
+//            case "OrganizationAct":
+//                result = OrganizationAct;
 //                break;
 //            case "Personal":
 //                result = Personal;

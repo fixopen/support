@@ -17,6 +17,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.*;
+import java.io.FileInputStream;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Date;
@@ -28,6 +29,12 @@ import java.util.Map;
  */
 @Path("resources")
 public class Resources {
+    private static final String FILE_PATH = "c:\\file.log";
+    private static final String BOOKS ="D:\\var\\file\\books\\";
+    private static final String COVERS ="D:\\var\\file\\covers\\";
+    private static final String ZIP_FILES ="D:\\var\\files\\";
+    private static final String ZIP_TEMPORARY ="D:\\var\\zipFiles\\";
+
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Resource post(@CookieParam("sessionId") String sessionId, Resource resource) {
@@ -110,10 +117,10 @@ public class Resources {
             em.getTransaction().commit();
 
             File file = new File(uploadLog.getFilePath());
-            File fileZip = new File("D:\\var\\zipFiles\\");
+            File fileZip = new File(ZIP_TEMPORARY);
             Securities.zip.uncompress(file, fileZip);
             try {
-                Reader reader = new InputStreamReader(new FileInputStream("D:\\var\\zipFiles\\" + "__meta.json"));
+                Reader reader = new InputStreamReader(new FileInputStream(ZIP_TEMPORARY + "__meta.json"));
                 Gson json = new Gson();
                 UploadMeta meta = json.fromJson(reader, UploadMeta.class);
                 Resource resource = new Resource(meta);
@@ -125,11 +132,11 @@ public class Resources {
 //                Files.move(Paths.get("D:\\var\\zipFiles\\"+resource.getFilePath()), Paths.get("D:\\var\\zipFilesSave\\"+resource.getFilePath()),options);
 //                Files.move(Paths.get("D:\\var\\zipFiles\\"+resource.getCover()), Paths.get("D:\\var\\zipFilesSave\\"+resource.getCover()),options);
 
-                File source = new File("D:\\var\\zipFiles\\" + resource.getFilePath());
-                File desc = new File("D:\\var\\zipFiles\\" + resource.getCover());
+                File source = new File(ZIP_TEMPORARY + resource.getFilePath());
+                File desc = new File(ZIP_TEMPORARY + resource.getCover());
 
-                if (source.renameTo(new File("D:\\var\\file\\books\\" + resource.getFilePath()))) {
-                    if (desc.renameTo(new File("D:\\var\\file\\covers\\" + resource.getCover()))) {
+                if (source.renameTo(new File(BOOKS + resource.getFilePath()))) {
+                    if (desc.renameTo(new File(COVERS + resource.getCover()))) {
                         System.out.println("File is moved successful!");
                     } else {
                         System.out.println("File is failed to move!");
@@ -138,7 +145,7 @@ public class Resources {
                     System.out.println("File is failed to move!");
                 }
 
-                InputStream inputStream = new FileInputStream("D:\\var\\file\\books\\" + resource.getFilePath());
+                InputStream inputStream = new FileInputStream(BOOKS + resource.getFilePath());
                 String d = Hex.bytesToHex(Securities.digestor.digest(inputStream));
                 resource.setDigest(d);
 
@@ -164,7 +171,6 @@ public class Resources {
 
     @POST
     @Consumes({"application/octet-stream", "application/zip", "application/x-compressed"})
-    //MediaType.APPLICATION_OCTET_STREAM_TYPE
     @Produces(MediaType.APPLICATION_JSON)
     public Response postZip(@Context HttpServletRequest request, @CookieParam("sessionId") String sessionId) {
         Response result = null;
@@ -172,7 +178,7 @@ public class Resources {
             try {
                 byte[] buffer = new byte[4 * 1024];
 
-                File zipFile = new File("D:\\var\\files\\" + IdGenerator.getNewId() + ".zip");
+                File zipFile = new File(ZIP_FILES + IdGenerator.getNewId() + ".zip");
                 FileOutputStream w = new FileOutputStream(zipFile);
                 ServletInputStream servletInputStream = request.getInputStream();
                 for (; ; ) {
@@ -229,14 +235,13 @@ public class Resources {
 //        //
 //    }
 
-    private static final String FILE_PATH = "c:\\file.log";
 
     @GET
     @Path("{no}")
     @Produces({"application/pdf", "application/msword", "text/plain"})
     public Response getFile(@CookieParam("sessionId") String sessionId, @PathParam("no") String no) {
         Response result = null;
-        if (JPAEntry.isLogining(sessionId)) {
+//        if (JPAEntry.isLogining(sessionId, (Account a) -> {})) {
             String sql = "SELECT r FROM Resource r WHERE r.no = :no";
             EntityManager em = JPAEntry.getEntityManager();
             Resource resource = em.createQuery(sql, Resource.class).setParameter("no", no).getSingleResult();
@@ -244,10 +249,78 @@ public class Resources {
                 result = Response.status(404).build();
             } else {
                 try {
-                    File file = new File("D:\\var\\file\\books\\" + resource.getFilePath());
-                    FileOutputStream fileOutput = new FileOutputStream(file);
-                    result = Response.ok(fileOutput).header("Content-Disposition", "attachment; filename=\"file_from_server.log\"").build();
-                } catch (FileNotFoundException e) {
+                    //判断是否有copyright
+//                    encrypt
+                    //resource_transfer 资源流转记一下
+                    File file = new File(BOOKS + resource.getFilePath());
+                    file.length();
+//                    File toFile = new File(resource.getFilePath());
+                    if(file.exists()){
+                        FileInputStream in = new FileInputStream(file);
+                        byte[] data = new byte[4*1024];
+                        in.read();
+                        /*
+                        * FileOutputStream fileOutput = new FileOutputStream(toFile);
+
+                        byte[] data = new byte[4*1024];
+                        int len;
+                        while ((len = in.read(data)) != -1) {
+                            fileOutput.write(data, 0, len);
+                        }
+                        in.close();
+                        fileOutput.close();
+                        * */
+
+//                       result = Response.ok(fileOutput).header("Content-Disposition", "attachment; filename=\"file_from_server.log\"").build();
+                        result = Response.ok(in).header("Content-Disposition", "attachment; filename=\"file_from_server.log\"").build();
+                    }else {
+                        result = Response.status(404).build();
+                    }
+
+                } catch (Exception e) {
+                    result = Response.status(500).build();
+                    e.printStackTrace();
+                }
+            }
+//        } else {
+//            result = Response.status(401).build();
+//        }
+        return result;
+    }
+
+    @GET
+    @Path("{no}/cover")
+    @Produces({"image/jpeg"})
+    public Response getImage(@CookieParam("sessionId") String sessionId, @PathParam("no") String no) {
+        Response result = null;
+        if (JPAEntry.isLogining(sessionId, (Account a) -> {})) {
+            String sql = "SELECT r FROM Resource r WHERE r.no = :no";
+            EntityManager em = JPAEntry.getEntityManager();
+            Resource resource = em.createQuery(sql, Resource.class).setParameter("no", no).getSingleResult();
+            if (resource == null) {
+                result = Response.status(404).build();
+            } else {
+                try {
+                    File file = new File(COVERS + resource.getCover());
+                    file.createNewFile();
+                    if(file.exists()){
+                        FileInputStream in = new FileInputStream(file);
+                        FileOutputStream fileOutput = new FileOutputStream(file);
+
+                        byte[] data = new byte[4*1024];
+                        int len;
+                        while ((len = in.read(data)) != -1) {
+                            fileOutput.write(data, 0, len);
+                        }
+                        in.close();
+                        fileOutput.close();
+
+                        result = Response.ok(fileOutput).header("Content-Disposition", "attachment; filename=\"file_from_server.log\"").build();
+                    }else {
+                        result = Response.status(404).build();
+                    }
+
+                } catch (Exception e) {
                     result = Response.status(500).build();
                     e.printStackTrace();
                 }

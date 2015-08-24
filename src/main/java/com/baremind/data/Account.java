@@ -16,9 +16,6 @@ public class Account {
     @Column(name="subject_type")
     private String subjectType;
 
-    @Transient
-    private String subjectTypeString;
-
     @Column(name="subject_id")
     private Long subjectId;
 
@@ -26,7 +23,7 @@ public class Account {
     private Integer active;
 
     @Column(name="type")
-    private Integer type;
+    private Integer type = 0;
 
     @Column(name="begin")
     private Date begin;
@@ -41,7 +38,7 @@ public class Account {
     private String password;
 
     @Column(name="can_change_password")
-    private Integer canChangePassword;
+    private Integer canChangePassword = 0;
 
     @Column(name="password_question")
     private String passwordQuestion;
@@ -59,10 +56,10 @@ public class Account {
     private Date lastLoginTime;
 
     @Column(name="login_count")
-    private Integer loginCount;
+    private Integer loginCount = 0;
 
     @Column(name="password_failed_count")
-    private Integer passwordFailedCount;
+    private Integer passwordFailedCount = 0;
 
     @Column(name="current_certificate")
     private String currentCertificate;
@@ -89,13 +86,13 @@ public class Account {
         this.subjectType = subjectType;
     }
 
-    public String getSubjectTypeString() {
-        return subjectTypeString;
-    }
-
-    public void setSubjectTypeString(String subjectTypeString) {
-        this.subjectTypeString = subjectTypeString;
-    }
+//    public String getSubjectTypeString() {
+//        return subjectTypeString;
+//    }
+//
+//    public void setSubjectTypeString(String subjectTypeString) {
+//        this.subjectTypeString = subjectTypeString;
+//    }
 
     public Long getSubjectId() {
         return subjectId;

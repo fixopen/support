@@ -61,7 +61,7 @@ public class Sessions{
                     case "Personal":
                         getUserOrOrg = "SELECT u FROM User u WHERE u.id= :id";
                         User user = em.createQuery(getUserOrOrg, User.class).setParameter("id", findAccount.getSubjectId()).getSingleResult();
-//                        List<User> user = em.createQuery(getUserOrOrg, User.class).setParameter("id", findAccount.getSubjectId()).getResultList();
+//                        List<UserAct> user = em.createQuery(getUserOrOrg, UserAct.class).setParameter("id", findAccount.getSubjectId()).getResultList();
                         response = Response.ok(new Gson().toJson(user),MediaType.APPLICATION_JSON).cookie(new NewCookie("sessionId", sessionString, "/api/", null, null, -1, false)).build();
                         break;
                 }
