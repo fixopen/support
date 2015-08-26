@@ -2,11 +2,8 @@ package com.baremind.utils;
 
 import com.baremind.data.Account;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-import java.util.Date;
-import java.util.List;
+import javax.persistence.*;
+import java.util.*;
 
 /**
  * Created by fixopen on 18/8/15.
@@ -24,25 +21,61 @@ public class JPAEntry {
         return factory.createEntityManager();
     }
 
+    public static <T> T getObject(Class<T> type, String fieldName, Object fieldValue) {
+        T result = null;
+        EntityManager em = getEntityManager();
+        String jpql = "SELECT a FROM " + type.getSimpleName() + " a WHERE a." + fieldName + " = :variable";
+        try {
+            result = em.createQuery(jpql, type)
+                .setParameter("variable", fieldValue)
+                .getSingleResult();
+        } catch (NoResultException e) {
+            //do noting
+        }
+        return result;
+    }
+
+    public static <T> List<T> getList(Class<T> type, String fieldName, Object fieldValue) {
+        HashMap<String, Object> condition = new HashMap<>(1);
+        condition.put(fieldName, fieldValue);
+        return getList(type, condition);
+    }
+
+    public static <T> List<T> getList(Class<T> type, Map<String, Object> conditions) {
+        String jpql = "SELECT o FROM " + type.getSimpleName() + " o WHERE 1 = 1";
+        if (conditions != null) {
+            for (Map.Entry<String, Object> item : conditions.entrySet()) {
+                jpql += " AND o." + item.getKey() + " = :" + item.getKey();
+            }
+        }
+        EntityManager em = getEntityManager();
+        TypedQuery<T> q = em.createQuery(jpql, type);
+        if (conditions != null) {
+            //conditions.forEach((key, value) -> {
+            //    q.setParameter(key, value);
+            //});
+            for (Map.Entry<String, Object> item : conditions.entrySet()) {
+                q.setParameter(item.getKey(), item.getValue());
+            }
+        }
+        return q.getResultList();
+    }
+
     public static Account getAccount(String sessionId) {
         Account result = null;
-        EntityManager em = getEntityManager();
-        String jpql = "SELECT a FROM Account a WHERE a.sessionId = :sessionId ";
-        List<Account> accounts = em.createQuery(jpql, Account.class)
-            .setParameter("sessionId", sessionId)
-            .getResultList();
+        List<Account> accounts = getList(Account.class, "sessionId", sessionId);
         int count = accounts.size();
         switch (count) {
             case 1: //ok
                 result = accounts.get(0);
                 break;
-
         }
         return result;
     }
 
     public static boolean isLogining(Account a) {
-        return isLogining(a, (Account account) -> {});
+        return isLogining(a, (Account account) -> {
+        });
     }
 
     public static boolean isLogining(Account account, TouchFunction touchFunction) {
@@ -55,7 +88,7 @@ public class JPAEntry {
                 em.getTransaction().begin();
                 account.setLastOpereationTime(now);
                 touchFunction.touch(account);
-                em.persist(account);
+                em.merge(account);
                 em.getTransaction().commit();
                 result = true;
             }
@@ -64,7 +97,8 @@ public class JPAEntry {
     }
 
     public static boolean isLogining(String sessionId) {
-        return isLogining(sessionId, (Account a) -> {});
+        return isLogining(sessionId, (Account a) -> {
+        });
     }
 
     public static boolean isLogining(String sessionId, TouchFunction touchFunction) {
