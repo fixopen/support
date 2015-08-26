@@ -84,17 +84,12 @@ public class JPAEntry  {
 
     public static Account getAccount(String sessionId) {
         Account result = null;
-        EntityManager em = getEntityManager();
-        String jpql = "SELECT a FROM Account a WHERE a.sessionId = :sessionId ";
-        List<Account> accounts = em.createQuery(jpql, Account.class)
-            .setParameter("sessionId", sessionId)
-            .getResultList();
+        List<Account> accounts = getList(Account.class, "sessionId", sessionId);
         int count = accounts.size();
         switch (count) {
             case 1: //ok
                 result = accounts.get(0);
                 break;
-
         }
         return result;
     }
