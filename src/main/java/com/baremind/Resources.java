@@ -116,6 +116,9 @@ public class Resources {
                 UploadMeta meta = json.fromJson(reader, UploadMeta.class);
                 Resource resource = new Resource(meta);
                 resource.setId(IdGenerator.getNewId());
+                File metaFile = new File(ZIP_TEMPORARY + "__meta.json");
+                metaFile.deleteOnExit();
+                
 //                CopyOption[] options = new CopyOption[]{
 //                        StandardCopyOption.REPLACE_EXISTING,
 //                        StandardCopyOption.COPY_ATTRIBUTES
