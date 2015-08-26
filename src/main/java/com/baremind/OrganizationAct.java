@@ -4,7 +4,6 @@ import com.baremind.data.Account;
 import com.baremind.data.Organization;
 import com.baremind.utils.IdGenerator;
 import com.baremind.utils.JPAEntry;
-import com.google.gson.Gson;
 
 import javax.persistence.EntityManager;
 import javax.ws.rs.*;
@@ -21,14 +20,11 @@ public class OrganizationAct {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getById(@CookieParam("sessionId") String sessionId, @PathParam("id") Long id) {
         Response result = Response.status(401).build();
-            if (JPAEntry.isLogining(sessionId)) {
-            String sql = "SELECT o FROM Organization o WHERE o.id=:id";
-            EntityManager em = JPAEntry.getEntityManager();
-            Organization org = em.createQuery(sql ,Organization.class).setParameter("id",id).getSingleResult();
-            if(org!= null){
-                result = Response.ok(new Gson().toJson(org),MediaType.APPLICATION_JSON).build();
-            }else{
-                result = Response.status(404).build();
+        if (JPAEntry.isLogining(sessionId)) {
+            result = Response.status(404).build();
+            Organization organization = JPAEntry.getObject(Organization.class, "id", id);
+            if (organization != null) {
+                result = Response.ok(organization).build();
             }
         }
         return result;
@@ -36,30 +32,25 @@ public class OrganizationAct {
 
     @POST
     @Produces(MediaType.APPLICATION_JSON)
-    public Response postUser(@CookieParam("sessionId") String sessionId, Organization org) {
+    public Response postUser(@CookieParam("sessionId") String sessionId, Organization organization) {
         Response result = Response.status(401).build();
         if (JPAEntry.isLogining(sessionId)) {
-            org.setId(IdGenerator.getNewId());
-//            {"no":"sf","name":"sfsf",}
+            organization.setId(IdGenerator.getNewId());
             EntityManager em = JPAEntry.getEntityManager();
             em.getTransaction().begin();
-            em.persist(org);
-//            em.getTransaction().commit();
+            em.persist(organization);
             Account account = new Account();
             account.setId(IdGenerator.getNewId());
-            account.setSubjectId(10000l);
+            account.setSubjectId(organization.getId());
             account.setSubjectType("Organization");
             account.setActive(0);
             account.setType(0);
-            account.setLoginName(org.getName());
-            account.setPassword(org.getName());
-//            em.getTransaction().begin();
+            account.setLoginName(organization.getName());
+            account.setPassword(organization.getName());
             em.persist(account);
             em.getTransaction().commit();
-
             result = Response.ok(account).build();
         }
         return result;
     }
-
 }
