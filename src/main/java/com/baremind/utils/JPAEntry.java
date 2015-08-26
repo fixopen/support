@@ -2,13 +2,8 @@ package com.baremind.utils;
 
 import com.baremind.data.Account;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.NoResultException;
-import javax.persistence.Persistence;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import javax.persistence.*;
+import java.util.*;
 
 /**
  * Created by fixopen on 18/8/15.
@@ -26,36 +21,36 @@ public class JPAEntry  {
         return factory.createEntityManager();
     }
 
-    public static <T> T getObject(Class<T> type, String typeName, String fieldName, String fieldValue) {
+    public static <T> T getObject(Class<T> type, String fieldName, Object fieldValue) {
         T result = null;
         EntityManager em = getEntityManager();
-        String jpql = "SELECT a FROM " + typeName + " a WHERE a." + fieldName + " = :variable";
+        String jpql = "SELECT a FROM " + type.getSimpleName() + " a WHERE a." + fieldName + " = :variable";
         try {
             result = em.createQuery(jpql, type)
-                    .setParameter("variable", fieldValue)
-                    .getSingleResult();
+                .setParameter("variable", fieldValue)
+                .getSingleResult();
         } catch (NoResultException e) {
             //do noting
         }
         return result;
     }
 
-    public static <T> T getObject(Class<T> type, String typeName, String fieldName, Long fieldValue) {
+    public static <T> T getObject(Class<T> type, String typeName, String fieldName, Object fieldValue) {
         T result = null;
         EntityManager em = getEntityManager();
         String jpql = "SELECT a FROM " + typeName + " a WHERE a." + fieldName + " = :variable";
         try {
             result = em.createQuery(jpql, type)
-                    .setParameter("variable", fieldValue)
-                    .getSingleResult();
+                .setParameter("variable", fieldValue)
+                .getSingleResult();
         } catch (NoResultException e) {
             //do noting
         }
         return result;
     }
 
-    public static <T> List<T>  getList(Class<T> type, String typeName, String fieldName, Long fieldValue) {
-        List<T>  result = new ArrayList<T>();
+    public static <T> List<T>  getList(Class<T> type, String typeName, String fieldName, Object fieldValue) {
+        List<T> result = new ArrayList<T>();
         EntityManager em = getEntityManager();
         String jpql = "SELECT a FROM " + typeName + " a WHERE a." + fieldName + " = :variable";
         try {
@@ -67,6 +62,26 @@ public class JPAEntry  {
         }
         return result;
     }
+
+    public static <T> List<T> getList(Class<T> type, String fieldName, Object fieldValue) {
+        HashMap<String, Object> condition = new HashMap<>(1);
+        condition.put(fieldName, fieldValue);
+        return getList(type, condition);
+    }
+
+    public static <T> List<T> getList(Class<T> type, Map<String, Object> conditions) {
+        String jpql = "SELECT o FROM " + type.getSimpleName() + " o WHERE 1 = 1";
+        for (Map.Entry<String, Object> item : conditions.entrySet()) {
+            jpql += " AND o." + item.getKey() + " = :" + item.getKey();
+        }
+        EntityManager em = getEntityManager();
+        TypedQuery<T> q = em.createQuery(jpql, type);
+        for (Map.Entry<String, Object> item : conditions.entrySet()) {
+            q.setParameter(item.getKey(), item.getValue());
+        }
+        return q.getResultList();
+    }
+
     public static Account getAccount(String sessionId) {
         Account result = null;
         EntityManager em = getEntityManager();
