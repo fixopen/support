@@ -8,7 +8,7 @@ import java.util.*;
 /**
  * Created by fixopen on 18/8/15.
  */
-public class JPAEntry  {
+public class JPAEntry {
     public interface TouchFunction {
         void touch(Account a);
     }
@@ -74,7 +74,8 @@ public class JPAEntry  {
     }
 
     public static boolean isLogining(Account a) {
-        return isLogining(a, (Account account) -> {});
+        return isLogining(a, (Account account) -> {
+        });
     }
 
     public static boolean isLogining(Account account, TouchFunction touchFunction) {
@@ -96,7 +97,8 @@ public class JPAEntry  {
     }
 
     public static boolean isLogining(String sessionId) {
-        return isLogining(sessionId, (Account a) -> {});
+        return isLogining(sessionId, (Account a) -> {
+        });
     }
 
     public static boolean isLogining(String sessionId, TouchFunction touchFunction) {

@@ -15,16 +15,15 @@ import java.util.List;
  */
 @Path("rightTransfers")
 public class RightTransfers {
-
     @GET
     @Path("{no}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response post(@CookieParam("sessionId") String sessionId,@PathParam("no") String no) {
+    public Response post(@CookieParam("sessionId") String sessionId, @PathParam("no") String no) {
         Response result = Response.status(401).build();
         if (JPAEntry.isLogining(sessionId)) {
             result = Response.status(404).build();
-            Resource resource = JPAEntry.getObject(Resource.class,"no",no);
+            Resource resource = JPAEntry.getObject(Resource.class, "no", no);
             if (resource != null) {
                 Copyright copyright = JPAEntry.getObject(Copyright.class, "resourceId", resource.getId());
                 if (copyright != null) {

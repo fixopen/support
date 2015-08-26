@@ -21,7 +21,7 @@ import java.util.Map;
  * Created by fixopen on 16/8/15.
  */
 @Path("sessions")
-public class Sessions{
+public class Sessions {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -53,7 +53,7 @@ public class Sessions{
                     em.getTransaction().commit();
 
                     String getUserOrOrg = "";
-                    switch (findAccount.getSubjectType()){
+                    switch (findAccount.getSubjectType()) {
                         case "Organization":
                             Organization organization = JPAEntry.getObject(Organization.class, "id", findAccount.getSubjectId());
                             response = Response.ok(organization, MediaType.APPLICATION_JSON).cookie(new NewCookie("sessionId", sessionString, "/api/", null, null, -1, false)).build();

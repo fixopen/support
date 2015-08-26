@@ -44,13 +44,13 @@ public class ConfigManager {
         // 遍历所有属性，方式一
         Set keys = props.keySet();
         for (Iterator it = keys.iterator(); it.hasNext(); ) {
-            String k = (String)it.next();
+            String k = (String) it.next();
             System.out.println(k + ":" + props.getProperty(k));
         }
         // 遍历所有属性，方式二
         Enumeration en = props.propertyNames();
         while (en.hasMoreElements()) {
-            String k = (String)en.nextElement();
+            String k = (String) en.nextElement();
             System.out.println(k + ":" + props.getProperty(k));
         }
         // 遍历所有属性，方式三

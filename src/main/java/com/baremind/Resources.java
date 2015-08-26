@@ -27,10 +27,10 @@ import java.util.Map;
 @Path("resources")
 public class Resources {
     private static final String FILE_PATH = "c:\\file.log";
-    private static final String BOOKS ="D:\\var\\file\\books\\";
-    private static final String COVERS ="D:\\var\\file\\covers\\";
-    private static final String ZIP_FILES ="D:\\var\\files\\";
-    private static final String ZIP_TEMPORARY ="D:\\var\\zipFiles\\";
+    private static final String BOOKS = "D:\\var\\file\\books\\";
+    private static final String COVERS = "D:\\var\\file\\covers\\";
+    private static final String ZIP_FILES = "D:\\var\\files\\";
+    private static final String ZIP_TEMPORARY = "D:\\var\\zipFiles\\";
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -58,7 +58,8 @@ public class Resources {
             Map<String, Object> filterObject = null;
             if (filter != "") {
                 String rawFilter = URLDecoder.decode(filter);
-                filterObject = new Gson().fromJson(rawFilter, new TypeToken<Map<String, Object>>() {}.getType());
+                filterObject = new Gson().fromJson(rawFilter, new TypeToken<Map<String, Object>>() {
+                }.getType());
             }
             List<Resource> resources = JPAEntry.getList(Resource.class, filterObject);
             result = Response.ok(resources).build();
@@ -237,14 +238,14 @@ public class Resources {
                     File file = new File(BOOKS + resource.getFilePath());
                     try {
                         FileInputStream in = new FileInputStream(file);
-                        byte[] data = new byte[(int)file.length()];
+                        byte[] data = new byte[(int) file.length()];
                         in.read(data);
                         in.close();
                         //save resource transfer
                         //ResourceTransfer resourceTransfer = new ResourceTransfer();
                         //resourceTransfer.setId(IdGenerator.getNewId());
                         //resourceTransfer.setSenderId();
-                        result = Response.ok(data, "application/octet-stream").header("Content-Disposition", "attachment; filename=\""+resource.getFilePath()+"\"").build();
+                        result = Response.ok(data, "application/octet-stream").header("Content-Disposition", "attachment; filename=\"" + resource.getFilePath() + "\"").build();
                     } catch (FileNotFoundException e) {
                         result = Response.status(404).build();
                         e.printStackTrace();
@@ -271,10 +272,10 @@ public class Resources {
                     File file = new File(COVERS + resource.getCover());
                     file.createNewFile();
                     FileInputStream in = new FileInputStream(file);
-                    byte[] data = new byte[(int)file.length()];
+                    byte[] data = new byte[(int) file.length()];
                     in.read(data);
                     in.close();
-                    result = Response.ok(data).header("Content-Disposition", "attachment; filename=\""+resource.getCover()+"\"").build();
+                    result = Response.ok(data).header("Content-Disposition", "attachment; filename=\"" + resource.getCover() + "\"").build();
                 } catch (FileNotFoundException e) {
                     result = Response.status(404).build();
                     e.printStackTrace();

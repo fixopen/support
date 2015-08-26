@@ -1,7 +1,7 @@
 package com.baremind;
 
 import com.baremind.data.Account;
-import com.baremind.data.User;
+import com.baremind.data.Organization;
 import com.baremind.utils.IdGenerator;
 import com.baremind.utils.JPAEntry;
 
@@ -13,8 +13,8 @@ import javax.ws.rs.core.Response;
 /**
  * Created by Administrator on 2015/8/20 0020.
  */
-@Path("user")
-public class UserAct {
+@Path("organizations")
+public class Organizations {
     @GET
     @Path("{id}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -22,9 +22,9 @@ public class UserAct {
         Response result = Response.status(401).build();
         if (JPAEntry.isLogining(sessionId)) {
             result = Response.status(404).build();
-            User user = JPAEntry.getObject(User.class, "id", id);
-            if (user != null) {
-               result = Response.ok(user, MediaType.APPLICATION_JSON).build();
+            Organization organization = JPAEntry.getObject(Organization.class, "id", id);
+            if (organization != null) {
+                result = Response.ok(organization).build();
             }
         }
         return result;
@@ -32,21 +32,21 @@ public class UserAct {
 
     @POST
     @Produces(MediaType.APPLICATION_JSON)
-    public Response postUser(@CookieParam("sessionId") String sessionId, User user) {
+    public Response postUser(@CookieParam("sessionId") String sessionId, Organization organization) {
         Response result = Response.status(401).build();
         if (JPAEntry.isLogining(sessionId)) {
-            user.setId(IdGenerator.getNewId());
+            organization.setId(IdGenerator.getNewId());
             EntityManager em = JPAEntry.getEntityManager();
             em.getTransaction().begin();
-            em.persist(user);
+            em.persist(organization);
             Account account = new Account();
             account.setId(IdGenerator.getNewId());
-            account.setSubjectId(user.getId());
-            account.setSubjectType("Personal");
+            account.setSubjectId(organization.getId());
+            account.setSubjectType("Organization");
             account.setActive(0);
             account.setType(0);
-            account.setLoginName(user.getName());
-            account.setPassword(user.getName());
+            account.setLoginName(organization.getName());
+            account.setPassword(organization.getName());
             em.persist(account);
             em.getTransaction().commit();
             result = Response.ok(account).build();
