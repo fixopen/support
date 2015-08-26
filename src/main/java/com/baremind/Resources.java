@@ -62,7 +62,7 @@ public class Resources {
                 }.getType());
             }
             List<Resource> resources = JPAEntry.getList(Resource.class, filterObject);
-            result = Response.ok(resources).build();
+            result = Response.ok(new Gson().toJson(resources)).build();
         }
         return result;
     }

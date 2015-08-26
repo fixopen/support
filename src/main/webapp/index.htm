@@ -139,7 +139,7 @@
                                 <th style="min-width: 10%;text-align: center;">图书管理</th>
                             </tr>
                         </thead>
-                        <tbody id="body"></tbody>
+                        <tbody id="permission-tbody"></tbody>
 
                     </table>
                 </div>
@@ -152,7 +152,7 @@
         </div>
     </div>
 </div>
-<template id="bookItemHeader">
+<template id="permission-tr">
     <tr class="permission-tr">
         <td>${id}</td>
         <td title="${name}"><h5
@@ -189,14 +189,57 @@
                 {name: 'Accept', value: 'application/json'}
             ],function(result){
                 if(result.meta.code == 200){
-
+                    render(result.data)
                 }
             })
         }
     }, false)
 
-    function outPutResource(){
+    function blind(element, data) {
+        if (element.innerHTML) {
+            element.innerHTML = element.innerHTML.replace('%7B', '{').replace('%7D', '}').replace(/\$\{(\w+)\}/g, function (all, variable) {
+                if (!variable) {
+                    return ""
+                }
+                return data[variable];
+            })
+        } else {
+            var children = element.childNodes
+            for (var i = 0, c = children.length; i < c; ++i) {
+                var child = children.item(i)
+                if (child.innerHTML) {
+                    child.innerHTML = child.innerHTML.replace('%7B', '{').replace('%7D', '}').replace(/\$\{(\w+)\}/g, function (all, variable) {
+                        var result = ''
+                        if (variable) {
+                            result = data[variable]
+                        }
+                        return result
+                    })
+                }
+            }
+        }
+        return element
+    }
 
+    function render(datas){
+        var container = document.getElementById('permission-tbody');
+        container.innerHTML = '';
+        var count=datas.length;
+        for (var i = 0; i < count; ++i) {
+            var body = document.getElementById('permission-tr').content.cloneNode(true).children[0]
+            blind(body,datas[i])
+            container.appendChild(body)
+//            if(datas[i].metaSubject.$ref){
+//                for(var j = 0; j< count ; j++){
+//                    if(datas[i].metaSubject.$ref == '$['+j+'].metaSubject'){
+//                        datas[i].metaSubject = datas[j].metaSubject ;
+//                    }
+//                }
+//            }else{
+//                datas[i].metaSubject=datas[i].metaSubject.caption
+//            }
+//            container.appendChild(dataToElement(datas[i], template))
+        }
     }
 
 </script>
