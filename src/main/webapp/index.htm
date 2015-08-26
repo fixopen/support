@@ -107,7 +107,7 @@
                 <li id="bookList"
                     class="menu-item"
                     style="background-position: 0 -124px;">
-                    数字图书管理
+                    图书权力转移列表
                     <!--
                     <ul>
                         <li id="importBooks">图书入库</li>
@@ -128,15 +128,12 @@
                         <!--表头-->
                         <thead id="header">
                             <tr class="permission-tr">
-                                <th style="min-width: 10%;text-align: center;">图书ID</th>
-                                <th style="min-width: 10%;text-align: center;">图书名称</th>
-                                <th style="min-width: 10%;text-align: center;">作者名称</th>
-                                <th style="min-width: 10%;text-align: center;">出版社</th>
-                                <th style="min-width: 10%;text-align: center;">书库分类</th>
-                                <th style="min-width: 10%;text-align: center;">中图分类</th>
-                                <th style="min-width: 10%;text-align: center;">ISBN</th>
-                                <th style="min-width: 10%;text-align: center;">上下架状态</th>
-                                <th style="min-width: 10%;text-align: center;">图书管理</th>
+                                <th style="min-width: 10%;text-align: center;">权利编号</th>
+                                <th style="min-width: 10%;text-align: center;">权利发出者</th>
+                                <th style="min-width: 10%;text-align: center;">权利接受者</th>
+                                <th style="min-width: 10%;text-align: center;">所属类型（rightTypeId）</th>
+                                <th style="min-width: 10%;text-align: center;">所属权利（copyrightId）</th>
+                                <th style="min-width: 10%;text-align: center;">生成时间</th>
                             </tr>
                         </thead>
                         <tbody id="permission-tbody"></tbody>
@@ -154,27 +151,18 @@
 </div>
 <template id="permission-tr">
     <tr class="permission-tr">
-        <td>${id}</td>
+        <td>${no}</td>
         <td title="${name}"><h5
                 style="width: 70px;text-overflow: ellipsis; white-space: nowrap; overflow: hidden;margin-top: 5px;">
-            ${name}</h5></td>
+            ${fromId}</h5></td>
         <td title="${author}"><h5
                 style="width: 70px;text-overflow: ellipsis; white-space: nowrap; overflow: hidden;margin-top: 5px;">
-            ${author}</h5></td>
+            ${toId}</h5></td>
         <td title="${publisher}"><h5
                 style="width: 70px;text-overflow: ellipsis; white-space: nowrap; overflow: hidden;margin-top: 5px;">
-            ${publisher}</h5></td>
-        <td>${firstLevelClassify}</td>
-        <td>${standardClassify}</td>
-        <td title="${isbn}"><h5
-                style="width: 70px;text-overflow: ellipsis; white-space: nowrap; overflow: hidden;margin-top: 5px;">
-            ${isbn}</h5></td>
-        <td>${state}</td>
-        <td>
-            <button class="biz" data-id="${id}">图书借阅详情</button>
-            <button class="ban" data-id="${id}">${checkState}</button>
-            <!--<button class="remove" data-id="${id}">删除</button>-->
-        </td>
+            ${rightTypeId}</h5></td>
+        <td>${copyrightId}</td>
+        <td>${time}</td>
     </tr>
 </template>
 <script src="js/util.js"></script>
