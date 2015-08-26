@@ -35,34 +35,6 @@ public class JPAEntry  {
         return result;
     }
 
-    public static <T> T getObject(Class<T> type, String typeName, String fieldName, Object fieldValue) {
-        T result = null;
-        EntityManager em = getEntityManager();
-        String jpql = "SELECT a FROM " + typeName + " a WHERE a." + fieldName + " = :variable";
-        try {
-            result = em.createQuery(jpql, type)
-                .setParameter("variable", fieldValue)
-                .getSingleResult();
-        } catch (NoResultException e) {
-            //do noting
-        }
-        return result;
-    }
-
-    public static <T> List<T>  getList(Class<T> type, String typeName, String fieldName, Object fieldValue) {
-        List<T> result = new ArrayList<T>();
-        EntityManager em = getEntityManager();
-        String jpql = "SELECT a FROM " + typeName + " a WHERE a." + fieldName + " = :variable";
-        try {
-            result = em.createQuery(jpql, type)
-                    .setParameter("variable", fieldValue)
-                    .getResultList();
-        } catch (NoResultException e) {
-            //do noting
-        }
-        return result;
-    }
-
     public static <T> List<T> getList(Class<T> type, String fieldName, Object fieldValue) {
         HashMap<String, Object> condition = new HashMap<>(1);
         condition.put(fieldName, fieldValue);

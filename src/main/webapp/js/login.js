@@ -21,7 +21,7 @@ window.addEventListener('load', function (e) {
             g.postData('/api/sessions', [
                 {name: 'Content-Type', value: 'application/json'},
                 {name: 'Accept', value: 'application/json'}
-            ], {subjectType:select,loginName:name.value.trim(),password: password.value.trim()}, function(r) {
+            ], {subjectType:"Personal",loginName:name.value.trim(),password: password.value.trim()}, function(r) {
                 if (r.meta.code == 200) {
                     //ok
                     //store sessionId
