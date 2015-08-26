@@ -71,13 +71,17 @@ public class JPAEntry  {
 
     public static <T> List<T> getList(Class<T> type, Map<String, Object> conditions) {
         String jpql = "SELECT o FROM " + type.getSimpleName() + " o WHERE 1 = 1";
-        for (Map.Entry<String, Object> item : conditions.entrySet()) {
-            jpql += " AND o." + item.getKey() + " = :" + item.getKey();
+        if (conditions != null) {
+            for (Map.Entry<String, Object> item : conditions.entrySet()) {
+                jpql += " AND o." + item.getKey() + " = :" + item.getKey();
+            }
         }
         EntityManager em = getEntityManager();
         TypedQuery<T> q = em.createQuery(jpql, type);
-        for (Map.Entry<String, Object> item : conditions.entrySet()) {
-            q.setParameter(item.getKey(), item.getValue());
+        if (conditions != null) {
+            for (Map.Entry<String, Object> item : conditions.entrySet()) {
+                q.setParameter(item.getKey(), item.getValue());
+            }
         }
         return q.getResultList();
     }
