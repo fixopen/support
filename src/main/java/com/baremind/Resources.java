@@ -9,6 +9,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
@@ -17,7 +18,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.*;
-import java.io.FileInputStream;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Date;
@@ -55,8 +55,9 @@ public class Resources {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public List<Resource> get(@CookieParam("sessionId") String sessionId, @QueryParam("filter") @DefaultValue("") String filter) {
-        List<Resource> result = new ArrayList<Resource>();
+    public Response get(@CookieParam("sessionId") String sessionId, @QueryParam("filter") @DefaultValue("") String filter) {
+        Response response = Response.status(401).build();
+        List<Resource> results = new ArrayList<Resource>();
         if (JPAEntry.isLogining(sessionId)) {
             Map<String, Object> filterObject = null;
             if (filter != "") {
@@ -71,23 +72,34 @@ public class Resources {
                 }
             }
             EntityManager em = JPAEntry.getEntityManager();
-            TypedQuery q = em.createQuery(sql, Resource.class);
+            TypedQuery<Resource> q = em.createQuery(sql, Resource.class);
             if (filterObject != null) {
                 for (Map.Entry<String, Object> entry : filterObject.entrySet()) {
                     String key = entry.getKey();
                     q.setParameter(key, entry.getValue());
                 }
             }
-            result = q.getResultList();
+            results = q.getResultList();
+
+            response =  Response.ok(new Gson().toJson(results),MediaType.APPLICATION_JSON).build();
         }
-        return result;
+        return response;
     }
 
     @GET
-    @Path("{id}")
+    @Path("{no}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Resource getById(@CookieParam("sessionId") String sessionId, @PathParam("id") Long id) {
-        return new Resource();
+    public Response getById(@CookieParam("sessionId") String sessionId, @PathParam("no") String no) {
+        Response result = Response.status(401).build();
+        if (JPAEntry.isLogining(sessionId)) {
+            //没有查询结果 500报错
+            Resource resource = JPAEntry.getObject(Resource.class,"Resource", "no",no);
+//                String sql = "SELECT r FROM Resource r WHERE r.no=:no";
+//                EntityManager em = JPAEntry.getEntityManager();
+//                 em.createQuery(sql,Resource.class).setParameter("no",no).getSingleResult();
+                result =  Response.ok(resource).build();
+        }
+        return result;
     }
 
     @POST
@@ -238,53 +250,50 @@ public class Resources {
 
     @GET
     @Path("{no}")
-    @Produces({"application/pdf", "application/msword", "text/plain"})
+    @Produces({"application/pdf", "application/zip", "application/msword", "text/plain"})
     public Response getFile(@CookieParam("sessionId") String sessionId, @PathParam("no") String no) {
         Response result = null;
-//        if (JPAEntry.isLogining(sessionId, (Account a) -> {})) {
+        if (JPAEntry.isLogining(sessionId)) {
             String sql = "SELECT r FROM Resource r WHERE r.no = :no";
             EntityManager em = JPAEntry.getEntityManager();
-            Resource resource = em.createQuery(sql, Resource.class).setParameter("no", no).getSingleResult();
-            if (resource == null) {
-                result = Response.status(404).build();
-            } else {
-                try {
-                    //判断是否有copyright
+            try  {
+                Resource resource = em.createQuery(sql, Resource.class).setParameter("no", no).getSingleResult();
+                //
+                String copyright = "SELECT c FROM Copyright c WHERE c.resourceId = :resourceId";
+                Copyright getCopyright = em.createQuery(copyright,Copyright.class).setParameter("resourceId",resource.getId()).getSingleResult();
+                if(getCopyright != null){
+                    try {
 //                    encrypt
-                    //resource_transfer 资源流转记一下
-                    File file = new File(BOOKS + resource.getFilePath());
-                    file.length();
+
+                        File file = new File(BOOKS + resource.getFilePath());
 //                    File toFile = new File(resource.getFilePath());
-                    if(file.exists()){
-                        FileInputStream in = new FileInputStream(file);
-                        byte[] data = new byte[4*1024];
-                        in.read();
-                        /*
-                        * FileOutputStream fileOutput = new FileOutputStream(toFile);
+                        if (file.exists()) {
+                            FileInputStream in = new FileInputStream(file);
 
-                        byte[] data = new byte[4*1024];
-                        int len;
-                        while ((len = in.read(data)) != -1) {
-                            fileOutput.write(data, 0, len);
+                            byte[] data = new byte[(int)file.length()];
+                            in.read(data);
+                            in.close();
+                            //resource_transfer 资源流转记一下
+//                            Securities.crypto.encrypt(in,new byte[] ,new byte[]);
+                            ResourceTransfer resourceTransfer = new ResourceTransfer();
+                            resourceTransfer.setId(IdGenerator.getNewId());
+
+                            result = Response.ok(data, "application/octet-stream").header("Content-Disposition", "attachment; filename=\""+resource.getFilePath()+"\"").build();
+                        } else {
+                            result = Response.status(404).build();
                         }
-                        in.close();
-                        fileOutput.close();
-                        * */
 
-//                       result = Response.ok(fileOutput).header("Content-Disposition", "attachment; filename=\"file_from_server.log\"").build();
-                        result = Response.ok(in).header("Content-Disposition", "attachment; filename=\"file_from_server.log\"").build();
-                    }else {
-                        result = Response.status(404).build();
-                    }
-
-                } catch (Exception e) {
-                    result = Response.status(500).build();
-                    e.printStackTrace();
+                    } catch (Exception e) {
+                        result = Response.status(500).build();
+                        e.printStackTrace();
+                    }}else{
+                    result = Response.status(404).build();
                 }
+            } catch (NoResultException e) {
+                result = Response.status(404).build();
+                //
             }
-//        } else {
-//            result = Response.status(401).build();
-//        }
+        }
         return result;
     }
 
@@ -294,9 +303,7 @@ public class Resources {
     public Response getImage(@CookieParam("sessionId") String sessionId, @PathParam("no") String no) {
         Response result = null;
         if (JPAEntry.isLogining(sessionId, (Account a) -> {})) {
-            String sql = "SELECT r FROM Resource r WHERE r.no = :no";
-            EntityManager em = JPAEntry.getEntityManager();
-            Resource resource = em.createQuery(sql, Resource.class).setParameter("no", no).getSingleResult();
+            Resource resource = JPAEntry.getObject(Resource.class,"Resource","no",no);
             if (resource == null) {
                 result = Response.status(404).build();
             } else {
@@ -305,17 +312,12 @@ public class Resources {
                     file.createNewFile();
                     if(file.exists()){
                         FileInputStream in = new FileInputStream(file);
-                        FileOutputStream fileOutput = new FileOutputStream(file);
 
-                        byte[] data = new byte[4*1024];
-                        int len;
-                        while ((len = in.read(data)) != -1) {
-                            fileOutput.write(data, 0, len);
-                        }
+                        byte[] data = new byte[(int)file.length()];
+                        in.read(data);
                         in.close();
-                        fileOutput.close();
 
-                        result = Response.ok(fileOutput).header("Content-Disposition", "attachment; filename=\"file_from_server.log\"").build();
+                        result = Response.ok(data).header("Content-Disposition", "attachment; filename=\""+resource.getCover()+"\"").build();
                     }else {
                         result = Response.status(404).build();
                     }

@@ -14,7 +14,7 @@ import javax.ws.rs.core.Response;
 /**
  * Created by Administrator on 2015/8/20 0020.
  */
-@Path("organization")
+@Path("organizations")
 public class OrganizationAct {
     @GET
     @Path("{id}")

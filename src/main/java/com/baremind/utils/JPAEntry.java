@@ -4,14 +4,16 @@ import com.baremind.data.Account;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.NoResultException;
 import javax.persistence.Persistence;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 /**
  * Created by fixopen on 18/8/15.
  */
-public class JPAEntry {
+public class JPAEntry  {
     public interface TouchFunction {
         void touch(Account a);
     }
@@ -24,6 +26,47 @@ public class JPAEntry {
         return factory.createEntityManager();
     }
 
+    public static <T> T getObject(Class<T> type, String typeName, String fieldName, String fieldValue) {
+        T result = null;
+        EntityManager em = getEntityManager();
+        String jpql = "SELECT a FROM " + typeName + " a WHERE a." + fieldName + " = :variable";
+        try {
+            result = em.createQuery(jpql, type)
+                    .setParameter("variable", fieldValue)
+                    .getSingleResult();
+        } catch (NoResultException e) {
+            //do noting
+        }
+        return result;
+    }
+
+    public static <T> T getObject(Class<T> type, String typeName, String fieldName, Long fieldValue) {
+        T result = null;
+        EntityManager em = getEntityManager();
+        String jpql = "SELECT a FROM " + typeName + " a WHERE a." + fieldName + " = :variable";
+        try {
+            result = em.createQuery(jpql, type)
+                    .setParameter("variable", fieldValue)
+                    .getSingleResult();
+        } catch (NoResultException e) {
+            //do noting
+        }
+        return result;
+    }
+
+    public static <T> List<T>  getList(Class<T> type, String typeName, String fieldName, Long fieldValue) {
+        List<T>  result = new ArrayList<T>();
+        EntityManager em = getEntityManager();
+        String jpql = "SELECT a FROM " + typeName + " a WHERE a." + fieldName + " = :variable";
+        try {
+            result = em.createQuery(jpql, type)
+                    .setParameter("variable", fieldValue)
+                    .getResultList();
+        } catch (NoResultException e) {
+            //do noting
+        }
+        return result;
+    }
     public static Account getAccount(String sessionId) {
         Account result = null;
         EntityManager em = getEntityManager();

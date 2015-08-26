@@ -1,9 +1,6 @@
 package com.baremind.data;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Date;
 
 /**
@@ -21,6 +18,12 @@ public class RightTransfer {
 
     @Column(name="time")
     private Date time;
+
+    @Transient
+    private String bookNo;
+
+    @Transient
+    private String expirationTime;
 
     @Column(name="copyright_id")
     private Long copyrightId;
@@ -94,6 +97,22 @@ public class RightTransfer {
 
     public void setTime(Date time) {
         this.time = time;
+    }
+
+    public String getBookNo() {
+        return bookNo;
+    }
+
+    public void setBookNo(String bookNo) {
+        this.bookNo = bookNo;
+    }
+
+    public String getExpirationTime() {
+        return expirationTime;
+    }
+
+    public void setExpirationTime(String expirationTime) {
+        this.expirationTime = expirationTime;
     }
 
     public Long getId() {

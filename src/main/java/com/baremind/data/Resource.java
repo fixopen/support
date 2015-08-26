@@ -10,7 +10,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name="resources")
-public class Resource {
+public class Resource implements AutoCloseable {
     public Resource() {
     }
     public Resource(UploadMeta meta) {
@@ -368,5 +368,10 @@ public class Resource {
 
     public void setLanguage(Long language) {
         this.language = language;
+    }
+
+    @Override
+    public void close() throws Exception {
+        //do nothing
     }
 }

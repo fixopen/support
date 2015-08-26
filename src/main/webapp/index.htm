@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>支撑管理平台</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="images/favicon.ico">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="css/base.css">
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+    <link rel="stylesheet" type="text/css" href="js/My97DatePicker/skin/WdatePicker.css">
+    <!--
+    <link href="css/non-responsive.css" rel="stylesheet"> xmlns="http://www.w3.org/1999/html"
+    -->
+    <link href="css/easyui.css" rel="stylesheet">
+    <link href="css/icon.css" rel="stylesheet">
+    <!--
+    <link href="css/global.css" rel="stylesheet">
+    -->
+    <style type="text/css">
+        td {
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+        td > select {
+            width: 90%;
+        }
+
+        .menu-item {
+            color: #ffffff;
+            background-repeat: no-repeat;
+            background-image: url('images/icons.png');
+            padding-left: 24px;
+        }
+
+        .menu-item:hover {
+            color: #0091ff;
+        }
+
+        .active-menu-item {
+            color: #0091ff;
+        }
+
+        .mainContent tr:nth-child(even) {
+            background-color: #ffffff;
+        }
+
+        .first {
+            width: 15%;
+            padding-right: 10px;
+            text-align: end;
+        }
+
+        .first-value {
+            width: 30%;
+        }
+
+        .second {
+            width: 15%;
+            padding-right: 10px;
+            text-align: end;
+        }
+
+        .second-value {
+            width: 40%;
+        }
+
+        .filter-title {
+            width: 30%;
+            padding-right: 10px;
+            text-align: end;
+        }
+
+        .filter-title-value {
+            width: 70%;
+        }
+        .button-click {
+            color: red;
+        }
+        .button-remove-click {
+            color: #ffffff;
+        }
+
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="row" style="height: 102px;">
+        <div class="col-lg-2"
+             style="text-align: center; color: #ffffff; background-color: #1378d5; font-size: 20px; line-height: 25px; padding-top: 26px; height: 100%;">
+            支撑管理平台<br/>
+            管理系统
+        </div>
+        <div class="col-lg-10"
+             style="text-align: right; color: #ffffff; padding-top: 48px; background-color: #0091ff; font-size: 13px; height: 100%;">
+            admin 管理员 | <span id="logout" style="cursor: pointer">退出</span>
+            <span id="timeNow" style="margin-left: 25px"></span>
+        </div>
+    </div>
+    <div class="row" style="background-color: #e9e9e9; height: 820px;">
+        <div class="col-lg-2"
+             style="cursor: pointer; height: 100%; background-color: #373d48; color: #ffffff; line-height: 200%; font-size: x-large; padding-top: 60px; padding-bottom: 60px">
+            <ul style="list-style: none; font-size: 16px;padding-left:10%;">
+                <li id="bookList"
+                    class="menu-item"
+                    style="background-position: 0 -124px;">
+                    数字图书管理
+                    <!--
+                    <ul>
+                        <li id="importBooks">图书入库</li>
+                        <li id="DRM">DRM设置</li>
+                        <li id="bookList">图书列表</li>
+                    </ul>
+                    -->
+                </li>
+            </ul>
+        </div>
+        <div class="col-lg-10" style="padding: 0; height: 100%; line-height: 200%">
+            <div id="contentTitle" style="background-color: #e9e9e9; color: #0091ff; padding-top: 54px; padding-left: 20px; font-size: x-large; height: 102px;">
+                <input id="search" style="width: 200px"/><button id="button"> 查询</button >
+            </div>
+            <div id="mainContainer" style="padding-top: 30px; padding-bottom: 60px; padding-left: 20px; padding-right: 20px;">
+                <div class="table" id="table">
+                    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                        <!--表头-->
+                        <thead id="header">
+                            <tr class="permission-tr">
+                                <th style="min-width: 10%;text-align: center;">图书ID</th>
+                                <th style="min-width: 10%;text-align: center;">图书名称</th>
+                                <th style="min-width: 10%;text-align: center;">作者名称</th>
+                                <th style="min-width: 10%;text-align: center;">出版社</th>
+                                <th style="min-width: 10%;text-align: center;">书库分类</th>
+                                <th style="min-width: 10%;text-align: center;">中图分类</th>
+                                <th style="min-width: 10%;text-align: center;">ISBN</th>
+                                <th style="min-width: 10%;text-align: center;">上下架状态</th>
+                                <th style="min-width: 10%;text-align: center;">图书管理</th>
+                            </tr>
+                        </thead>
+                        <tbody id="body"></tbody>
+
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row" style="height: 88px;">
+        <div class="col-lg-12" style="background-color: #373d48; color: #ffffff; text-align: center">
+            footer info, legal info, address info
+        </div>
+    </div>
+</div>
+<template id="bookItemHeader">
+    <tr class="permission-tr">
+        <td>${id}</td>
+        <td title="${name}"><h5
+                style="width: 70px;text-overflow: ellipsis; white-space: nowrap; overflow: hidden;margin-top: 5px;">
+            ${name}</h5></td>
+        <td title="${author}"><h5
+                style="width: 70px;text-overflow: ellipsis; white-space: nowrap; overflow: hidden;margin-top: 5px;">
+            ${author}</h5></td>
+        <td title="${publisher}"><h5
+                style="width: 70px;text-overflow: ellipsis; white-space: nowrap; overflow: hidden;margin-top: 5px;">
+            ${publisher}</h5></td>
+        <td>${firstLevelClassify}</td>
+        <td>${standardClassify}</td>
+        <td title="${isbn}"><h5
+                style="width: 70px;text-overflow: ellipsis; white-space: nowrap; overflow: hidden;margin-top: 5px;">
+            ${isbn}</h5></td>
+        <td>${state}</td>
+        <td>
+            <button class="biz" data-id="${id}">图书借阅详情</button>
+            <button class="ban" data-id="${id}">${checkState}</button>
+            <!--<button class="remove" data-id="${id}">删除</button>-->
+        </td>
+    </tr>
+</template>
+<script src="js/util.js"></script>
+<script type="text/javascript">
+    document.getElementById('button').addEventListener('click', function (e) {
+       var search = document.getElementById('search').value;
+        if(search == ""){
+            alert('请输入内容')
+        }else{
+            g.getData('/api/rightTransfers/'+search,[
+                {name: 'Content-Type', value: 'application/json'},
+                {name: 'Accept', value: 'application/json'}
+            ],function(result){
+                if(result.meta.code == 200){
+
+                }
+            })
+        }
+    }, false)
+
+    function outPutResource(){
+
+    }
+
+</script>
+</body>
+</html>

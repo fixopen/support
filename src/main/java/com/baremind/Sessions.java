@@ -23,8 +23,10 @@ import java.util.List;
 @Path("sessions")
 public class Sessions{
     @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response login(Account account) {
-        Response response = null;
+        Response response = Response.status(401).build();
         EntityManager em = JPAEntry.getEntityManager();
         String jpql = "SELECT a FROM Account a WHERE a.subjectType = :subjectType AND  a.loginName = :loginName AND a.password = :password";
         List<Account> accounts = new ArrayList<Account>();

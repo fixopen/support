@@ -8,6 +8,7 @@ import javax.ws.rs.Path;
  */
 @Path("licenses")
 public class Licenses {
+    //请求资源   秘钥 resource_transfer --key
     @GET
     public String get() {
         return "";
