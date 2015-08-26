@@ -4,10 +4,7 @@ import com.baremind.algorithm.Config;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Enumeration;
-import java.util.Iterator;
-import java.util.Properties;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by fixopen on 4/6/15.
@@ -28,6 +25,7 @@ public class ConfigManager {
         InputStream in = ConfigManager.class.getResourceAsStream("../config.properties");
 
         // 或使用文件输入流(不推荐)，假设当前工作目录为bin
+        //System.getProperty("user.dir") == current work directory
         //InputStream in = new FileInputStream("./config.properties");
 
         try {
@@ -57,5 +55,23 @@ public class ConfigManager {
         props.forEach((name, value) -> {
             System.out.println(name + ":" + value);
         });
+
+//        props = new Properties();
+//        InputStream in = getClass().getResouceAsStream("properties文件相对于当前类加载路径的文件目录");
+//        props.load(in);
+//
+//        OutputStream output = new FileOutputStream("properties文件路径");
+//        props.setProperty("ip", "10.248.112.123"); // 修改或新增属性键值对
+//        props.store(output, "modify ip value"); // store(OutputStream output, String comment)将修改结果写入输出流
+//        output.close();
+
+        // ResourceBundle rb = ResourceBundle.getBundle("配置文件相对工程根目录的相对路径（不含扩展名）");
+        ResourceBundle rb = ResourceBundle.getBundle("config");
+        try{
+            String name = rb.getString("name");
+        }
+        catch(MissingResourceException ex){
+            //
+        }
     }
 }
