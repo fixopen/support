@@ -26,5 +26,5 @@ public class Securities {
     public static final RSA lowLevelRSA = new RSA();
     public static final Watermark watermark = new Watermark();
     public static final Zip zip = new Zip();
-    public static final Config config = ConfigManager.parseConfig("configFilePath");
+    public static final Config config = ConfigManager.parseConfig("./WEB-INF/config.properties");
 }
