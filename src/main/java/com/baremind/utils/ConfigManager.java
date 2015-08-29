@@ -20,7 +20,10 @@ public class ConfigManager {
             InputStream in = new FileInputStream(configFilePath);
             props.load(in);
             in.close();
-            result.bookPath = props.getProperty("bookPath");
+            result.BOOKS = props.getProperty("BOOKS");
+            result.COVERS = props.getProperty("COVERS");
+            result.ZIP_FILES = props.getProperty("ZIP_FILES");
+            result.ZIP_TEMPORARY = props.getProperty("ZIP_TEMPORARY");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {

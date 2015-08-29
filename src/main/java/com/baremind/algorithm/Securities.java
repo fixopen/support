@@ -26,5 +26,8 @@ public class Securities {
     public static final RSA lowLevelRSA = new RSA();
     public static final Watermark watermark = new Watermark();
     public static final Zip zip = new Zip();
-    public static final Config config = ConfigManager.parseConfig("./WEB-INF/config.properties");
+//    public static final String rootPath = System.getProperty("user.dir");
+//    public static final Config config = ConfigManager.parseConfig("/data/program/tomcat/webapps/ROOT/WEB-INF/config.properties");
+    public static final Config config = ConfigManager.parseConfig("E:\\supportNew\\trunk\\target\\support\\WEB-INF\\config.properties");
+//    public static final Config config = ConfigManager.parseConfig("/opt/apache-tomcat-8.0.23/webapps/ROOT/WEB-INF/config.properties");
 }

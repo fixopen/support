@@ -26,7 +26,7 @@ window.addEventListener('load', function (e) {
                     //ok
                     //store sessionId
 //                    g.setCookie('sessionId', r.data.sessionId)
-                    location.href = 'index.htm?name=' + r.data.name
+                    location.href = 'index.htm?name=admin'
                 } else {
                     //error
                 }
