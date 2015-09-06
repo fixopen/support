@@ -4,6 +4,7 @@ import com.baremind.data.Copyright;
 import com.baremind.data.Resource;
 import com.baremind.data.RightTransfer;
 import com.baremind.utils.JPAEntry;
+import com.google.gson.Gson;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -28,7 +29,7 @@ public class RightTransfers {
                 Copyright copyright = JPAEntry.getObject(Copyright.class, "resourceId", resource.getId());
                 if (copyright != null) {
                     List<RightTransfer> list = JPAEntry.getList(RightTransfer.class, "copyrightId", copyright.getId());
-                    result = Response.ok(list).build();
+                    result = Response.ok(new Gson().toJson(list)).build();
                 }
             }
         }

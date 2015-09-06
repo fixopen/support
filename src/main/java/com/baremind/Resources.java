@@ -26,11 +26,11 @@ import java.util.Map;
  */
 @Path("resources")
 public class Resources {
-    private static final String FILE_PATH = "c:\\file.log";
-    private static final String BOOKS = "D:\\var\\file\\books\\";
-    private static final String COVERS = "D:\\var\\file\\covers\\";
-    private static final String ZIP_FILES = "D:\\var\\files\\";
-    private static final String ZIP_TEMPORARY = "D:\\var\\zipFiles\\";
+//    private static final String FILE_PATH = "c:\\file.log";
+//    private static final String BOOKS = "D:\\var\\file\\books\\";
+//    private static final String COVERS = "D:\\var\\file\\covers\\";
+//    private static final String ZIP_FILES = "D:\\var\\files\\";
+//    private static final String ZIP_TEMPORARY = "D:\\var\\zipFiles\\";
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -62,7 +62,7 @@ public class Resources {
                 }.getType());
             }
             List<Resource> resources = JPAEntry.getList(Resource.class, filterObject);
-            result = Response.ok(resources).build();
+            result = Response.ok(new Gson().toJson(resources)).build();
         }
         return result;
     }
@@ -74,9 +74,9 @@ public class Resources {
         Response result = Response.status(401).build();
         if (JPAEntry.isLogining(sessionId)) {
             result = Response.status(404).build();
-            Resource resource = JPAEntry.getObject(Resource.class, "no", no);
+            List<Resource> resource = JPAEntry.getList(Resource.class, "no", no);
             if (resource != null) {
-                result = Response.ok(resource).build();
+                result = Response.ok(resource.get(0)).build();
             }
         }
         return result;
@@ -109,15 +109,15 @@ public class Resources {
             em.getTransaction().commit();
 
             File file = new File(uploadLog.getFilePath());
-            File fileZip = new File(ZIP_TEMPORARY);
+            File fileZip = new File(Securities.config.ZIP_TEMPORARY);
             Securities.zip.uncompress(file, fileZip);
             try {
-                Reader reader = new InputStreamReader(new FileInputStream(ZIP_TEMPORARY + "__meta.json"));
+                Reader reader = new InputStreamReader(new FileInputStream(Securities.config.ZIP_TEMPORARY + "__meta.json"));
                 Gson json = new Gson();
                 UploadMeta meta = json.fromJson(reader, UploadMeta.class);
                 Resource resource = new Resource(meta);
                 resource.setId(IdGenerator.getNewId());
-                File metaFile = new File(ZIP_TEMPORARY + "__meta.json");
+                File metaFile = new File(Securities.config.ZIP_TEMPORARY + "__meta.json");
                 metaFile.deleteOnExit();
 
 //                CopyOption[] options = new CopyOption[]{
@@ -127,11 +127,11 @@ public class Resources {
 //                Files.move(Paths.get("D:\\var\\zipFiles\\"+resource.getFilePath()), Paths.get("D:\\var\\zipFilesSave\\"+resource.getFilePath()),options);
 //                Files.move(Paths.get("D:\\var\\zipFiles\\"+resource.getCover()), Paths.get("D:\\var\\zipFilesSave\\"+resource.getCover()),options);
 
-                File source = new File(ZIP_TEMPORARY + resource.getFilePath());
-                File desc = new File(ZIP_TEMPORARY + resource.getCover());
+                File source = new File(Securities.config.ZIP_TEMPORARY + resource.getFilePath());
+                File desc = new File(Securities.config.ZIP_TEMPORARY + resource.getCover());
 
-                if (source.renameTo(new File(BOOKS + resource.getFilePath()))) {
-                    if (desc.renameTo(new File(COVERS + resource.getCover()))) {
+                if (source.renameTo(new File(Securities.config.BOOKS + resource.getFilePath()))) {
+                    if (desc.renameTo(new File(Securities.config.COVERS + resource.getCover()))) {
                         System.out.println("File is moved successful!");
                     } else {
                         System.out.println("File is failed to move!");
@@ -140,7 +140,7 @@ public class Resources {
                     System.out.println("File is failed to move!");
                 }
 
-                InputStream inputStream = new FileInputStream(BOOKS + resource.getFilePath());
+                InputStream inputStream = new FileInputStream(Securities.config.BOOKS + resource.getFilePath());
                 String d = Hex.bytesToHex(Securities.digestor.digest(inputStream));
                 resource.setDigest(d);
 
@@ -172,7 +172,9 @@ public class Resources {
             try {
                 byte[] buffer = new byte[4 * 1024];
 
-                File zipFile = new File(ZIP_FILES + IdGenerator.getNewId() + ".zip");
+                File zipFile = new File(Securities.config.ZIP_FILES + IdGenerator.getNewId() + ".zip");
+//                zipFile.setWritable(true, false);
+                //szipFile.createNewFile();
                 FileOutputStream w = new FileOutputStream(zipFile);
                 ServletInputStream servletInputStream = request.getInputStream();
                 for (; ; ) {
@@ -231,28 +233,27 @@ public class Resources {
         Response result = Response.status(401).build();
         if (JPAEntry.isLogining(sessionId)) {
             result = Response.status(404).build();
-            Resource resource = JPAEntry.getObject(Resource.class, "no", no);
+            List<Resource> resource = JPAEntry.getList(Resource.class, "no",no);
             if (resource != null) {
-                Copyright copyright = JPAEntry.getObject(Copyright.class, "resourceId", resource.getId());
+                Copyright copyright = JPAEntry.getObject(Copyright.class, "resourceId", resource.get(0).getId());
                 if (copyright != null) {
-                    File file = new File(BOOKS + resource.getFilePath());
-                    try {
-                        FileInputStream in = new FileInputStream(file);
-                        byte[] data = new byte[(int) file.length()];
-                        in.read(data);
-                        in.close();
+                    File file = new File(Securities.config.BOOKS + resource.get(0).getFilePath());
+                    if (file.exists()) {
+                        //FileInputStream in = new FileInputStream(file);
+                        //byte[] data = new byte[(int) file.length()];
+                        //in.read(data);
+                        //in.close();
                         //save resource transfer
                         //ResourceTransfer resourceTransfer = new ResourceTransfer();
                         //resourceTransfer.setId(IdGenerator.getNewId());
                         //resourceTransfer.setSenderId();
-                        result = Response.ok(data, "application/octet-stream").header("Content-Disposition", "attachment; filename=\"" + resource.getFilePath() + "\"").build();
-                    } catch (FileNotFoundException e) {
+                        result = Response.ok(file, "application/octet-stream").header("Content-Disposition", "attachment; filename=\"" + resource.get(0).getFilePath() + "\"").build();
+                    } else {
                         result = Response.status(404).build();
-                        e.printStackTrace();
-                    } catch (IOException e) {
+                    }/* catch (IOException e) {
                         result = Response.status(500).build();
                         e.printStackTrace();
-                    }
+                    }*/
                 }
             }
         }
@@ -266,22 +267,18 @@ public class Resources {
         Response result = Response.status(401).build();
         if (JPAEntry.isLogining(sessionId)) {
             result = Response.status(404).build();
-            Resource resource = JPAEntry.getObject(Resource.class, "no", no);
+            List<Resource> resource = JPAEntry.getList(Resource.class, "no", no);
             if (resource != null) {
-                try {
-                    File file = new File(COVERS + resource.getCover());
-                    file.createNewFile();
-                    FileInputStream in = new FileInputStream(file);
-                    byte[] data = new byte[(int) file.length()];
-                    in.read(data);
-                    in.close();
-                    result = Response.ok(data).header("Content-Disposition", "attachment; filename=\"" + resource.getCover() + "\"").build();
-                } catch (FileNotFoundException e) {
+                File file = new File(Securities.config.COVERS + resource.get(0).getCover());
+                if (file.exists()) {
+                    //file.createNewFile();
+                    //FileInputStream in = new FileInputStream(file);
+                    //byte[] data = new byte[(int) file.length()];
+                    //in.read(data);
+                    //in.close();
+                    result = Response.ok(file).header("Content-Disposition", "attachment; filename=\"" + resource.get(0).getCover() + "\"").build();
+                } else {
                     result = Response.status(404).build();
-                    e.printStackTrace();
-                } catch (Exception e) {
-                    result = Response.status(500).build();
-                    e.printStackTrace();
                 }
             }
         }
