@@ -7,6 +7,7 @@ import com.baremind.utils.IdGenerator;
 import com.baremind.utils.JPAEntry;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import org.eclipse.persistence.exceptions.DatabaseException;
 
 import javax.persistence.EntityManager;
 import javax.servlet.ServletInputStream;
@@ -74,9 +75,9 @@ public class Resources {
         Response result = Response.status(401).build();
         if (JPAEntry.isLogining(sessionId)) {
             result = Response.status(404).build();
-            List<Resource> resource = JPAEntry.getList(Resource.class, "no", no);
+            Resource resource = JPAEntry.getObject(Resource.class, "no", no);
             if (resource != null) {
-                result = Response.ok(resource.get(0)).build();
+                result = Response.ok(resource).build();
             }
         }
         return result;
@@ -116,6 +117,7 @@ public class Resources {
                 Gson json = new Gson();
                 UploadMeta meta = json.fromJson(reader, UploadMeta.class);
                 Resource resource = new Resource(meta);
+//                Resource r = JPAEntry.getObject(Resource.class,"no",resource.getNo());
                 resource.setId(IdGenerator.getNewId());
                 File metaFile = new File(Securities.config.ZIP_TEMPORARY + "__meta.json");
                 metaFile.deleteOnExit();
@@ -143,7 +145,6 @@ public class Resources {
                 InputStream inputStream = new FileInputStream(Securities.config.BOOKS + resource.getFilePath());
                 String d = Hex.bytesToHex(Securities.digestor.digest(inputStream));
                 resource.setDigest(d);
-
                 Copyright copyright = new Copyright();
                 copyright.setId(IdGenerator.getNewId());
                 copyright.setNo(resource.getNo());
@@ -152,12 +153,19 @@ public class Resources {
                 copyright.setAuthorId(10000L);
                 copyright.setStatus(1);
                 em.getTransaction().begin();
-                em.persist(resource);
-                em.persist(copyright);
+//                if( JPAEntry.getList(Resource.class,"no",resource.getNo()).size() == 0) {
+//                }
+                uploadLog.setResourceNo(resource.getNo());
                 uploadLog.setState(9);
                 em.persist(uploadLog);
                 em.getTransaction().commit();
-            } catch (IOException e) {
+
+                em.getTransaction().begin();
+                em.persist(resource);
+                em.persist(copyright);
+                em.getTransaction().commit();
+
+            }catch (IOException | DatabaseException e) {
                 e.printStackTrace();
             }
         }
@@ -229,24 +237,35 @@ public class Resources {
     @GET
     @Path("{no}")
     @Produces({"application/pdf", "application/zip", "application/msword", "text/plain"})
-    public Response getFile(@CookieParam("sessionId") String sessionId, @PathParam("no") String no) {
+    public Response getFile(@CookieParam("sessionId") String sessionId, @PathParam("no") String no) throws FileNotFoundException {
         Response result = Response.status(401).build();
         if (JPAEntry.isLogining(sessionId)) {
             result = Response.status(404).build();
             List<Resource> resource = JPAEntry.getList(Resource.class, "no",no);
             if (resource != null) {
+                result = Response.status(404).build();
                 Copyright copyright = JPAEntry.getObject(Copyright.class, "resourceId", resource.get(0).getId());
                 if (copyright != null) {
                     File file = new File(Securities.config.BOOKS + resource.get(0).getFilePath());
                     if (file.exists()) {
-                        //FileInputStream in = new FileInputStream(file);
-                        //byte[] data = new byte[(int) file.length()];
-                        //in.read(data);
-                        //in.close();
+//                        FileInputStream in = null;
+//                        try {
+//                           in = new FileInputStream(file);
+//                            byte[] data = new byte[(int) file.length()];
+//                            in.read(data);
+//                            in.close();
+//                        } catch (IOException e) {
+//                            result = Response.status(500).build();
+//                            e.printStackTrace();
+//                        }
+
                         //save resource transfer
-                        //ResourceTransfer resourceTransfer = new ResourceTransfer();
-                        //resourceTransfer.setId(IdGenerator.getNewId());
-                        //resourceTransfer.setSenderId();
+                        //资源摘要  --》 交给我个签名  --》然后下载
+//                        ResourceTransfer resourceTransfer = new ResourceTransfer();
+//                        resourceTransfer.setId(IdGenerator.getNewId());
+//                        resourceTransfer.setResourceId(resource.get(0).getId());
+//                        resourceTransfer.setRightTransferId();
+
                         result = Response.ok(file, "application/octet-stream").header("Content-Disposition", "attachment; filename=\"" + resource.get(0).getFilePath() + "\"").build();
                     } else {
                         result = Response.status(404).build();
@@ -271,11 +290,18 @@ public class Resources {
             if (resource != null) {
                 File file = new File(Securities.config.COVERS + resource.get(0).getCover());
                 if (file.exists()) {
-                    //file.createNewFile();
-                    //FileInputStream in = new FileInputStream(file);
-                    //byte[] data = new byte[(int) file.length()];
-                    //in.read(data);
-                    //in.close();
+//                    file.createNewFile();
+//                    FileInputStream in = null;
+//                    try {
+//                        in = new FileInputStream(file);
+//                        byte[] data = new byte[(int) file.length()];
+//                        in.read(data);
+//                        in.close();
+//                    }catch (IOException e) {
+//                        result = Response.status(500).build();
+//                        e.printStackTrace();
+//                    }
+
                     result = Response.ok(file).header("Content-Disposition", "attachment; filename=\"" + resource.get(0).getCover() + "\"").build();
                 } else {
                     result = Response.status(404).build();

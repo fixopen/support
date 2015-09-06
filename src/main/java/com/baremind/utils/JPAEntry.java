@@ -31,6 +31,11 @@ public class JPAEntry {
                 .getSingleResult();
         } catch (NoResultException e) {
             //do noting
+        } catch (NonUniqueResultException e) {
+            List<T> t = em.createQuery(jpql, type)
+                    .setParameter("variable", fieldValue)
+                    .getResultList();
+            result = t.get(0);
         }
         return result;
     }

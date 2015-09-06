@@ -11,6 +11,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by Administrator on 2015/8/18 0018.
@@ -26,9 +27,9 @@ public class Rights {
     public Response post(@CookieParam("sessionId") String sessionId, RightTransfer rightTransfer) {
         Response result = Response.status(401).build();
         if (JPAEntry.isLogining(sessionId)) {
-            Resource r = JPAEntry.getObject(Resource.class, "no", rightTransfer.getBookNo());
-            if (r != null) {
-                Copyright copyright = JPAEntry.getObject(Copyright.class, "resourceId", r.getId());
+            List<Resource> r = JPAEntry.getList(Resource.class, "no", rightTransfer.getBookNo());
+            if (r.size()>0) {
+                Copyright copyright = JPAEntry.getObject(Copyright.class, "resourceId", r.get(0).getId());
                 rightTransfer.setId(IdGenerator.getNewId());
                 rightTransfer.setNo(rightTransfer.getId().toString());
                 rightTransfer.setTime(new Date());
