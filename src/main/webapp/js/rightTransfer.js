@@ -56,7 +56,7 @@ function queryData(cUrl,page){
 	],function(result){
 		if(result.meta.code == 200){
 			var totalRow = result.data.allNum;//所有数据
-			var totalPage =totalRow/ result.data.pageSize//页数
+			var totalPage =result.data.allPage//页数
 			ajaxpager(totalPage,totalRow,page);
 			render(result.data.list)
 		}
@@ -69,6 +69,7 @@ document.getElementById('button').addEventListener('click', function (e) {
 		alert('请输入内容')
 	}else{
 		var cUrl='/api/rightTransfers/page?resourceId='+search+''
+		newUrl = cUrl;
 		queryData(cUrl)
 	}
 }, false)
@@ -77,9 +78,6 @@ function render(datas){
 	var container = document.getElementById('permission-tbody');
 	container.innerHTML = '';
 	var count=datas.length;
-	console.log(datas);
-
-
 	for (var i = 0; i < count; ++i) {
 		var body = document.getElementById('permission-tr').content.cloneNode(true).children[0]
 		blind(body,datas[i])

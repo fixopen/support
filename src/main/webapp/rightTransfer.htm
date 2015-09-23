@@ -125,6 +125,13 @@
 
                     </table>
                     <div id="page"></div>
+                    <div class="list-page" style="width:600px;float:right;">
+                        <div id="kkpager">
+                            <input type="hidden" id="totalRow" value="">
+                            <input type="hidden" id="totalPage" value="">
+                            <input type="hidden" id="action" value="">
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -149,58 +156,12 @@
         <td style="text-align: center">${timeStr}</td>
     </tr>
 </template>
+<link rel="stylesheet" type="text/css" href="/css/kkpager_blue.css"/>
+<script src="js/jquery-1.4.2.min.js"></script>
 <script src="js/util.js"></script>
+<script src="/js/kkpager.js"></script>
 <script src="js/common.js"></script>
-<script type="text/javascript">
-
-window.addEventListener('load', function (e) {
-
-    g.getData('/api/rightTransfers/page?page=1&pageSize=10',[
-        {name: 'Content-Type', value: 'application/json'},
-        {name: 'Accept', value: 'application/json'}
-    ],function(result){
-        if(result.meta.code == 200){
-            render(result.data)
-        }
-    }, true);
-
-
-
-
-}, false);
-
-    document.getElementById('button').addEventListener('click', function (e) {
-       var search = document.getElementById('search').value;
-        if(search == ""){
-            alert('请输入内容')
-        }else{
-
-            g.getData('/api/rightTransfers/page?resourceId='+search+'',[
-                {name: 'Content-Type', value: 'application/json'},
-                {name: 'Accept', value: 'application/json'}
-            ],function(result){
-                if(result.meta.code == 200){
-                    render(result.data)
-                }
-            })
-        }
-    }, false)
-
-
-
-    function render(datas){
-        var container = document.getElementById('permission-tbody');
-        container.innerHTML = '';
-        var dataList = datas.list;
-        var count=dataList.length;
-        console.log(datas);
-        for (var i = 0; i < count; ++i) {
-            var body = document.getElementById('permission-tr').content.cloneNode(true).children[0]
-            blind(body,dataList[i])
-            container.appendChild(body)
-        }
-    }
-
-</script>
+<script src="/js/rightTransfer.js"></script>
+<script src="/js/ajaxpager.js"></script>
 </body>
 </html>
