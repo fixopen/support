@@ -202,11 +202,12 @@ window.addEventListener('load', function (e) {
     function render(datas){
         var container = document.getElementById('permission-tbody');
         container.innerHTML = '';
-        var count=datas.length;
+        var dataList = datas.list;
+        var count=dataList.length;
         console.log(datas);
         for (var i = 0; i < count; ++i) {
             var body = document.getElementById('permission-tr').content.cloneNode(true).children[0]
-            blind(body,datas[i])
+            blind(body,dataList[i])
             container.appendChild(body)
         }
     }
