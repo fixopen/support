@@ -10,7 +10,9 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.text.SimpleDateFormat;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Administrator on 2015/8/25 0025.
@@ -152,12 +154,19 @@ public class RightTransfers {
                 resourceName = resource.getName();
                 rt.setResourceName(resourceName);
 
+                rt.setBookNo(resource.getNo());
+
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd H:m:s");
                 rt.setTimeStr(dateFormat.format(rt.getTime()));
 
             }
 
-            result = Response.ok(new Gson().toJson(list)).build();
+            Map<String,Object> map = new HashMap<>();
+            map.put("list",list);
+            map.put("allNum",allNum);
+            map.put("pageSize",pageSize);
+
+            result = Response.ok(new Gson().toJson(map)).build();
         }
         return result;
     }
