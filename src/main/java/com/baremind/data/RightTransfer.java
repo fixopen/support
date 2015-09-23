@@ -25,6 +25,18 @@ public class RightTransfer {
     @Transient
     private String expirationTime;
 
+    @Transient
+    private String fromName;
+
+    @Transient
+    private String toName;
+
+    @Transient
+    private String resourceName;
+
+    @Transient
+    private String timeStr;
+
     @Column(name="copyright_id")
     private Long copyrightId;
 
@@ -129,5 +141,37 @@ public class RightTransfer {
 
     public void setExpiration(Date expiration) {
         this.expiration = expiration;
+    }
+
+    public String getFromName() {
+        return fromName;
+    }
+
+    public void setFromName(String fromName) {
+        this.fromName = fromName;
+    }
+
+    public String getToName() {
+        return toName;
+    }
+
+    public void setToName(String toName) {
+        this.toName = toName;
+    }
+
+    public String getResourceName() {
+        return resourceName;
+    }
+
+    public void setResourceName(String resourceName) {
+        this.resourceName = resourceName;
+    }
+
+    public String getTimeStr() {
+        return timeStr;
+    }
+
+    public void setTimeStr(String timeStr) {
+        this.timeStr = timeStr;
     }
 }
