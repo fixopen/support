@@ -1,11 +1,11 @@
 
 //init
-function  ajaxpager(tpage,trecords,pno){
+function  ajaxpager(tpage,trecords,page){
     var totalPage = tpage;
     var totalRecords = trecords;
     var action = "";
     //var pageNo = getParameter('pno')==null? 1:getParameter('pno');
-    var pageNo = pno;
+    var pageNo = page;
     var mode = 'click';
 
     kkpager.generPageHtml({
@@ -30,7 +30,7 @@ function  ajaxpager(tpage,trecords,pno){
 
         mode : mode,//默认值是link，可选link或者click
         click : function(n){
-            var cUrl= replaceQueStr("pno",n);
+            var cUrl= replaceQueStr("page",n);
             queryData(cUrl,n);
             this.selectPage(n);
         }
