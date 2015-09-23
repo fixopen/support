@@ -23,7 +23,7 @@ public class Account {
     private Integer active;
 
     @Column(name="type")
-    private Integer type = 0;
+    private Integer type = 0;   //9版权审核人员，2版权登记(出版社)，-1管理员，0普通
 
     @Column(name="begin")
     private Date begin;

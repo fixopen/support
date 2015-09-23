@@ -95,7 +95,7 @@ public class RightTransfers {
 
             int allNum = query.getResultList().size(); //总条数
 
-            int allPage = allNum / pageSize;
+            int allPage = (allNum + pageSize - 1) / pageSize;
 
             List<RightTransfer> list = query.setFirstResult(firstNum).setMaxResults(pageSize).getResultList();
             User user = null;
@@ -165,6 +165,7 @@ public class RightTransfers {
             map.put("list",list);
             map.put("allNum",allNum);
             map.put("pageSize",pageSize);
+            map.put("allPage",allPage);
 
             result = Response.ok(new Gson().toJson(map)).build();
         }
