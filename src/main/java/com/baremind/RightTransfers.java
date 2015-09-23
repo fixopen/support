@@ -152,6 +152,8 @@ public class RightTransfers {
                 resourceName = resource.getName();
                 rt.setResourceName(resourceName);
 
+                rt.setBookNo(resource.getNo());
+
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd H:m:s");
                 rt.setTimeStr(dateFormat.format(rt.getTime()));
 
