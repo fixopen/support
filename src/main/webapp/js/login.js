@@ -4,14 +4,14 @@
 
 window.addEventListener('load', function (e) {
     var doc = document
-    var rememberPassword = doc.getElementById('rememberPassword')
+   /* var rememberPassword = doc.getElementById('rememberPassword')
     rememberPassword.addEventListener('click', function(e) {
         if (e.target.checked) {
             //remember to local storage
         } else {
             //clear from local storage
         }
-    }, false)
+    }, false)*/
     var login = doc.getElementById('login')
     login.addEventListener('click', function(e) {
         var select = $('#select option:selected') .val();

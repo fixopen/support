@@ -96,7 +96,7 @@
         </div>
         <div class="col-lg-10"
              style="text-align: right; color: #ffffff; padding-top: 48px; background-color: #0091ff; font-size: 13px; height: 100%;">
-            admin 管理员 | <span id="logout" style="cursor: pointer">退出</span>
+            <span id="userName"></span> | <span id="logout" style="cursor: pointer">退出</span>
             <span id="timeNow" style="margin-left: 25px"></span>
         </div>
     </div>
@@ -152,7 +152,9 @@
 <script src="js/util.js"></script>
 <script src="js/common.js"></script>
 <script type="text/javascript">
+
 window.addEventListener('load', function (e) {
+
     g.getData('/api/rightTransfers/page?page=1&pageSize=10',[
         {name: 'Content-Type', value: 'application/json'},
         {name: 'Accept', value: 'application/json'}
@@ -163,20 +165,7 @@ window.addEventListener('load', function (e) {
     }, true);
 
 
-    document.getElementById('logout').addEventListener('click', function (e) {
-        g.deleteData('/api/sessions/me',[
-            {name: 'Content-Type', value: 'application/json'},
-            {name: 'Accept', value: 'application/json'}
-        ],function(result){
-            if(result.meta.code == 200){
-                alert("退出成功！");
-                window.location.href="/login.html";
-            }
-        }, false);
-    });
 
-    var b = leftMenu();
-    document.getElementById('leftMenu').innerHTML=b;
 
 }, false);
 
