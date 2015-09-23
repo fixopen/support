@@ -67,9 +67,8 @@ public class RightTransfers {
                 resourceIdStr = "0";
             }
 
-            Long resourceId = Long.parseLong(resourceIdStr);
 
-            Resource r = JPAEntry.getObject(Resource.class, "no", resourceId+"");
+            Resource r = JPAEntry.getObject(Resource.class, "no", resourceIdStr+"");
             Copyright cr = null;
             if (r != null) {
                 cr = JPAEntry.getObject(Copyright.class, "resourceId", r.getId()+"");
@@ -84,8 +83,15 @@ public class RightTransfers {
 
             int firstNum = (page - 1) * pageSize;
 
-            String sql = "SELECT rt FROM RightTransfer rt where 1=1";
-            if(copyrightId > 0 || resourceId!=0){
+            Account currAccount= JPAEntry.getAccount(sessionId);
+
+            String sql = "SELECT rt FROM RightTransfer rt,Copyright cr,Resource r where rt.copyrightId=cr.id and cr.resourceId = r.id";
+
+            if(currAccount.getType() == 2){
+                sql += " and r.ownerId = "+currAccount.getId()+"";
+            }
+
+            if(copyrightId > 0 || !"0".equals(resourceIdStr)){
                 sql = sql + " and rt.copyrightId="+copyrightId+"";
             }
 

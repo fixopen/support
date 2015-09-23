@@ -1,9 +1,6 @@
 package com.baremind.data;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Date;
 
 /**
@@ -22,6 +19,9 @@ public class Copyright {
     @Column(name="resource_id")
     private Long resourceId;
 
+    @Transient
+    private Resource resource;
+
     @Column(name="owner_id")
     private Long ownerId;
 
@@ -33,6 +33,19 @@ public class Copyright {
 
     @Column(name="status")
     private int status;
+
+    @Transient
+    private String statusStr;
+
+    public String getStatusStr() {
+
+
+        return statusStr;
+    }
+
+    public void setStatusStr(String statusStr) {
+        this.statusStr = statusStr;
+    }
 
     public Long getId() {
         return id;
@@ -88,5 +101,13 @@ public class Copyright {
 
     public void setStatus(int status) {
         this.status = status;
+    }
+
+    public Resource getResource() {
+        return resource;
+    }
+
+    public void setResource(Resource resource) {
+        this.resource = resource;
     }
 }

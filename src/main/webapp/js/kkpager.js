@@ -9,10 +9,10 @@ var kkpager = {
 		isShowLastPageBtn	: true, //是否显示尾页按钮
 		isShowPrePageBtn	: true, //是否显示上一页按钮
 		isShowNextPageBtn	: true, //是否显示下一页按钮
-		isShowTotalPage 	: true, //是否显示总页数
-		isShowCurrPage		: true,//是否显示当前页
+		isShowTotalPage 	: false, //是否显示总页数
+		isShowCurrPage		: false,//是否显示当前页
 		isShowTotalRecords 	: false, //是否显示总记录数
-		isGoPage 			: true,	//是否显示页码跳转输入框
+		isGoPage 			: false,	//是否显示页码跳转输入框
 		isWrapedPageBtns	: true,	//是否用span包裹住页码按钮
 		isWrapedInfoTextAndGoPageBtn : true, //是否用span包裹住分页信息和跳转按钮
 		hrefFormer			: '', //链接前部

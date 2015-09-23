@@ -1,9 +1,6 @@
 package com.baremind.data;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Date;
 
 /**
@@ -21,6 +18,9 @@ public class UploadLog {
 
     @Column(name="time")
     private Date time;
+
+    @Transient
+    private String timeStr;
 
     @Column(name="uploader_id")
     private Long uploaderId;
@@ -77,5 +77,13 @@ public class UploadLog {
 
     public void setState(int state) {
         this.state = state;
+    }
+
+    public String getTimeStr() {
+        return timeStr;
+    }
+
+    public void setTimeStr(String timeStr) {
+        this.timeStr = timeStr;
     }
 }

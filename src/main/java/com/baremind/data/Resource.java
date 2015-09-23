@@ -1,9 +1,6 @@
 package com.baremind.data;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
  * Created by fixopen on 15/8/15.
@@ -129,6 +126,23 @@ public class Resource implements AutoCloseable {
 
     @Column(name="language")
     private Long language ;
+
+    @Column(name="author")
+    private String author ;
+
+    @Transient
+    private UploadLog uploadLog;
+
+    @Transient
+    private User user;
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 
     public Long getId() {
         return id;
@@ -373,5 +387,21 @@ public class Resource implements AutoCloseable {
     @Override
     public void close() throws Exception {
         //do nothing
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+
+    public UploadLog getUploadLog() {
+        return uploadLog;
+    }
+
+    public void setUploadLog(UploadLog uploadLog) {
+        this.uploadLog = uploadLog;
     }
 }
