@@ -344,7 +344,7 @@ ALTER TABLE resource_types OWNER TO postgres;
 
 CREATE TABLE resources (
     id bigint NOT NULL,
-    no name NOT NULL,
+    no name NOT NULL UNIQUE,
     name name NOT NULL,
     chief_editor name,
     associate_editor name,
@@ -445,6 +445,7 @@ ALTER TABLE trees OWNER TO postgres;
 
 CREATE TABLE upload_logs (
     id bigint NOT NULL,
+    resource_no name ,
     "time" timestamp(0) without time zone,
     uploader_id bigint,
     file_path name NOT NULL,

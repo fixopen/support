@@ -16,7 +16,7 @@ public class Resource implements AutoCloseable {
     public Resource(UploadMeta meta) {
         id = meta.getId();
         no = meta.getTextbookNum();
-        name = meta.getFileName();
+        name = meta.getCaption();
         chiefEditor = meta.getSubResumeCaption();
         associateEditor = meta.getMajorResumeCaption();
         quasiUseNo = meta.getAuthNum();

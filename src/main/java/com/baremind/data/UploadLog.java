@@ -16,6 +16,9 @@ public class UploadLog {
     @Column(name="id")
     private Long id;
 
+    @Column(name="resource_no")
+    private String resourceNo;
+
     @Column(name="time")
     private Date time;
 
@@ -34,6 +37,14 @@ public class UploadLog {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getResourceNo() {
+        return resourceNo;
+    }
+
+    public void setResourceNo(String resourceNo) {
+        this.resourceNo = resourceNo;
     }
 
     public Date getTime() {

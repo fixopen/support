@@ -100,14 +100,14 @@
             <span id="timeNow" style="margin-left: 25px"></span>
         </div>
     </div>
-    <div class="row" style="background-color: #e9e9e9; height: 820px;">
+    <div class="row" style="background-color: #e9e9e9; min-height: 820px;">
         <div class="col-lg-2"
-             style="cursor: pointer; height: 100%; background-color: #373d48; color: #ffffff; line-height: 200%; font-size: x-large; padding-top: 60px; padding-bottom: 60px">
+             style="cursor: pointer; height: 820px; background-color: #373d48; color: #ffffff; line-height: 200%; font-size: x-large; padding-top: 60px; padding-bottom: 60px">
             <ul style="list-style: none; font-size: 16px;padding-left:10%;">
                 <li id="bookList"
                     class="menu-item"
                     style="background-position: 0 -124px;">
-                    图书权力转移列表
+                    资源流转追溯
                     <!--
                     <ul>
                         <li id="importBooks">图书入库</li>
@@ -119,20 +119,20 @@
             </ul>
         </div>
         <div class="col-lg-10" style="padding: 0; height: 100%; line-height: 200%">
-            <div id="contentTitle" style="background-color: #e9e9e9; color: #0091ff; padding-top: 54px; padding-left: 20px; font-size: x-large; height: 102px;">
+            <div id="contentTitle" style="background-color: #e9e9e9; color: #0091ff; padding-top: 54px; padding-left: 20px; height: 102px;">
                 <input id="search" style="width: 200px"/><button id="button"> 查询</button >
             </div>
             <div id="mainContainer" style="padding-top: 30px; padding-bottom: 60px; padding-left: 20px; padding-right: 20px;">
                 <div class="table" id="table">
-                    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                    <table width="100%" border="0" cellspacing="0" cellpadding="0" style="background-color:white;">
                         <!--表头-->
                         <thead id="header">
                             <tr class="permission-tr">
-                                <th style="min-width: 10%;text-align: center;">权利编号</th>
+                                <th style="min-width: 10%;text-align: center;">权利转移编号</th>
                                 <th style="min-width: 10%;text-align: center;">权利发出者</th>
                                 <th style="min-width: 10%;text-align: center;">权利接受者</th>
-                                <th style="min-width: 10%;text-align: center;">所属类型（rightTypeId）</th>
-                                <th style="min-width: 10%;text-align: center;">所属权利（copyrightId）</th>
+                                <th style="min-width: 10%;text-align: center;">权利类型</th>
+                                <th style="min-width: 10%;text-align: center;">版权编号</th>
                                 <th style="min-width: 10%;text-align: center;">生成时间</th>
                             </tr>
                         </thead>
@@ -143,30 +143,37 @@
             </div>
         </div>
     </div>
-    <div class="row" style="height: 88px;">
-        <div class="col-lg-12" style="background-color: #373d48; color: #ffffff; text-align: center">
-            footer info, legal info, address info
-        </div>
-    </div>
+    <!--<div class="row" style="height: 88px;">-->
+        <!--<div class="col-lg-12" style="background-color: #373d48; color: #ffffff; text-align: center">-->
+            <!--footer info, legal info, address info-->
+        <!--</div>-->
+    <!--</div>-->
 </div>
 <template id="permission-tr">
     <tr class="permission-tr">
-        <td>${no}</td>
-        <td title="${name}"><h5
-                style="width: 70px;text-overflow: ellipsis; white-space: nowrap; overflow: hidden;margin-top: 5px;">
-            ${fromId}</h5></td>
-        <td title="${author}"><h5
-                style="width: 70px;text-overflow: ellipsis; white-space: nowrap; overflow: hidden;margin-top: 5px;">
-            ${toId}</h5></td>
-        <td title="${publisher}"><h5
-                style="width: 70px;text-overflow: ellipsis; white-space: nowrap; overflow: hidden;margin-top: 5px;">
-            ${rightTypeId}</h5></td>
-        <td>${copyrightId}</td>
-        <td>${time}</td>
+        <td style="text-align: center">${no}</td>
+        <td style="text-align: center">
+            ${fromId}</td>
+        <td style="text-align: center">
+            ${toId}</td>
+        <td style="text-align: center">
+            读</td>
+        <td style="text-align: center">${copyrightId}</td>
+        <td style="text-align: center">${time}</td>
     </tr>
 </template>
 <script src="js/util.js"></script>
 <script type="text/javascript">
+window.addEventListener('load', function (e) {
+    g.getData('/api/rightTransfers/',[
+        {name: 'Content-Type', value: 'application/json'},
+        {name: 'Accept', value: 'application/json'}
+    ],function(result){
+        if(result.meta.code == 200){
+            render(result.data)
+        }
+    })
+}, false)
     document.getElementById('button').addEventListener('click', function (e) {
        var search = document.getElementById('search').value;
         if(search == ""){
@@ -217,16 +224,6 @@
             var body = document.getElementById('permission-tr').content.cloneNode(true).children[0]
             blind(body,datas[i])
             container.appendChild(body)
-//            if(datas[i].metaSubject.$ref){
-//                for(var j = 0; j< count ; j++){
-//                    if(datas[i].metaSubject.$ref == '$['+j+'].metaSubject'){
-//                        datas[i].metaSubject = datas[j].metaSubject ;
-//                    }
-//                }
-//            }else{
-//                datas[i].metaSubject=datas[i].metaSubject.caption
-//            }
-//            container.appendChild(dataToElement(datas[i], template))
         }
     }
 
