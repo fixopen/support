@@ -159,7 +159,7 @@ g.getTemplate = function (type) {
     return result
 }
 
-g.ajaxProcess = function (method, url, headers, data, postProcess) {
+g.ajaxProcess = function (method, url, headers, data, postProcess, async) {
     var xhr = new XMLHttpRequest()
     xhr.onreadystatechange = function () {
         if (xhr.readyState === 4) {
@@ -172,7 +172,7 @@ g.ajaxProcess = function (method, url, headers, data, postProcess) {
             postProcess(result)
         }
     }
-    xhr.open(method, url, false)
+    xhr.open(method, url, async)
     for (var i = 0, c = headers.length; i < c; ++i) {
         xhr.setRequestHeader(headers[i].name, headers[i].value)
     }
@@ -255,24 +255,24 @@ g.uploader = {
     }
 }
 
-g.getData = function (url, headers, postProcess) {
-    g.ajaxProcess('GET', url, headers, null, postProcess)
+g.getData = function (url, headers, postProcess, async) {
+    g.ajaxProcess('GET', url, headers, null, postProcess, async)
 }
 
-g.putData = function (url, headers, data, postProcess) {
-    g.ajaxProcess('PUT', url, headers, data, postProcess)
+g.putData = function (url, headers, data, postProcess, async) {
+    g.ajaxProcess('PUT', url, headers, data, postProcess, async)
 }
 
-g.patchData = function (url, headers, data, postProcess) {
-    g.ajaxProcess('PATCH', url, headers, data, postProcess)
+g.patchData = function (url, headers, data, postProcess, async) {
+    g.ajaxProcess('PATCH', url, headers, data, postProcess, async)
 }
 
-g.postData = function (url, headers, data, postProcess) {
-    g.ajaxProcess('POST', url, headers, data, postProcess)
+g.postData = function (url, headers, data, postProcess, async) {
+    g.ajaxProcess('POST', url, headers, data, postProcess, async)
 }
 
-g.deleteData = function (url, headers, postProcess) {
-    g.ajaxProcess('DELETE', url, headers, null, postProcess)
+g.deleteData = function (url, headers, postProcess, async) {
+    g.ajaxProcess('DELETE', url, headers, null, postProcess, async)
 }
 
 g.bind = function (element, data) {

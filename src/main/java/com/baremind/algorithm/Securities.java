@@ -28,6 +28,6 @@ public class Securities {
     public static final Zip zip = new Zip();
 //    public static final String rootPath = System.getProperty("user.dir");
 //    public static final Config config = ConfigManager.parseConfig("/data/program/tomcat/webapps/ROOT/WEB-INF/config.properties");
-    public static final Config config = ConfigManager.parseConfig("E:\\supportNew\\trunk\\target\\support\\WEB-INF\\config.properties");
+    public static final Config config = ConfigManager.parseConfig("E:/gaolianli/src/support/target/support/WEB-INF/config.properties");
 //    public static final Config config = ConfigManager.parseConfig("/opt/apache-tomcat-8.0.23/webapps/ROOT/WEB-INF/config.properties");
 }
