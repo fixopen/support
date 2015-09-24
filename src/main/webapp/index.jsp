@@ -1,9 +1,2 @@
-<html>
-<body>
-    <h2>Jersey RESTful Web Application!</h2>
-    <p><a href="api/my-resource">Jersey resource</a>
-    <p><a href="api/my-resource/43">Jersey resource</a>
-    <p>Visit <a href="http://jersey.java.net">Project Jersey website</a>
-    for more information on Jersey!
-</body>
-</html>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<jsp:include page="copyrightList.jsp"/>

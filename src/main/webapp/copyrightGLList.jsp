@@ -1,3 +1,4 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
 <html>
 <head lang="en">
@@ -5,101 +6,11 @@
     <title>支撑管理平台</title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="icon" href="images/favicon.ico">
-    <link href="css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="css/base.css">
-    <link rel="stylesheet" type="text/css" href="css/main.css">
-    <link rel="stylesheet" type="text/css" href="js/My97DatePicker/skin/WdatePicker.css">
-    <!--
-    <link href="css/non-responsive.css" rel="stylesheet"> xmlns="http://www.w3.org/1999/html"
-    -->
-    <link href="css/easyui.css" rel="stylesheet">
-    <link href="css/icon.css" rel="stylesheet">
-    <!--
-    <link href="css/global.css" rel="stylesheet">
-    -->
-    <style type="text/css">
-        td {
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            overflow: hidden;
-        }
-
-        td > select {
-            width: 90%;
-        }
-
-        .menu-item {
-            color: #ffffff;
-            background-repeat: no-repeat;
-            background-image: url('images/icons.png');
-            padding-left: 24px;
-        }
-
-        .menu-item:hover {
-            color: #0091ff;
-        }
-
-        .active-menu-item {
-            color: #0091ff;
-        }
-
-        .mainContent tr:nth-child(even) {
-            background-color: #ffffff;
-        }
-
-        .first {
-            width: 15%;
-            padding-right: 10px;
-            text-align: end;
-        }
-
-        .first-value {
-            width: 30%;
-        }
-
-        .second {
-            width: 15%;
-            padding-right: 10px;
-            text-align: end;
-        }
-
-        .second-value {
-            width: 40%;
-        }
-
-        .filter-title {
-            width: 30%;
-            padding-right: 10px;
-            text-align: end;
-        }
-
-        .filter-title-value {
-            width: 70%;
-        }
-        .button-click {
-            color: red;
-        }
-        .button-remove-click {
-            color: #ffffff;
-        }
-
-    </style>
+    <jsp:include page="headers.jsp" />
 </head>
 <body>
 <div class="container">
-    <div class="row" style="height: 102px;">
-        <div class="col-lg-2"
-             style="text-align: center; color: #ffffff; background-color: #1378d5; font-size: 20px; line-height: 25px; padding-top: 26px; height: 100%;">
-            支撑管理平台<br/>
-            管理系统
-        </div>
-        <div class="col-lg-10"
-             style="text-align: right; color: #ffffff; padding-top: 48px; background-color: #0091ff; font-size: 13px; height: 100%;">
-            <span id="userName"></span> | <span id="logout" style="cursor: pointer">退出</span>
-            <span id="timeNow" style="margin-left: 25px"></span>
-        </div>
-    </div>
+    <jsp:include page="topMenu.jsp" />
     <div class="row" style="background-color: #e9e9e9; min-height: 820px;">
 <div id="leftMenu"></div>
         <div class="col-lg-10" style="padding: 0; height: 100%; line-height: 200%">
@@ -143,18 +54,21 @@
         <!--</div>-->
     <!--</div>-->
 </div>
+
+
+
 <template id="permission-tr">
     <tr class="permission-tr">
-        <td style="text-align: center">${resource.no}</td>
-        <td style="text-align: center">${resource.name}</td>
-        <td style="text-align: center">${resource.author}</td>
+        <td style="text-align: center">$_{resource.no}</td>
+        <td style="text-align: center">$_{resource.name}</td>
+        <td style="text-align: center">$_{resource.author}</td>
         <td style="text-align: center">
-            ${resource.version}</td>
+            $_{resource.version}</td>
         <td style="text-align: center">
-            ${resource.uploadLog.timeStr}</td>
+            $_{resource.uploadLog.timeStr}</td>
         <td style="text-align: center">
-            ${resource.user.name}</td>
-        <td style="text-align: center">${statusStr}</td>
+            $_{resource.user.name}</td>
+        <td style="text-align: center">$_{statusStr}</td>
 
     </tr>
 </template>

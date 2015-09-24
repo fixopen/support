@@ -14,7 +14,8 @@ window.addEventListener('load', function (e) {
             type = d.account.type;
             document.getElementById("userName").innerHTML=name;
         }else{
-            alert("请您先登录！");
+            alert("登录超时！");
+            window.location.href="/login.html";
         }
     }, false);
 
@@ -42,7 +43,7 @@ window.addEventListener('load', function (e) {
 
 function blind(element, data) {
     if (element.innerHTML) {
-        element.innerHTML = element.innerHTML.replace('%7B', '{').replace('%7D', '}').replace(/\$\{(.+)\}/g, function (all, variable) {
+        element.innerHTML = element.innerHTML.replace('%7B', '{').replace('%7D', '}').replace(/\$_\{(.+)\}/g, function (all, variable) {
             if (!variable) {
                 return ""
             }
@@ -72,11 +73,11 @@ function blind(element, data) {
 }
 
 function leftMenu(type){
-    var links = "版权管理|copyrightGLList.htm," +
-        "版权审核|copyrightSPList.htm," +
-        "版权库|copyrightList.htm," +
-        "资源流转追溯|rightTransfer.htm," +
-        "用户管理|userManager.htm";
+    var links = "版权管理|copyrightGLList.jsp," +
+        "版权审核|copyrightSPList.jsp," +
+        "版权库|copyrightList.jsp," +
+        "资源流转追溯|rightTransfer.jsp," +
+        "用户管理|userManager.jsp";
 
     var link_1=new Array(0,1,2,3,4);
 
@@ -159,6 +160,7 @@ function queryData(cUrl,page){
             var totalRow = result.data.allNum;//所有数据
             var totalPage =result.data.allPage//页数
             ajaxpager(totalPage,totalRow,page);
+            console.log(result.data);
             render(result.data.list)
         }
     }, true);

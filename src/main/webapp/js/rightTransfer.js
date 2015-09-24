@@ -1,19 +1,6 @@
 var newUrl="/api/rightTransfers/page?page=1&pageSize=10";
 window.addEventListener('load', function (e) {
 	queryData("/api/rightTransfers/page?page=1&pageSize=10",1);
-	document.getElementById('logout').addEventListener('click', function (e) {
-		g.deleteData('/api/sessions/me',[
-			{name: 'Content-Type', value: 'application/json'},
-			{name: 'Accept', value: 'application/json'}
-		],function(result){
-			if(result.meta.code == 200){
-				alert("退出成功！");
-				window.location.href="/login.html";
-			}
-		}, false);
-	});
-
-
 }, false);
 
 
