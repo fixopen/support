@@ -1,6 +1,8 @@
 package com.baremind;
 
+import com.baremind.algorithm.Securities;
 import com.baremind.data.*;
+import com.baremind.utils.IdGenerator;
 import com.baremind.utils.JPAEntry;
 import com.google.gson.Gson;
 import org.glassfish.jersey.server.mvc.Template;
@@ -13,6 +15,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
@@ -261,5 +264,51 @@ public class Copyrights {
         request.setAttribute("copyright",copyright);
         return new Viewable("/copyrightDetail", null);
     }
+
+
+    @GET
+    @Path("delete/{copyrightId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response delete(@CookieParam("sessionId") String sessionId, @PathParam("copyrightId") String copyrightId) {
+        Response result = Response.status(401).build();
+        if (JPAEntry.isLogining(sessionId)) {
+            result = Response.status(404).build();
+
+
+            EntityManager em = JPAEntry.getEntityManager();
+            em.getTransaction().begin();
+
+
+            Copyright copyright = JPAEntry.getObject(Copyright.class, "id", copyrightId);
+            if(copyright == null){
+                return null;
+            }
+
+            Account currAccount= JPAEntry.getAccount(sessionId);
+            if(currAccount.getType() == 2){
+                if(currAccount.getId() != copyright.getOwnerId()){
+                    return null;
+                }
+            }
+
+
+            Resource resource = JPAEntry.getObject(Resource.class, "id", copyright.getResourceId());
+            if(resource == null){
+                return null;
+            }
+
+
+            UploadLog uploadLog = JPAEntry.getObject(UploadLog.class, "resourceNo", resource.getNo());
+            em.remove(copyright);
+            em.remove(resource);
+            em.remove(uploadLog);
+            em.getTransaction().commit();
+
+
+            result = Response.status(200).build();
+        }
+        return result;
+    }
+
 
 }

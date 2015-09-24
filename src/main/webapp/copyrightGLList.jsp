@@ -31,6 +31,7 @@
                                 <th style="min-width: 10%;text-align: center;">入库时间</th>
                                 <th style="min-width: 10%;text-align: center;">版权人</th>
                                 <th style="min-width: 10%;text-align: center;">状态</th>
+                                <th style="min-width: 10%;text-align: center;">操作</th>
                             </tr>
                         </thead>
                         <tbody id="permission-tbody" style="font-size: 12px;"></tbody>
@@ -60,7 +61,7 @@
 <template id="permission-tr">
     <tr class="permission-tr">
         <td style="text-align: center">$_{resource.no}</td>
-        <td style="text-align: center">$_{resource.name}</td>
+        <td style="text-align: center"><a href="javascript:void(0);" onclick="openUrl('/api/copyrights/infoJSP?copyrightId=$_{id}', '查看', 600, 550);">$_{resource.name}</a></td>
         <td style="text-align: center">$_{resource.author}</td>
         <td style="text-align: center">
             $_{resource.version}</td>
@@ -69,7 +70,7 @@
         <td style="text-align: center">
             $_{resource.user.name}</td>
         <td style="text-align: center">$_{statusStr}</td>
-
+        <td style="text-align: center" class="" ><div id="disable$_{id}"></div></td>
     </tr>
 </template>
 <link rel="stylesheet" type="text/css" href="/css/kkpager_blue.css"/>
@@ -86,7 +87,6 @@
     window.addEventListener('load', function (e) {
         queryData("/api/copyrights/page?page=1&pageSize=10",1);
 
-
     }, false);
 
     function render(datas){
@@ -97,6 +97,9 @@
             var body = document.getElementById('permission-tr').content.cloneNode(true).children[0]
             blind(body,datas[i])
             container.appendChild(body)
+            if(datas[i].statusStr == '待审核'){
+                $("#disable"+ datas[i].id).html("<a href=\"/api/copyrights/delete/"+datas[i].id+"\" onclick=\"sp();\">撤销<\/a>");
+            }
         }
     }
 
