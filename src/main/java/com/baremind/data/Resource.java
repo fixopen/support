@@ -33,6 +33,7 @@ public class Resource implements AutoCloseable {
         reversion = meta.getReVersion();
         filePath = meta.getFileName();
         cover = meta.getCoverFile();
+        author = meta.getAuthor();
 
     }
 

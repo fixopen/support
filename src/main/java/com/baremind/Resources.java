@@ -181,7 +181,7 @@ public class Resources {
                 byte[] buffer = new byte[4 * 1024];
 
                 File zipFile = new File(Securities.config.ZIP_FILES + IdGenerator.getNewId() + ".zip");
-//                zipFile.setWritable(true, false);
+                //zipFile.setWritable(true, false);
                 //szipFile.createNewFile();
                 FileOutputStream w = new FileOutputStream(zipFile);
                 ServletInputStream servletInputStream = request.getInputStream();

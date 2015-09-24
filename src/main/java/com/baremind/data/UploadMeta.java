@@ -26,6 +26,7 @@ public class UploadMeta {
     private String reVersion;
     private String fileName;
     private String coverFile;
+    private String author;
     //{
     // "id":0, -- id
     // "textbookNum":"XB-2011020-15S-02-01", -- no
@@ -225,5 +226,13 @@ public class UploadMeta {
 
     public void setCoverFile(String coverFile) {
         this.coverFile = coverFile;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
     }
 }
