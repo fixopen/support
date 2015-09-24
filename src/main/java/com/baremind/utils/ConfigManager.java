@@ -24,6 +24,7 @@ public class ConfigManager {
             result.COVERS = props.getProperty("COVERS");
             result.ZIP_FILES = props.getProperty("ZIP_FILES");
             result.ZIP_TEMPORARY = props.getProperty("ZIP_TEMPORARY");
+            result.TMP_FILES = props.getProperty("TMP_FILES");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
