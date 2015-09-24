@@ -13,6 +13,9 @@ public class Copyright {
     @Column(name="id")
     private Long id;
 
+    @Transient
+    private String idStr;
+
     @Column(name="no")
     private String no;
 
@@ -43,6 +46,14 @@ public class Copyright {
         return statusStr;
     }
 
+    public String getIdStr() {
+        return idStr;
+    }
+
+    public void setIdStr(String idStr) {
+        this.idStr = idStr;
+    }
+
     public void setStatusStr(String statusStr) {
         this.statusStr = statusStr;
     }
@@ -52,6 +63,7 @@ public class Copyright {
     }
 
     public void setId(Long id) {
+        this.idStr = id + "";
         this.id = id;
     }
 

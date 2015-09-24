@@ -43,7 +43,8 @@ public class Resources {
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    public Resource post(@CookieParam("sessionId") String sessionId, Resource resource) {
+    public Response post(@CookieParam("sessionId") String sessionId, Resource resource) {
+        Response result = Response.status(401).build();
         Account account = JPAEntry.getAccount(sessionId);
         if (account != null) {
             boolean isLogin = JPAEntry.isLogining(account);
@@ -56,7 +57,7 @@ public class Resources {
                 em.getTransaction().commit();
             }
         }
-        return resource;
+        return result;
     }
 
     @GET
