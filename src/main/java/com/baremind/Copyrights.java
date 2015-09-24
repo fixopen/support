@@ -184,6 +184,53 @@ public class Copyrights {
         return result;
     }
 
+
+    private Copyright getById(String sessionId,Long copyrightId){
+        Copyright copyright = JPAEntry.getObject(Copyright.class, "id", copyrightId);
+        if(copyright == null){
+            return null;
+        }
+        Account currAccount= JPAEntry.getAccount(sessionId);
+        if(currAccount.getType() == 2){
+            if(currAccount.getId() != copyright.getOwnerId()){
+                return null;
+            }
+        }
+        Resource resource = JPAEntry.getObject(Resource.class, "id", copyright.getResourceId());
+        if(resource == null){
+            return null;
+        }
+        copyright.setResource(resource);
+
+        UploadLog uploadLog = JPAEntry.getObject(UploadLog.class, "resourceNo", resource.getNo());
+
+        resource.setUploadLog(uploadLog);
+        User user = JPAEntry.getObject(User.class, "id", resource.getOwnerId());
+        resource.setUser(user);
+
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd H:m:s");
+        uploadLog.setTimeStr(dateFormat.format(uploadLog.getTime()));
+        resource.setUploadLog(uploadLog);
+
+
+        int status = copyright.getStatus();
+        String statusStr = "";
+        if(status == 1){
+            statusStr = "待审核";
+        }
+
+        if(status == 2){
+            statusStr = "通过";
+        }
+
+        if(status == -1){
+            statusStr = "不通过";
+        }
+        copyright.setStatusStr(statusStr);
+        return copyright;
+    }
+
     @GET
     @Path("info")
     @Produces(MediaType.APPLICATION_JSON)
@@ -192,53 +239,11 @@ public class Copyrights {
         if (JPAEntry.isLogining(sessionId)) {
             result = Response.status(404).build();
 
-            Copyright copyright = JPAEntry.getObject(Copyright.class, "id", copyrightId);
-            if(copyright == null){
-                return result;
-            }
-            Account currAccount= JPAEntry.getAccount(sessionId);
-            if(currAccount.getType() == 2){
-                if(currAccount.getId() != copyright.getOwnerId()){
-                    result = Response.status(401).build();
-                    return result;
-                }
-            }
 
-            Resource resource = JPAEntry.getObject(Resource.class, "id", copyright.getResourceId());
-            if(resource == null){
-                return result;
-            }
-            copyright.setResource(resource);
-
-            UploadLog uploadLog = JPAEntry.getObject(UploadLog.class, "resourceNo", resource.getNo());
-
-            resource.setUploadLog(uploadLog);
-            User user = JPAEntry.getObject(User.class, "id", resource.getOwnerId());
-            resource.setUser(user);
-
-
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd H:m:s");
-            uploadLog.setTimeStr(dateFormat.format(uploadLog.getTime()));
-            resource.setUploadLog(uploadLog);
-
-
-            int status = copyright.getStatus();
-            String statusStr = "";
-            if(status == 1){
-                statusStr = "待审核";
-            }
-
-            if(status == 2){
-                statusStr = "通过";
-            }
-
-            if(status == -1){
-                statusStr = "不通过";
-            }
-            copyright.setStatusStr(statusStr);
             /*Map<String,Object> map = new HashMap<>();
             map.put("data",copyright);
             map.put("meta",allNum);*/
+            Copyright copyright = this.getById(sessionId, copyrightId);
             result = Response.ok(new Gson().toJson(copyright)).build();
         }
         return result;
@@ -249,7 +254,11 @@ public class Copyrights {
     @Template
     @Produces(MediaType.TEXT_HTML)
     public Viewable get(@Context HttpServletRequest request,@CookieParam("sessionId") String sessionId, @QueryParam("copyrightId") Long copyrightId) {
-        request.setAttribute("copyrightId",copyrightId);
+        if (!JPAEntry.isLogining(sessionId)) {
+           return new Viewable("/login",null);
+        }
+        Copyright copyright = this.getById(sessionId, copyrightId);
+        request.setAttribute("copyright",copyright);
         return new Viewable("/copyright", null);
     }
 

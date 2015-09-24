@@ -1,3 +1,4 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-${copyrightId}
-${copyright.id}
+<script>
+    window.location.href="/login.html";
+</script>
