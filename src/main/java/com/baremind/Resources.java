@@ -2,11 +2,18 @@ package com.baremind;
 
 import com.baremind.algorithm.Securities;
 import com.baremind.data.*;
+import com.baremind.utils.FileUtils;
 import com.baremind.utils.Hex;
 import com.baremind.utils.IdGenerator;
 import com.baremind.utils.JPAEntry;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.FileItemFactory;
+import org.apache.commons.fileupload.FileUploadException;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.eclipse.persistence.exceptions.DatabaseException;
 
 import javax.persistence.EntityManager;
@@ -19,6 +26,7 @@ import javax.ws.rs.core.Response;
 import java.io.*;
 import java.net.URLDecoder;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -306,6 +314,54 @@ public class Resources {
                 } else {
                     result = Response.status(404).build();
                 }
+            }
+        }
+        return result;
+    }
+
+    @POST
+    @Path("file")
+    @Consumes("multipart/form-data")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response upload(@CookieParam("sessionId") String sessionId,@Context HttpServletRequest request){
+        Response result = Response.status(401).build();
+        if (JPAEntry.isLogining(sessionId)) {
+            result = Response.status(404).build();
+            try {
+
+                if (ServletFileUpload.isMultipartContent(request)) {
+                    FileItemFactory factory = new DiskFileItemFactory();
+                    ServletFileUpload upload = new ServletFileUpload(factory);
+                    List<FileItem> items = null;
+                    String fileName = "";
+                    Long tmpID = IdGenerator.getNewId();
+                    String tmpName = tmpID  + ".";
+                    String tmpPath = Securities.config.TMP_FILES;
+
+
+                    items = upload.parseRequest(request);
+                    if (items != null) {
+                        Iterator<FileItem> iter = items.iterator();
+                        while (iter.hasNext()) {
+                            FileItem item = iter.next();
+                            if (!item.isFormField() && item.getSize() > 0) {
+                                tmpName = tmpName + FileUtils.getExt(item.getName());
+                                tmpPath = tmpPath  + tmpName;
+                                try {
+                                    item.write(new File(tmpPath));
+                                    } catch (Exception e) {
+                                    e.printStackTrace();
+                                    }
+                                }
+                        }
+                    }
+
+                    result = Response.ok("{\"tmpId\":\""+tmpID+"\",\"tmpPath\":\""+tmpName+"\"}").build(); //new Gson().toJson(uploadLog)
+                }
+
+            } catch (FileUploadException e) {
+                e.printStackTrace();
+                result = Response.status(500).build();
             }
         }
         return result;

@@ -12,6 +12,7 @@ public class Config {
     public String COVERS;
     public String ZIP_FILES;
     public String ZIP_TEMPORARY;
+    public String TMP_FILES;
 
 
 
