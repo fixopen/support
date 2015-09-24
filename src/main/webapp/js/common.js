@@ -174,3 +174,43 @@ function sp(id){
 }
 
 
+function fei_check(){
+    var v = 1;
+    $(".error").css("display","none"); //
+
+    $(".error").each(function(){
+        if($(this).attr("zd")!=""){
+            var c = $(this).attr("zd");
+            if($(this).attr("yz")=="bt"){
+                // alert($("#"+c).val());
+                if($("#"+c).val()==""){
+                    //$("#"+c+"_error").css("display","block");
+                    alert($(this).html());
+                    v = 0;
+                    return false;
+                }
+            }
+            if($(this).attr("yz")=="bt_shuzi"){
+                if($("#"+c).val()==""){
+                    $("#"+c+"_error").css("display","block");
+                    v = 0;
+                }else{
+                    if(isNaN($("#"+c).val())){
+                        $("#"+c+"_error").css("display","block");
+                        v = 0;
+                    }else{
+                        //alert(Number($("#"+c).attr("value"))+"||"+Number($("#"+c).attr("min")));
+                        if(Number($("#"+c).val())<Number($("#"+c+"_error").attr("min")) || Number($("#"+c).val())>Number($("#"+c+"_error").attr("max"))){
+                            $("#"+c+"_error").css("display","block");
+                            v = 0;
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    return v;
+}
+
+

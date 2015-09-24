@@ -42,8 +42,9 @@ public class Resources {
 //    private static final String ZIP_TEMPORARY = "D:\\var\\zipFiles\\";
 
     @POST
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response post(@CookieParam("sessionId") String sessionId, Resource resource) {
+    @Consumes({"application/json", "text/javascript"})
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response post(@CookieParam("sessionId") String sessionId) {
         Response result = Response.status(401).build();
         Account account = JPAEntry.getAccount(sessionId);
         if (account != null) {
@@ -51,9 +52,9 @@ public class Resources {
             if (isLogin) {
                 EntityManager em = JPAEntry.getEntityManager();
                 em.getTransaction().begin();
-                resource.setId(IdGenerator.getNewId());
+                /*resource.setId(IdGenerator.getNewId());
                 resource.setOwnerId(account.getId());
-                em.persist(resource);
+                em.persist(resource);*/
                 em.getTransaction().commit();
             }
         }

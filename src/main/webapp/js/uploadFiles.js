@@ -59,7 +59,6 @@ function uploadFileByForm(file, obj){
                     console.log(xhr.responseText);
                     var href = JSON.parse(xhr.responseText);
                     $(obj).val(href.tmpPath);
-                    
                 }
 
             };

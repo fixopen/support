@@ -47,7 +47,8 @@ public class Copyright {
     }
 
     public String getIdStr() {
-        return idStr;
+
+        return id + "";
     }
 
     public void setIdStr(String idStr) {
