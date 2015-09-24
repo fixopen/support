@@ -259,7 +259,7 @@ public class Copyrights {
         }
         Copyright copyright = this.getById(sessionId, copyrightId);
         request.setAttribute("copyright",copyright);
-        return new Viewable("/copyright", null);
+        return new Viewable("/copyrightDetail", null);
     }
 
 }

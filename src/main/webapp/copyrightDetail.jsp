@@ -10,19 +10,19 @@
 <div class="container">
     <div class="row" style="background-color: #e9e9e9; min-height: 820px;">
         <div class="inputArea">
-            <strong>图书编号：</strong> $_{resource.no}
+            <strong>图书编号：</strong> ${copyright.no}
         </div>
         <div class="inputArea">
-            <strong>书名：</strong>$_{resource.name}
+            <strong>书名：</strong>${copyright.name}
         </div>
         <div class="inputArea">
-            <strong>作者：</strong> $_{resource.author}
+            <strong>作者：</strong> ${copyright.author}
         </div>
         <div class="inputArea">
-            <strong>入库时间：</strong> $_{resource.uploadLog.timeStr}
+            <strong>入库时间：</strong> ${copyright.uploadLog.timeStr}
         </div>
         <div class="inputArea">
-            <strong>版权人：</strong> $_{resource.user.name}
+            <strong>版权人：</strong> ${copyright.user.name}
         </div>
     </div>
 
@@ -30,27 +30,5 @@
 
 </body>
 </html>
-<script>
 
-//    window.addEventListener('load', function (e) {
-//        queryData(newUrl,1);
-//
-//
-//        document.getElementById('button').addEventListener('click', function (e) {
-//            var search = document.getElementById('search').value;
-//            var type = document.getElementById('type').value;
-//
-//            var cUrl="/api/copyrights/SPpage?page=1&pageSize=10" + '&str='+search+'&type='+type+'';
-//
-//            console.log(cUrl)
-//            newUrl = cUrl;
-//            queryData(cUrl)
-//
-//        }, false)
-//
-//    }, false);
-
-
-
-</script>
 

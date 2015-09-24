@@ -64,7 +64,7 @@
 <template id="permission-tr">
     <tr class="permission-tr">
         <td style="text-align: center">$_{resource.no}</td>
-        <td style="text-align: center"><a href="javascript:void(0);" onclick="openUrl('copyrightDetail.jsp', '查看', 600, 550);">$_{resource.name}</a></td>
+        <td style="text-align: center"><a href="javascript:void(0);" onclick="openUrl('/api/copyrights/infoJSP?copyrightId='+$_{id}, '查看', 600, 550);">$_{resource.name}</a></td>
         <td style="text-align: center">$_{resource.author}</td>
         <td style="text-align: center">
             $_{resource.uploadLog.timeStr}</td>
