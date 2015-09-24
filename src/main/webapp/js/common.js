@@ -43,7 +43,7 @@ window.addEventListener('load', function (e) {
 
 function blind(element, data) {
     if (element.innerHTML) {
-        element.innerHTML = element.innerHTML.replace('%7B', '{').replace('%7D', '}').replace(/\$_\{(.+)\}/g, function (all, variable) {
+        element.innerHTML = element.innerHTML.replace('%7B', '{').replace('%7D', '}').replace(/\$_\{([\w|\.]+)\}/g, function (all, variable) {
             if (!variable) {
                 return ""
             }
