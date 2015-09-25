@@ -141,6 +141,8 @@ public class Copyrights {
                     if(str.split("=").length ==2){
                         String val = str.split("=")[1];
                         sql += " and r."+ s+" like "+"'"+val+"%'";
+                    }else {
+                        sql += " and r."+ s+" like "+"''";
                     }
                 }
             }

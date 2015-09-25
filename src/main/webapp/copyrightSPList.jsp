@@ -144,10 +144,13 @@
         $('#searchBtn').click(function(){
 
             var inputVal = $("#searchInputVal").val();
-            if(inputVal ==''){
-                alert("请输入文字！")
-                return;
+            if(searchConditionVal != "all"){
+                if(inputVal ==''){
+                    alert("请输入文字！")
+                    return;
+                }
             }
+
             var str = searchConditionVal+ "="+inputVal;
             var cUrl;
             if(newUrl.indexOf("str")==-1){
