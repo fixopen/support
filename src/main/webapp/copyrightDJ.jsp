@@ -6,7 +6,6 @@
     <title>支撑管理平台</title>
     <script src="js/jquery-1.7.2.min.js"></script>
     <script src="js/uploadFiles.js"></script>
-    <script src="js/common.js"></script>
     <jsp:include page="tc_headers.jsp" />
 </head>
 <body>

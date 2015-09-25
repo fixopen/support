@@ -3,41 +3,42 @@ var userId = "";
 var type = 0;
 
 window.addEventListener('load', function (e) {
-    g.getData('/api/user/session',[
-        {name: 'Content-Type', value: 'application/json'},
-        {name: 'Accept', value: 'application/json'}
-    ],function(result){
-        if(result.meta.code == 200){
-            var d = result.data;
-            name = d.user.name;
-            userId = d.user.id;
-            type = d.account.type;
-            document.getElementById("userName").innerHTML=name;
-        }else{
-            alert("登录超时！");
-            window.location.href="/login.html";
-        }
-    }, false);
-
-
-
-
-    document.getElementById('logout').addEventListener('click', function (e) {
-        g.deleteData('/api/sessions/me',[
+    if(document.getElementById("userName")) {
+        g.getData('/api/user/session', [
             {name: 'Content-Type', value: 'application/json'},
             {name: 'Accept', value: 'application/json'}
-        ],function(result){
-            if(result.meta.code == 200){
-                alert("退出成功！");
-                window.location.href="/login.html";
+        ], function (result) {
+            if (result.meta.code == 200) {
+                var d = result.data;
+                name = d.user.name;
+                userId = d.user.id;
+                type = d.account.type;
+                document.getElementById("userName").innerHTML = name;
+            } else {
+                alert("登录超时！");
+                window.location.href = "/login.html";
             }
         }, false);
-    });
+    }
 
-    console.log(type);
-    var b = leftMenu(type);
-    document.getElementById('leftMenu').innerHTML=b;
 
+    if(document.getElementById("logout")) {
+        document.getElementById('logout').addEventListener('click', function (e) {
+            g.deleteData('/api/sessions/me', [
+                {name: 'Content-Type', value: 'application/json'},
+                {name: 'Accept', value: 'application/json'}
+            ], function (result) {
+                if (result.meta.code == 200) {
+                    alert("退出成功！");
+                    window.location.href = "/login.html";
+                }
+            }, false);
+        });
+    }
+    if(document.getElementById('leftMenu')){
+        var b = leftMenu(type);
+        document.getElementById('leftMenu').innerHTML=b;
+    }
 }, false);
 
 
