@@ -9,6 +9,7 @@
     <jsp:include page="headers.jsp" />
 </head>
 <body>
+
 <div class="container">
     <jsp:include page="topMenu.jsp" />
     <div class="row" style="background-color: #e9e9e9; min-height: 820px;">
