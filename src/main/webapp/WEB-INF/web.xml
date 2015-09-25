@@ -20,6 +20,14 @@
         <servlet-name>Jersey Web Application</servlet-name>
         <url-pattern>/api/*</url-pattern>
     </servlet-mapping>
+    <filter>
+        <filter-name>CNFilter</filter-name>
+        <filter-class>com.baremind.utils.CNFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>CNFilter</filter-name>
+        <url-pattern>/api/*</url-pattern>
+    </filter-mapping>
     <welcome-file-list>
         <welcome-file>login.html</welcome-file>
     </welcome-file-list>
