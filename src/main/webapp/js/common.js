@@ -214,3 +214,20 @@ function fei_check(){
 }
 
 
+function formDataToJson(data){
+
+    var json = {};
+
+    var datas = data.split("&");
+    if(datas.length < 1){return json;}
+    for(var i = 0; i < datas.length; i++){
+        var dds = datas[i].split("=");
+        var key = dds[0];
+        var value = dds[1];
+        json[key] = value;
+    }
+
+    return json;
+}
+
+

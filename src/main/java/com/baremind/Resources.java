@@ -2,10 +2,8 @@ package com.baremind;
 
 import com.baremind.algorithm.Securities;
 import com.baremind.data.*;
-import com.baremind.utils.FileUtils;
-import com.baremind.utils.Hex;
-import com.baremind.utils.IdGenerator;
-import com.baremind.utils.JPAEntry;
+import com.baremind.data.Resource;
+import com.baremind.utils.*;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -16,6 +14,8 @@ import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.eclipse.persistence.exceptions.DatabaseException;
 
+import javax.annotation.*;
+import javax.json.Json;
 import javax.persistence.EntityManager;
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
@@ -25,10 +25,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.*;
 import java.net.URLDecoder;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by fixopen on 16/8/15.
@@ -42,20 +39,74 @@ public class Resources {
 //    private static final String ZIP_TEMPORARY = "D:\\var\\zipFiles\\";
 
     @POST
-    @Consumes({"application/json", "text/javascript"})
+    @Consumes({MediaType.APPLICATION_JSON})
     @Produces(MediaType.APPLICATION_JSON)
-    public Response post(@CookieParam("sessionId") String sessionId) {
+    public Response post(@Context HttpServletRequest request, @CookieParam("sessionId") String sessionId, Resource resource) {
+
+
+
         Response result = Response.status(401).build();
         Account account = JPAEntry.getAccount(sessionId);
         if (account != null) {
             boolean isLogin = JPAEntry.isLogining(account);
             if (isLogin) {
+
+                resource = DecodeObject.decodeUTF8(resource, Resource.class);
+                Long resourceId = IdGenerator.getNewId();
+                resource.setId(resourceId);
+                resource.setOwnerId(account.getId());
+
+                File source = new File(Securities.config.TMP_FILES + resource.getFilePath());
+                File desc = new File(Securities.config.TMP_FILES + resource.getCover());
+
+                if (source.renameTo(new File(Securities.config.BOOKS + resource.getFilePath()))) {
+                    if (desc.renameTo(new File(Securities.config.COVERS + resource.getCover()))) {
+                        System.out.println("File is moved successful!");
+                    } else {
+                        System.out.println("File is failed to move!");
+                    }
+                } else {
+                    System.out.println("File is failed to move!");
+                }
+
+                InputStream inputStream = null;
+                try {
+                    inputStream = new FileInputStream(Securities.config.BOOKS + resource.getFilePath());
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                    return result;
+                }
+                String d = Hex.bytesToHex(Securities.digestor.digest(inputStream));
+                resource.setDigest(d);
+                Copyright copyright = new Copyright();
+                copyright.setId(IdGenerator.getNewId());
+                copyright.setNo(resource.getNo());
+                copyright.setResourceId(resource.getId());
+                copyright.setOwnerId(resource.getOwnerId());
+                copyright.setAuthorId(0L); //暂时没有
+                copyright.setStatus(1);
+
+
+                UploadLog uploadLog = new UploadLog();
+                uploadLog.setId(resourceId);
+                uploadLog.setTime(new Date());
+                uploadLog.setFilePath(resource.getFilePath());
+                uploadLog.setResourceNo(resource.getNo());
+                uploadLog.setState(9);
+
                 EntityManager em = JPAEntry.getEntityManager();
                 em.getTransaction().begin();
-                /*resource.setId(IdGenerator.getNewId());
-                resource.setOwnerId(account.getId());
-                em.persist(resource);*/
+
+                em.persist(resource);
+                em.persist(copyright);
+                em.persist(uploadLog);
+
                 em.getTransaction().commit();
+
+                Map map = new HashMap<>();
+                map.put("resourceId", resourceId+"");
+
+                result = Response.ok(new Gson().toJson(map)).build();
             }
         }
         return result;
