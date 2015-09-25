@@ -16,8 +16,33 @@
         <div class="col-lg-10" style="padding: 0; height: 100%; line-height: 200%">
             <div id="contentTitle" class="contentTitle">
                 <div class="title">版权管理</div>
-                <div class="search">
-                    <div style="float: left;"><input id="search" style="width: 200px"/><button id="button"> 查询</button ></div>
+                <div class="row">
+                    <div class="col-lg-3">
+                        <span>筛选：</span>
+                        <select id="type" style="height: 34px;width: 100px;">
+                            <option value="">全部</option>
+                            <option value="1">待审核</option>
+                            <option value="2">已通过</option>
+                            <option value="-1">不通过</option>
+                        </select>
+                    </div>
+                    <div class="col-lg-3">
+                        <span>搜索：</span>
+                        <select id="searchCondition" style="height: 34px;width: 100px;">
+                            <option value="all">全部</option>
+                            <option value="name">书名</option>
+                            <option value="author">作者</option>
+                            <option value="no">编号</option>
+                        </select>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="input-group">
+                            <input id="searchInputVal" type="text" class="form-control" placeholder="">
+                          <span class="input-group-btn">
+                            <button id="searchBtn" class="btn btn-default" type="button">查询</button>
+                          </span>
+                        </div>
+                    </div>
                     <div style="float:right; margin-right:20px;"><a href="javascript:void(0);" onclick="openUrl('/copyrightDJ.jsp', '版权登记', 600, 550);"><u>版权登记</u></a></div>
                 </div>
             </div>
@@ -88,8 +113,62 @@
 </html>
 <script>
     var newUrl="/api/copyrights/page?page=1&pageSize=10";
+    var searchConditionVal = "all";
     window.addEventListener('load', function (e) {
         queryData("/api/copyrights/page?page=1&pageSize=10",1);
+
+        //type发生变化时 发请求
+        $('#type').change(function(){
+            var type  = $("#type").find("option:selected").val();
+
+            var cUrl="/api/copyrights/SPpage?page=1&pageSize=10" +'&type='+type;
+
+            console.log(cUrl)
+            newUrl = cUrl;
+            queryData(cUrl,1)
+
+        });
+        //输入框 查询
+
+        $('#searchCondition').change(function(){
+            searchConditionVal  = $("#searchCondition").find("option:selected").val();
+            var placeholder ="";
+            switch (searchConditionVal){
+                case "name":
+                    placeholder = "例如：小学语文"
+                    break;
+                case "no":
+                    placeholder = "例如：CB-2006044-15F-01-01"
+                    break;
+                case "author":
+                    placeholder = "例如：张三"
+                    break;
+            }
+            $("#searchInputVal").attr("placeholder",placeholder)
+
+        });
+        $('#searchBtn').click(function(){
+
+            var inputVal = $("#searchInputVal").val();
+            if(searchConditionVal != "all"){
+                if(inputVal ==''){
+                    alert("请输入文字！")
+                    return;
+                }
+            }
+
+            var str = searchConditionVal+ "-"+inputVal;
+            var cUrl;
+            if(newUrl.indexOf("str")==-1){
+                cUrl=newUrl+'&str='+str;
+            }else{
+                cUrl = delQueStr(newUrl,"str")+'&str='+str;
+            }
+
+            newUrl = cUrl;
+            queryData(cUrl,1)
+
+        });
 
     }, false);
 

@@ -32,7 +32,6 @@ function  ajaxpager(tpage,trecords,page){
         click : function(n){
             var cUrl= replaceQueStr("page",n);
             newUrl = cUrl;
-            alert(newUrl)
             currentPage = n;
             queryData(cUrl,n);
             this.selectPage(n);

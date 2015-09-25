@@ -134,12 +134,11 @@ public class Copyrights {
                 sql += " and cr.status = "+type+"";
             }
             if(str!=null){
-                //数据格式 例如： name＝小学语文
-                String s = str.split("=")[0];
-                int ss =str.split("=").length;
+                //数据格式 例如： name.小学语文
+                String s = str.split("-")[0];
                 if(!"all".equals(s)){
-                    if(str.split("=").length ==2){
-                        String val = str.split("=")[1];
+                    if(str.split("-").length ==2){
+                        String val = str.split("-")[1];
                         sql += " and r."+ s+" like "+"'"+val+"%'";
                     }else {
                         sql += " and r."+ s+" like "+"''";

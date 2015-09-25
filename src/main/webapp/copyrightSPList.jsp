@@ -44,7 +44,6 @@
                     </div>
                 </div>
 
-
             </div>
             <div id="mainContainer" style="padding-top: 30px; padding-bottom: 60px; padding-left: 20px; padding-right: 20px;">
                 <div class="table" id="table">
@@ -151,7 +150,7 @@
                 }
             }
 
-            var str = searchConditionVal+ "="+inputVal;
+            var str = searchConditionVal+ "-"+inputVal;
             var cUrl;
             if(newUrl.indexOf("str")==-1){
                 cUrl=newUrl+'&str='+str;
