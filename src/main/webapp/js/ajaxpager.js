@@ -31,6 +31,8 @@ function  ajaxpager(tpage,trecords,page){
         mode : mode,//默认值是link，可选link或者click
         click : function(n){
             var cUrl= replaceQueStr("page",n);
+            newUrl = cUrl;
+            currentPage = n;
             queryData(cUrl,n);
             this.selectPage(n);
         }

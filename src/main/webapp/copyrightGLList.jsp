@@ -98,8 +98,22 @@
             blind(body,datas[i])
             container.appendChild(body)
             if(datas[i].statusStr == '待审核'){
-                $("#disable"+ datas[i].id).html("<a href=\"/api/copyrights/delete/"+datas[i].id+"\" onclick=\"sp();\">撤销<\/a>");
+                $("#disable"+ datas[i].id).html("<a href=javascript:void(0); onclick=deleteCR("+datas[i].id+")>撤销</a>");
             }
+        }
+    }
+
+    function deleteCR(id){
+        if(confirm("确认要删除吗？")){
+            g.getData("/api/copyrights/delete/"+id,[
+                {name: 'Content-Type', value: 'application/json'},
+                {name: 'Accept', value: 'application/json'}
+            ],function(result){
+                if(result.meta.code == 200){
+                    alert("删除成功！");
+                    queryData(newUrl,currentPage);
+                }
+            }, true);
         }
     }
 

@@ -269,15 +269,10 @@ public class Copyrights {
     @GET
     @Path("delete/{copyrightId}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response delete(@CookieParam("sessionId") String sessionId, @PathParam("copyrightId") String copyrightId) {
+    public Response delete(@CookieParam("sessionId") String sessionId, @PathParam("copyrightId") Long copyrightId) {
         Response result = Response.status(401).build();
         if (JPAEntry.isLogining(sessionId)) {
             result = Response.status(404).build();
-
-
-            EntityManager em = JPAEntry.getEntityManager();
-            em.getTransaction().begin();
-
 
             Copyright copyright = JPAEntry.getObject(Copyright.class, "id", copyrightId);
             if(copyright == null){
@@ -291,7 +286,6 @@ public class Copyrights {
                 }
             }
 
-
             Resource resource = JPAEntry.getObject(Resource.class, "id", copyright.getResourceId());
             if(resource == null){
                 return null;
@@ -299,11 +293,41 @@ public class Copyrights {
 
 
             UploadLog uploadLog = JPAEntry.getObject(UploadLog.class, "resourceNo", resource.getNo());
-            em.remove(copyright);
-            em.remove(resource);
-            em.remove(uploadLog);
+            EntityManager em = JPAEntry.getEntityManager();
+            em.getTransaction().begin();
+
+            Copyright copyrightR = em.find(Copyright.class, copyright.getId());
+            Resource resourceR = em.find(Resource.class, resource.getId());
+            UploadLog uploadLogR = em.find(UploadLog.class, uploadLog.getId());
+            em.remove(copyrightR);
+            em.remove(resourceR);
+            em.remove(uploadLogR);
             em.getTransaction().commit();
 
+
+            result = Response.status(200).build();
+        }
+        return result;
+    }
+
+    @GET
+    @Path("audit/{copyrightId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response delete(@CookieParam("sessionId") String sessionId, @PathParam("copyrightId") Long copyrightId, @QueryParam("status") Integer status) {
+        Response result = Response.status(401).build();
+        if (JPAEntry.isLogining(sessionId)) {
+            result = Response.status(404).build();
+
+            Copyright copyright = this.getById(sessionId, copyrightId);
+
+            EntityManager em = JPAEntry.getEntityManager();
+            em.getTransaction().begin();
+
+            copyright.setStatus(status);
+
+            em.merge(copyright);
+
+            em.getTransaction().commit();
 
             result = Response.status(200).build();
         }

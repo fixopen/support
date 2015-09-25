@@ -12,17 +12,39 @@
 <div class="container">
     <jsp:include page="topMenu.jsp" />
     <div class="row" style="background-color: #e9e9e9; min-height: 820px;">
-<div id="leftMenu"></div>
+    <div id="leftMenu"></div>
         <div class="col-lg-10" style="padding: 0; height: 100%; line-height: 200%">
-            <div id="contentTitle" style="background-color: #e9e9e9; color: #0091ff; padding-top: 54px; padding-left: 20px; height: 102px;">
-                <select id="type">
-                    <option value="">全部</option>
-                    <option value="1">待审核</option>
-                    <option value="2">已通过</option>
-                    <option value="-1">不通过</option>
-                </select>
-                &nbsp;
-                <input id="search" style="width: 200px"/><button id="button"> 查询</button >
+            <div id="contentTitle" style=" padding-top: 54px; padding-left: 20px; height: 102px;">
+                <div class="row">
+                    <div class="col-lg-3">
+                        <span>筛选：</span>
+                        <select id="type" style="height: 34px;width: 100px;">
+                            <option value="">全部</option>
+                            <option value="1">待审核</option>
+                            <option value="2">已通过</option>
+                            <option value="-1">不通过</option>
+                        </select>
+                    </div>
+                    <div class="col-lg-3">
+                        <span>搜索：</span>
+                        <select id="type" style="height: 34px;width: 100px;">
+                            <option value="">全部</option>
+                            <option value="1">书名</option>
+                            <option value="2">作者</option>
+                            <option value="3">编号</option>
+                        </select>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="input-group">
+                            <input type="text" class="form-control" placeholder="例如：小学语文">
+                          <span class="input-group-btn">
+                            <button class="btn btn-default" type="button">查询</button>
+                          </span>
+                        </div>
+                    </div>
+                </div>
+
+
             </div>
             <div id="mainContainer" style="padding-top: 30px; padding-bottom: 60px; padding-left: 20px; padding-right: 20px;">
                 <div class="table" id="table">
@@ -70,8 +92,8 @@
             $_{resource.uploadLog.timeStr}</td>
         <td style="text-align: center">
             $_{resource.user.name}</td>
-        <td style="text-align: center">$_{statusStr}</td>
-        <td style="text-align: center"><a href="javascript:void(0);" onclick="sp($_{id});">通过</a></td>
+        <td style="text-align: center"><div id="status$_{id}"></div></td>
+        <td style="text-align: center"><div id="disable$_{id}"></div></td>
     </tr>
 </template>
 <link rel="stylesheet" type="text/css" href="/css/kkpager_blue.css"/>
@@ -97,9 +119,16 @@
 
             console.log(cUrl)
             newUrl = cUrl;
-            queryData(cUrl)
+            queryData(cUrl,1)
 
         }, false)
+
+        //type发生变化时 发请求
+        stages.forEach(function(i){
+            stage += i.grade + ":" + i.term + ",";
+        });
+        //输入框 查询
+
 
     }, false);
 
@@ -111,7 +140,41 @@
             var body = document.getElementById('permission-tr').content.cloneNode(true).children[0]
             blind(body,datas[i])
             container.appendChild(body)
+            $("#status"+ datas[i].id).html(datas[i].statusStr);
+            if(datas[i].statusStr == '待审核'){
+                $("#disable"+ datas[i].id).html("<a href=javascript:void(0); onclick=auditCR("+datas[i].id+",2)>通过</a>    " +
+                        "<a href=javascript:void(0); onclick=auditCR("+datas[i].id+",-1)>不通过</a>");
+            }
         }
+    }
+
+    function auditCR(id,auditStatus){
+        if(auditStatus== 2){
+            if(confirm("确认要审核通过吗？")){
+               auditFun(id,auditStatus)
+            }
+        }else{
+            if(confirm("确认要审核不通过吗？")){
+                auditFun(id,auditStatus)
+            }
+        }
+    }
+
+    function auditFun(id,auditStatus){
+        g.getData("/api/copyrights/audit/"+id+"/?status="+auditStatus,[
+            {name: 'Content-Type', value: 'application/json'},
+            {name: 'Accept', value: 'application/json'}
+        ],function(result){
+            if(result.meta.code == 200){
+                alert("操作成功！");
+                $("#disable"+ id).html("");
+                if(auditStatus == 2){
+                    $("#status"+ id).html("通过");
+                }else{
+                    $("#status"+ id).html("不通过");
+                }
+            }
+        }, true);
     }
 
 </script>
