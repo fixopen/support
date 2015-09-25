@@ -17,5 +17,14 @@
         background-color: #e9e9e9; color: #0091ff; padding-top: 20px; padding-left: 20px; height: 102px;
     }
 
+    .contentTitle .title{
+        font-weight: bold;
+        font-size: 16px;
+    }
+
+    .contentTitle .search{
+        margin-top:10px;
+    }
+
 </style>
 <jsp:include page="dialogjs.htm" />

@@ -9,6 +9,7 @@
         display: none;
     }
     .inputArea{
-        line-height: 30px;
+        line-height: 40px;
     }
 </style>
+<jsp:include page="dialogjs.htm" />

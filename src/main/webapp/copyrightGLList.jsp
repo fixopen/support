@@ -15,7 +15,11 @@
 <div id="leftMenu"></div>
         <div class="col-lg-10" style="padding: 0; height: 100%; line-height: 200%">
             <div id="contentTitle" class="contentTitle">
-                <input id="search" style="width: 200px"/><button id="button"> 查询</button >
+                <div class="title">版权管理</div>
+                <div class="search">
+                    <div style="float: left;"><input id="search" style="width: 200px"/><button id="button"> 查询</button ></div>
+                    <div style="float:right; margin-right:20px;"><a href="javascript:void(0);" onclick="openUrl('/copyrightDJ.jsp', '版权登记', 600, 550);"><u>版权登记</u></a></div>
+                </div>
             </div>
             <div id="mainContainer" style="padding-top: 30px; padding-bottom: 60px; padding-left: 20px; padding-right: 20px;">
                 <div class="table" id="table">

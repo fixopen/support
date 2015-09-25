@@ -3,44 +3,7 @@
 <script type="text/javascript" src="/js/dialog/artDialog.js"></script>
 <script type="text/javascript" src="/js/dialog/iframeTools.js"></script>
 <script type="text/javascript">
-    /*
-     核心方法
-     art.dialog.top 获取artDialog可用最高层window对象。这与直接使用window.top不同，它能排除artDialog对象不存在已经或者顶层页面为框架集的情况
-     这是iframe应用工具集中的核心方法，你可以用它来操作父页面对象（包括上面的对话框）
-     art.dialog.data(name, value) 跨框架数据共享写入接口。
-     框架与框架之间以及与主页面之间进行数据交换是非常头疼的事情，常规情况下你必须知道框架的名称才能进行数据交换，如果是在复杂的多层框架下操作简直就是噩梦。
-     而data方法就是为了解决这个问题，你完全不用管框架层级问题，它可以写入任何类型的数据，而做到各个页面之间数据共享。
-     art.dialog.data(name) 跨框架数据共享读取接口。指定name即返回数据，任何引用了artDialog的页面都有效
-     art.dialog.removeData(name) 跨框架数据共享删除接口。删除指定名称的数据，任何引用了artDialog的页面都有效
-     异步数据对话框
-     art.dialog.open(url, options, cache) 创建一个iframe页面
-     参数: 地址, 配置参数, 缓存开关(默认true)
-     art.dialog.open.api iframe页面获取open方法扩展方法。
-     (注意这个iframe中也必须引用artDialog脚本文件)
-     art.dialog.opener iframe页面获取open方法触发来源页面window对象。
-     (注意这个iframe中也必须引用artDialog脚本文件)
-     art.dialog.close() iframe页面关闭open方法创建的对话框的快捷方式。
-     close方法等同于：
-     var api = art.dialog.open.api;
-     api && api.close();
 
-     (注意这个iframe中也必须引用artDialog脚本文件)
-     art.dialog.load(url, options, cache) Ajax加载内容
-     参数：地址, 配置参数, 缓存开关(默认true)
-     基础交互对话框
-     art.dialog.alert(content, callback) 警告消息 (同时只允许一个alert)
-     参数: 内容, 对话框关闭后的回调函数
-     art.dialog.confirm(content, ok, cancel) 确认 (同时只允许一个confirm)
-     参数: 内容, 确定按钮回调函数, 取消按钮回调函数
-     art.dialog.prompt(content, ok, value) 提问 (同时只允许一个prompt)
-     参数: 内容, 确定按钮回调函数, 文本框默认值
-     art.dialog.tips(content, time) 短暂提示(同时只允许一个tips)
-     参数: 内容、显示时间(单位秒, 默认1.5)
-     自定义
-     art.dialog.through(options) 创建一个普通可穿越框架的对话框
-     不鼓励直接使用window.top这样的方式穿越，这样可能因为对话框触发页面重置导致其创建的对象在内存中被清空而发生异常
-
-     */
     function openUrl(url,title,width,height){
         art.dialog.open(url, {title: title,width:width,height:height,lock: true});
     }
