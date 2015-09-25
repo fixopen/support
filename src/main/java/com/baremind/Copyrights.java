@@ -111,7 +111,7 @@ public class Copyrights {
     @Path("SPpage")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getSPPage(@CookieParam("sessionId") String sessionId, @QueryParam("type") String type, @QueryParam("str") String str, @QueryParam("page") int page, @QueryParam("pageSize") int pageSize) {
+    public Response getSPPage(@CookieParam("sessionId") String sessionId, @QueryParam("type") Integer type, @QueryParam("str") String str, @QueryParam("page") int page, @QueryParam("pageSize") int pageSize) {
         Response result = Response.status(401).build();
         if (JPAEntry.isLogining(sessionId)) {
             result = Response.status(404).build();
@@ -129,6 +129,20 @@ public class Copyrights {
 
             if(currAccount.getType() == 2){
                 sql += " and r.ownerId = "+currAccount.getId()+"";
+            }
+            if(type!=null){
+                sql += " and cr.status = "+type+"";
+            }
+            if(str!=null){
+                //数据格式 例如： name＝小学语文
+                String s = str.split("=")[0];
+                int ss =str.split("=").length;
+                if(!"all".equals(s)){
+                    if(str.split("=").length ==2){
+                        String val = str.split("=")[1];
+                        sql += " and r."+ s+" like "+"'"+val+"%'";
+                    }
+                }
             }
 
             /*if(copyrightId > 0 || resourceId!=0){

@@ -120,6 +120,37 @@ function leftMenu(type){
     return b;
 }
 
+//删除参数值
+function delQueStr(url, ref) {
+    var str = "";
+    if (url.indexOf('?') != -1) {
+        str = url.substr(url.indexOf('?') + 1);
+    }
+    else {
+        return url;
+    }
+    var arr = "";
+    var returnurl = "";
+    var setparam = "";
+    if (str.indexOf('&') != -1) {
+        arr = str.split('&');
+        for (var i = 0;i < arr.length; i++) {
+            if (arr[i].split('=')[0] != ref) {
+                returnurl = returnurl + arr[i].split('=')[0] + "=" + arr[i].split('=')[1] + "&";
+            }
+        }
+        return url.substr(0, url.indexOf('?')) + "?" + returnurl.substr(0, returnurl.length - 1);
+    }
+    else {
+        arr = str.split('=');
+        if (arr[0] == ref) {
+            return url.substr(0, url.indexOf('?'));
+        }
+        else {
+            return url;
+        }
+    }
+}
 
 function replaceQueStr(ref,pnoVal){
     var url = newUrl;
