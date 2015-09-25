@@ -14,7 +14,7 @@
     <div class="row" style="background-color: #e9e9e9; min-height: 820px;">
 <div id="leftMenu"></div>
         <div class="col-lg-10" style="padding: 0; height: 100%; line-height: 200%">
-            <div id="contentTitle" style="background-color: #e9e9e9; color: #0091ff; padding-top: 54px; padding-left: 20px; height: 102px;">
+            <div id="contentTitle" class="contentTitle">
                 <input id="search" style="width: 200px"/><button id="button"> 查询</button >
             </div>
             <div id="mainContainer" style="padding-top: 30px; padding-bottom: 60px; padding-left: 20px; padding-right: 20px;">

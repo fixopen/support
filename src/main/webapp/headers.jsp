@@ -12,4 +12,10 @@
 <!--
 <link href="css/global.css" rel="stylesheet">
 -->
+<style type="text/css">
+    .contentTitle{
+        background-color: #e9e9e9; color: #0091ff; padding-top: 20px; padding-left: 20px; height: 102px;
+    }
+
+</style>
 <jsp:include page="dialogjs.htm" />
