@@ -112,10 +112,10 @@
 </body>
 </html>
 <script>
-    var newUrl="/api/copyrights/page?page=1&pageSize=10";
+    var newUrl="/api/copyrights/SPpage?page=1&pageSize=10";
     var searchConditionVal = "all";
     window.addEventListener('load', function (e) {
-        queryData("/api/copyrights/page?page=1&pageSize=10",1);
+        queryData("/api/copyrights/SPpage?page=1&pageSize=10",1);
 
         //type发生变化时 发请求
         $('#type').change(function(){
