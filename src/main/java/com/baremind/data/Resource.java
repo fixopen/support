@@ -1,6 +1,7 @@
 package com.baremind.data;
 
 import javax.persistence.*;
+import java.util.Date;
 
 /**
  * Created by fixopen on 15/8/15.
@@ -129,10 +130,16 @@ public class Resource implements AutoCloseable {
     private Long language ;
 
     @Column(name="author")
-    private String author ;
+    private String author = "无";
 
     @Transient
     private UploadLog uploadLog;
+
+    @Column(name="time")
+    private Date time;
+
+    @Transient
+    private String timeStr;
 
     @Transient
     private User user;
@@ -404,5 +411,22 @@ public class Resource implements AutoCloseable {
 
     public void setUploadLog(UploadLog uploadLog) {
         this.uploadLog = uploadLog;
+    }
+
+
+    public Date getTime() {
+        return time;
+    }
+
+    public void setTime(Date time) {
+        this.time = time;
+    }
+
+    public String getTimeStr() {
+        return timeStr;
+    }
+
+    public void setTimeStr(String timeStr) {
+        this.timeStr = timeStr;
     }
 }

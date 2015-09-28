@@ -52,7 +52,7 @@ public class Copyrights {
             if(startTime!=null){
                 //
                 if(endTime ==null){
-                    endTime= new Date().toString();;
+                    endTime= new Date().toString();
                 }
                 sql += "and r.no = ul.resourceNo and ul.time between cast('"+startTime+"' as date) and cast('"+endTime+"' as date)";
             }
@@ -84,14 +84,14 @@ public class Copyrights {
             List<Copyright> list = query.setFirstResult(firstNum).setMaxResults(pageSize).getResultList();
             User user = null;
             Account account = null;
-            UploadLog uploadLog = null;
+            //UploadLog uploadLog = null;
             for(Copyright cc : list){
                 Resource rt = JPAEntry.getObject(Resource.class,"id",cc.getResourceId());
-                uploadLog = JPAEntry.getObject(UploadLog.class, "resourceNo", rt.getNo());
+                //uploadLog = JPAEntry.getObject(UploadLog.class, "resourceNo", rt.getNo());
 
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd H:m:s");
-                uploadLog.setTimeStr(dateFormat.format(uploadLog.getTime()));
-                rt.setUploadLog(uploadLog);
+                rt.setTimeStr(dateFormat.format(rt.getTime()));
+
 
                 user = JPAEntry.getObject(User.class, "id", rt.getOwnerId());
 
@@ -182,11 +182,9 @@ public class Copyrights {
             UploadLog uploadLog = null;
             for(Copyright cc : list){
                 Resource rt = JPAEntry.getObject(Resource.class,"id",cc.getResourceId());
-                uploadLog = JPAEntry.getObject(UploadLog.class, "resourceNo", rt.getNo());
 
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd H:m:s");
-                uploadLog.setTimeStr(dateFormat.format(uploadLog.getTime()));
-                rt.setUploadLog(uploadLog);
+                rt.setTimeStr(dateFormat.format(rt.getTime()));
 
                 user = JPAEntry.getObject(User.class, "id", rt.getOwnerId());
 
@@ -246,8 +244,7 @@ public class Copyrights {
 
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd H:m:s");
-        uploadLog.setTimeStr(dateFormat.format(uploadLog.getTime()));
-        resource.setUploadLog(uploadLog);
+        resource.setTimeStr(dateFormat.format(resource.getTime()));
 
 
         int status = copyright.getStatus();

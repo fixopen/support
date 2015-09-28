@@ -55,6 +55,7 @@ public class Resources {
                 Long resourceId = IdGenerator.getNewId();
                 resource.setId(resourceId);
                 resource.setOwnerId(account.getId());
+                resource.setTime(new Date());
 
                 File source = new File(Securities.config.TMP_FILES + resource.getFilePath());
                 File desc = new File(Securities.config.TMP_FILES + resource.getCover());
