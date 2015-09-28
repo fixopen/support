@@ -73,7 +73,7 @@ public class Copyrights {
                 sql += " and r.time between cast('"+startDate+"' as timestamp) and cast('"+endDate+"' as timestamp)";
             }
             if(str!=null){
-                //数据格式 例如： name.小学语文
+                //数据格式 例如： name::小学语文
                 String s = str.split("::")[0];
                 if(!"all".equals(s)){
                     if(str.split("::").length ==2){
@@ -168,7 +168,7 @@ public class Copyrights {
                 sql += " and cr.status = "+type+"";
             }
             if(str!=null){
-                //数据格式 例如： name.小学语文
+                //数据格式 例如： name::小学语文
                 String s = str.split("::")[0];
                 if(!"all".equals(s)){
                     if(str.split("::").length ==2){
