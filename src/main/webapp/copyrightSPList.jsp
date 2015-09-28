@@ -15,6 +15,7 @@
     <div id="leftMenu"></div>
         <div class="col-lg-10" style="padding: 0; height: 100%; line-height: 200%">
             <div id="contentTitle" class="contentTitle">
+                <div class="title">版权审核</div>
                 <div class="row">
                     <div class="col-lg-3">
                         <span>筛选：</span>

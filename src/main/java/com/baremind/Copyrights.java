@@ -1,8 +1,6 @@
 package com.baremind;
 
-import com.baremind.algorithm.Securities;
 import com.baremind.data.*;
-import com.baremind.utils.IdGenerator;
 import com.baremind.utils.JPAEntry;
 import com.google.gson.Gson;
 import org.glassfish.jersey.server.mvc.Template;
@@ -15,8 +13,9 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.io.File;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,7 +30,7 @@ public class Copyrights {
     @Path("page")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getPage(@CookieParam("sessionId") String sessionId, @QueryParam("type") String type, @QueryParam("str") String str, @QueryParam("page") int page, @QueryParam("pageSize") int pageSize) {
+    public Response getPage(@CookieParam("sessionId") String sessionId, @QueryParam("startTime") String startTime,@QueryParam("endTime") String endTime, @QueryParam("str") String str, @QueryParam("page") int page, @QueryParam("pageSize") int pageSize) throws ParseException {
         Response result = Response.status(401).build();
         if (JPAEntry.isLogining(sessionId)) {
             result = Response.status(404).build();
@@ -45,10 +44,29 @@ public class Copyrights {
 
             Account currAccount= JPAEntry.getAccount(sessionId);
 
-            String sql = "SELECT cr FROM Copyright cr,Resource r where cr.resourceId = r.id ";
+            String sql = "SELECT cr FROM Copyright cr,Resource r,UploadLog ul where cr.resourceId = r.id ";
 
             if(currAccount.getType() == 2){
                 sql += " and r.ownerId = "+currAccount.getId()+"";
+            }
+            if(startTime!=null){
+                //
+                if(endTime ==null){
+                    endTime= new Date().toString();;
+                }
+                sql += "and r.no = ul.resourceNo and ul.time between cast('"+startTime+"' as date) and cast('"+endTime+"' as date)";
+            }
+            if(str!=null){
+                //数据格式 例如： name.小学语文
+                String s = str.split("-")[0];
+                if(!"all".equals(s)){
+                    if(str.split("-").length ==2){
+                        String val = str.split("-")[1];
+                        sql += " and r."+ s+" like "+"'"+val+"%'";
+                    }else {
+                        sql += " and r."+ s+" like "+"''";
+                    }
+                }
             }
 
             /*if(copyrightId > 0 || resourceId!=0){
