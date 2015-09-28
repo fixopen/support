@@ -9,7 +9,9 @@ import javax.persistence.TypedQuery;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -58,26 +60,12 @@ public class RightTransfers {
     @Path("page")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getPage(@CookieParam("sessionId") String sessionId, @QueryParam("resourceId") String resourceIdStr, @QueryParam("page") int page, @QueryParam("pageSize") int pageSize) {
+    public Response getPage(@CookieParam("sessionId") String sessionId, @QueryParam("startTime") String startTime,@QueryParam("endTime") String endTime, @QueryParam("str") String str,  @QueryParam("page") int page, @QueryParam("pageSize") int pageSize) {
         Response result = Response.status(401).build();
         if (JPAEntry.isLogining(sessionId)) {
             result = Response.status(404).build();
 
-            if(null == resourceIdStr || "".equals(resourceIdStr)){
-                resourceIdStr = "0";
-            }
 
-
-            Resource r = JPAEntry.getObject(Resource.class, "no", resourceIdStr+"");
-            Copyright cr = null;
-            if (r != null) {
-                cr = JPAEntry.getObject(Copyright.class, "resourceId", r.getId()+"");
-            }
-
-            Long copyrightId = 0l;
-            if(cr != null){
-                copyrightId = cr.getId();
-            }
             if(pageSize == 0) pageSize = 10;
             if(page < 1) page = 1;
 
@@ -91,10 +79,39 @@ public class RightTransfers {
                 sql += " and r.ownerId = "+currAccount.getId()+"";
             }
 
-            if(copyrightId > 0 || !"0".equals(resourceIdStr)){
-                sql = sql + " and rt.copyrightId="+copyrightId+"";
-            }
 
+            if(startTime!=null){
+
+                Date startDate = null;
+                Date endDate = null;
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                try {
+                    startDate = sdf.parse(startTime + " 00:00:00");
+                    if(endTime ==null || "".equals(endTime)){
+                        endDate   =  new Date();
+                    }else {
+                        endDate = sdf.parse(endTime + " 23:59:59");
+                    }
+
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                //
+
+                sql += " and rt.time between cast('"+startDate+"' as timestamp) and cast('"+endDate+"' as timestamp)";
+            }
+            if(str!=null){
+                //数据格式 例如： name.小学语文
+                String s = str.split("::")[0];
+                if(!"all".equals(s)){
+                    if(str.split("::").length ==2){
+                        String val = str.split("::")[1];
+                        sql += " and r."+ s+" like "+"'"+val+"%'";
+                    }else {
+                        sql += " and r."+ s+" like "+"''";
+                    }
+                }
+            }
 
             EntityManager em = JPAEntry.getEntityManager();
             TypedQuery query = em.createQuery(sql,RightTransfer.class);

@@ -1,20 +1,76 @@
-var newUrl="/api/rightTransfers/page?page=1&pageSize=10";
+var newUrl="/api/rightTransfers/page?pageSize=10&page=1";
+var searchConditionVal = "all";
 window.addEventListener('load', function (e) {
 	queryData("/api/rightTransfers/page?page=1&pageSize=10",1);
+	//输入框 查询
+	$('#searchCondition').change(function(){
+		searchConditionVal  = $("#searchCondition").find("option:selected").val();
+		var placeholder ="";
+		switch (searchConditionVal){
+			case "name":
+				placeholder = "例如：小学语文"
+				break;
+			case "no":
+				placeholder = "例如：CB-2006044-15F-01-01"
+				break;
+			case "author":
+				placeholder = "例如：张三"
+				break;
+		}
+		$("#searchInputVal").attr("placeholder",placeholder)
+
+	});
+	$('#searchBtn').click(function(){
+
+		var inputVal = $("#searchInputVal").val();
+
+		var startTime = $("#sdate").val();
+		if(startTime ==''){
+			alert("请选择入库开始时间！")
+			return;
+		}
+
+		var endTime = $("#edate").val();
+
+		var str = searchConditionVal+ "::"+inputVal;
+		var cUrl;
+		if(newUrl.indexOf("str")==-1){
+			if(inputVal !=''){
+				cUrl=newUrl+'&str='+str;
+			}else{
+				cUrl=newUrl
+			}
+			newUrl = cUrl;
+		}else{
+			cUrl = delQueStr(newUrl,"str")+'&str='+str;
+			newUrl = cUrl;
+		}
+		if(newUrl.indexOf("startTime")==-1){
+			cUrl=newUrl+'&startTime='+startTime;
+			//时间搜索时 需要将page参数 默认为1；
+			cUrl=delQueStr(cUrl,"page")+'&page=1';
+			newUrl = cUrl;
+		}else{
+			cUrl = delQueStr(newUrl,"startTime")+'&startTime='+startTime;
+			//时间搜索时 需要将page参数 默认为1；
+			cUrl=delQueStr(cUrl,"page")+'&page=1';
+			newUrl = cUrl;
+		}
+
+		if(newUrl.indexOf("endTime")==-1){
+			cUrl=newUrl+'&endTime='+endTime;
+			newUrl = cUrl;
+		}else{
+			cUrl = delQueStr(newUrl,"endTime")+'&endTime='+endTime;
+			newUrl = cUrl;
+		}
+
+		queryData(newUrl,1)
+
+	});
 }, false);
 
 
-
-document.getElementById('button').addEventListener('click', function (e) {
-	var search = document.getElementById('search').value;
-	if(search == ""){
-		alert('请输入内容')
-	}else{
-		var cUrl='/api/rightTransfers/page?resourceId='+search+''
-		newUrl = cUrl;
-		queryData(cUrl)
-	}
-}, false)
 
 function render(datas){
 	var container = document.getElementById('permission-tbody');

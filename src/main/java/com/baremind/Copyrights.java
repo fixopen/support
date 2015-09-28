@@ -44,24 +44,40 @@ public class Copyrights {
 
             Account currAccount= JPAEntry.getAccount(sessionId);
 
-            String sql = "SELECT cr FROM Copyright cr,Resource r,UploadLog ul where cr.resourceId = r.id ";
+            String sql = "SELECT cr FROM Copyright cr,Resource r where cr.resourceId = r.id and cr.status = 2";
 
             if(currAccount.getType() == 2){
                 sql += " and r.ownerId = "+currAccount.getId()+"";
             }
+
+
+
             if(startTime!=null){
-                //
-                if(endTime ==null){
-                    endTime= new Date().toString();
+
+                Date startDate = null;
+                Date endDate = null;
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                try {
+                    startDate = sdf.parse(startTime + " 00:00:00");
+                    if(endTime ==null || "".equals(endTime)){
+                        endDate   =  new Date();
+                    }else {
+                        endDate = sdf.parse(endTime + " 23:59:59");
+                    }
+
+                } catch (ParseException e) {
+                    e.printStackTrace();
                 }
-                sql += "and r.no = ul.resourceNo and ul.time between cast('"+startTime+"' as date) and cast('"+endTime+"' as date)";
+                //
+
+                sql += " and r.time between cast('"+startDate+"' as timestamp) and cast('"+endDate+"' as timestamp)";
             }
             if(str!=null){
                 //数据格式 例如： name.小学语文
-                String s = str.split("-")[0];
+                String s = str.split("::")[0];
                 if(!"all".equals(s)){
-                    if(str.split("-").length ==2){
-                        String val = str.split("-")[1];
+                    if(str.split("::").length ==2){
+                        String val = str.split("::")[1];
                         sql += " and r."+ s+" like "+"'"+val+"%'";
                     }else {
                         sql += " and r."+ s+" like "+"''";
@@ -75,7 +91,7 @@ public class Copyrights {
 
 
             EntityManager em = JPAEntry.getEntityManager();
-            TypedQuery query = em.createQuery(sql,Copyright.class);
+            TypedQuery query = em.createQuery(sql, Copyright.class);
 
             int allNum = query.getResultList().size(); //总条数
 
@@ -153,10 +169,10 @@ public class Copyrights {
             }
             if(str!=null){
                 //数据格式 例如： name.小学语文
-                String s = str.split("-")[0];
+                String s = str.split("::")[0];
                 if(!"all".equals(s)){
-                    if(str.split("-").length ==2){
-                        String val = str.split("-")[1];
+                    if(str.split("::").length ==2){
+                        String val = str.split("::")[1];
                         sql += " and r."+ s+" like "+"'"+val+"%'";
                     }else {
                         sql += " and r."+ s+" like "+"''";

@@ -6,6 +6,25 @@
     <title>支撑管理平台</title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type="text/css">
+        .inputArea {
+            width: 100%;
+            overflow: hidden;
+            line-height: 24px;
+        }
+        .ipt {
+            line-height: 22px;
+            font-size: 12px;
+            border: #dfdfdf 1px solid;
+            border-top-color: #cfcfcf;
+            background-color: #fff;
+            -moz-border-radius: 3px;
+            -webkit-border-radius: 3px;
+            border-radius: 3px;
+            padding: 0 8px;
+            box-shadow: 1px 1px 1px #efefef inset;
+        }
+    </style>
     <jsp:include page="headers.jsp" />
 </head>
 <body>
@@ -14,8 +33,36 @@
     <div class="row" style="background-color: #e9e9e9; min-height: 820px;">
 <div id="leftMenu"></div>
         <div class="col-lg-10" style="padding: 0; height: 100%; line-height: 200%">
-            <div id="contentTitle" style="background-color: #e9e9e9; color: #0091ff; padding-top: 54px; padding-left: 20px; height: 102px;">
-                <input id="search" style="width: 200px"/><button id="button"> 查询</button >
+            <div id="contentTitle"  class="contentTitle">
+                <div class="title">资源流转追溯</div>
+                <div class="row">
+                    <div class="col-lg-5">
+                        <div class="inputArea">
+                            <span>生成时间：</span>
+                            <input id="sdate" class="ipt Wdate " style="height: 34px;width: 130px;" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true,maxDate:'#F{$dp.$D(\'edate\')}'})" />
+                            到
+                            <input id="edate" class="ipt Wdate" style="height: 34px;width: 130px;"onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true,minDate:'#F{$dp.$D(\'sdate\')}',startDate:'#F{$dp.$D(\'sdate\',{d:+1})}'})" />
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <span>搜索：</span>
+                        <select id="searchCondition" style="height: 34px;width: 100px;">
+                            <option value="all">全部</option>
+                            <option value="name">书名</option>
+                            <option value="author">作者</option>
+                            <option value="no">编号</option>
+                        </select>
+                    </div>
+                    <div class="col-lg-4" style="margin-left: -20px;">
+                        <div class="input-group">
+                            <input id="searchInputVal" type="text" class="form-control" placeholder="">
+                          <span class="input-group-btn">
+                            <button id="searchBtn" class="btn btn-default" type="button">查询</button>
+                          </span>
+                        </div>
+                    </div>
+
+                </div>
             </div>
             <div id="mainContainer" style="padding-top: 30px; padding-bottom: 60px; padding-left: 20px; padding-right: 20px;">
                 <div class="table" id="table">
@@ -69,6 +116,7 @@
 </template>
 <link rel="stylesheet" type="text/css" href="/css/kkpager_blue.css"/>
 <script src="js/jquery-1.4.2.min.js"></script>
+<script type="text/javascript" src="My97DatePicker/WdatePicker.js"></script>
 <script src="js/util.js"></script>
 <script src="/js/kkpager.js"></script>
 <script src="js/common.js"></script>

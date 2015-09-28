@@ -95,7 +95,7 @@
         <td style="text-align: center">
             $_{resource.version}</td>
         <td style="text-align: center">
-            $_{resource.uploadLog.timeStr}</td>
+            $_{resource.timeStr}</td>
         <td style="text-align: center">
             $_{resource.user.name}</td>
         <td style="text-align: center">$_{statusStr}</td>
@@ -157,7 +157,7 @@
                 }
             }
 
-            var str = searchConditionVal+ "-"+inputVal;
+            var str = searchConditionVal+ "::"+inputVal;
             var cUrl;
             if(newUrl.indexOf("str")==-1){
                 cUrl=newUrl+'&str='+str;

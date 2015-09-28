@@ -89,7 +89,7 @@
         <td style="text-align: center"><a href="javascript:void(0);" onclick="openUrl('/api/copyrights/infoJSP?copyrightId=$_{id}', '查看', 600, 550);">$_{resource.name}</a></td>
         <td style="text-align: center">$_{resource.author}</td>
         <td style="text-align: center">
-            $_{resource.uploadLog.timeStr}</td>
+            $_{resource.timeStr}</td>
         <td style="text-align: center">
             $_{resource.user.name}</td>
         <td style="text-align: center"><div id="status$_{id}"></div></td>
@@ -151,7 +151,7 @@
                 }
             }
 
-            var str = searchConditionVal+ "-"+inputVal;
+            var str = searchConditionVal+ "::"+inputVal;
             var cUrl;
             if(newUrl.indexOf("str")==-1){
                 cUrl=newUrl+'&str='+str;
