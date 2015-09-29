@@ -92,7 +92,7 @@
                 data: JSON.stringify(formDataToJson($('#form1').serialize())),
                 contentType: "application/json; charset=UTF-8",
                 success: function (data) {
-                    if (data.meta.code == 200) {
+                    if (data.code == 200) {
                         alert('创建成功！');
                         winClose(1);
                     } else {

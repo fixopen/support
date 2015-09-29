@@ -244,7 +244,10 @@ public class Users {
 
                 em.getTransaction().commit();
 
-                result = Response.ok().build();
+                Map map = new HashMap<>();
+                map.put("code", "200");
+
+                result = Response.ok(new Gson().toJson(map)).build();
             }
         }
         return result;
