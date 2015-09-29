@@ -14,7 +14,7 @@ public class Account {
     private Long id;
 
     @Column(name="subject_type")
-    private String subjectType;
+    private String subjectType;//Personal ,Organization
 
     @Column(name="subject_id")
     private Long subjectId;

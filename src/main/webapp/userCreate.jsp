@@ -36,7 +36,12 @@
         <form action="/api/user/create" method="post"  name="form1" id="form1">
         <div class="col-lg-12">
             <div class="inputArea">
-                <strong>设置登录名：</strong> <input type="text"  name="name" id="name" />
+                <strong>账号：</strong>
+                <input class="ipt" type="text" value="" id="loginName" name="loginName" onblur="checkText(this)"/>
+                <span id="loginName_error" class="error" zd="loginName" yz="bt">请填写登录名</span>
+            </div>
+            <div class="inputArea">
+                <strong>真实姓名：</strong> <input type="text"  name="name" id="name" />
                 <div id="name_error" class="error" zd="name" yz="bt">请填写登录名</div>
             </div>
 
@@ -46,11 +51,9 @@
             </div>
             <div class="inputArea">
                 <strong>用户类型：</strong>
-                <select id="type" name="type.code" >
-                    <option value="0">普通用户</option>
+                <select id="type" name="type" >
                     <option value="2">版权登记(出版社)</option>
                     <option value="9">版权审核人员</option>
-                    <option value="-1">管理员</option>
                 </select>
 
             </div>
@@ -81,7 +84,7 @@
             if (v == 0) {
                 return false;
             }
-            console.log(JSON.stringify(formDataToJson($('#form1').serialize())));
+
             $.ajax({
                 url: "/api/user/create",
                 type: "post",
@@ -89,9 +92,8 @@
                 data: JSON.stringify(formDataToJson($('#form1').serialize())),
                 contentType: "application/json; charset=UTF-8",
                 success: function (data) {
-                    console.log(data.meta.status);
-                    if (data.meta.status == 200) {
-                        console.log("成功！");
+                    if (data.meta.code == 200) {
+                        alert('创建成功！');
                         winClose(1);
                     } else {
 
@@ -105,6 +107,31 @@
             });
         }
     });
+
+    //输入框失去焦点时检验输入内容是否有效
+    function checkText(obj) {
+        //获取输入框的id值
+        var id= obj.id;
+        var loginName=document.getElementById(id).value;
+
+        //判断是否为空
+        if(loginName.replace(/\s/g, "")=="") {
+           return
+        } else {
+            //验证账号是否已存在
+            g.getData('/api/user/checkValidate?loginName='+ loginName,[
+                {name: 'Content-Type', value: 'application/json'},
+                {name: 'Accept', value: 'application/json'}
+            ],function(result){
+                if(result.meta.code == 502){
+                    alert('账号已存在，请重新输入！');
+                }
+            }, true);
+
+        }
+
+    }
+
 
 </script>
 

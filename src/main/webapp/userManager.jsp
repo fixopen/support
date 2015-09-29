@@ -42,7 +42,7 @@
                           </span>
                         </div>
                     </div>
-                    <div style="float:right; margin-right:20px;"><a href="javascript:void(0);" onclick="openUrl('/userCreate.jsp', '创建用户', 500, 300);"><u>创建用户</u></a></div>
+                    <div style="float:right; margin-right:20px;"><a href="javascript:void(0);" onclick="openUrl('/userCreate.jsp', '创建用户', 600, 350);"><u>创建用户</u></a></div>
                 </div>
             </div>
             <div id="mainContainer" style="padding-top: 30px; padding-bottom: 60px; padding-left: 20px; padding-right: 20px;">

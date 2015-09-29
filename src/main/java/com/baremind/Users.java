@@ -172,13 +172,12 @@ public class Users {
         return result;
     }
 
-    @POST
-    @Path("create")
+
+    @GET
+    @Path("checkValidate")
     @Consumes({MediaType.APPLICATION_JSON})
     @Produces(MediaType.APPLICATION_JSON)
-    public Response post(@Context HttpServletRequest request, @CookieParam("sessionId") String sessionId, String json) {
-
-        User user = new Gson().fromJson(json,User.class);
+    public Response get(@Context HttpServletRequest request, @CookieParam("sessionId") String sessionId, @QueryParam("loginName") String loginName) {
 
         Response result = Response.status(401).build();
         Account account = JPAEntry.getAccount(sessionId);
@@ -187,16 +186,52 @@ public class Users {
             boolean isLogin = JPAEntry.isLogining(account);
             if (isLogin) {
 
-                user = DecodeObject.decodeUTF8(user, User.class);
+                String sql = "SELECT a FROM Account a where a.loginName= "+ "'"+loginName+ "'";
+
+                EntityManager em = JPAEntry.getEntityManager();
+                TypedQuery query = em.createQuery(sql,Account.class);
+
+                int allNum = query.getResultList().size(); //总条数
+                if(allNum != 0){
+                    result = Response.status(502).build();
+                }else {
+                    result = Response.status(200).build();
+                }
+            }
+        }
+        return result;
+    }
+
+    @POST
+    @Path("create")
+    @Consumes({MediaType.APPLICATION_JSON})
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response post(@Context HttpServletRequest request, @CookieParam("sessionId") String sessionId, String json) {
+
+        Response result = Response.status(401).build();
+        Account account = JPAEntry.getAccount(sessionId);
+        request.getContextPath();
+        if (account != null) {
+            boolean isLogin = JPAEntry.isLogining(account);
+            if (isLogin) {
+
+
+                User user = new Gson().fromJson(json,User.class);
+
+
                 Long userId = IdGenerator.getNewId();
                 user.setId(userId);
+                user.setNo(String.valueOf(userId));
+                user.setIdType("C");
+                user.setIdNo(String.valueOf(userId));
 
 
-                Account newAccount =new Account();
+                Account newAccount = new Gson().fromJson(json,Account.class);
                 newAccount.setId(IdGenerator.getNewId());
+                newAccount.setSubjectType("Personal");
                 newAccount.setSubjectId(user.getId());
-                String t = request.getParameter("type.code");
-                newAccount.setType(Integer.valueOf(request.getParameter("type.code")));
+                newAccount.setActive(0);
+
 
 
 
@@ -209,9 +244,7 @@ public class Users {
 
                 em.getTransaction().commit();
 
-
-
-                result = Response.status(200).build();
+                result = Response.ok().build();
             }
         }
         return result;
