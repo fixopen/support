@@ -133,12 +133,17 @@
             searchConditionVal  = $("#searchCondition").find("option:selected").val();
             var placeholder ="";
             switch (searchConditionVal){
-                case "name":
-                    placeholder = "例如：yonghu_123"
+                case "loginName":
+                    placeholder = "例如：张某某"
                     break;
                 case "id":
                     placeholder = "例如：27317"
                     break;
+                case "name":
+                    placeholder = "例如：yonghu_123"
+                    break;
+                default :
+                        break
             }
             $("#searchInputVal").attr("placeholder",placeholder)
 
