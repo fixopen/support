@@ -35,7 +35,7 @@
         <div id="leftMenu"></div>
         <div class="col-lg-10" style="padding: 0; height: 100%; line-height: 200%">
             <div id="contentTitle"  class="contentTitle">
-                <div class="title">版权审核</div>
+                <div class="title">版权库</div>
                 <div class="row">
                     <div class="col-lg-5">
                         <div class="inputArea">
@@ -79,6 +79,7 @@
                                 <th style="min-width: 10%;text-align: center;">入库时间</th>
                                 <th style="min-width: 10%;text-align: center;">版权人</th>
                                 <th style="min-width: 10%;text-align: center;">状态</th>
+                                <th style="min-width: 10%;text-align: center;">次数</th>
                             </tr>
                         </thead>
                         <tbody id="permission-tbody" style="font-size: 12px;"></tbody>
@@ -114,6 +115,7 @@
         <td style="text-align: center">
             $_{resource.user.name}</td>
         <td style="text-align: center">$_{statusStr}</td>
+        <td style="text-align: center">$_{count}</td>
 
     </tr>
 </template>

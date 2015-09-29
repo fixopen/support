@@ -1,6 +1,7 @@
 package com.baremind.utils;
 
 import com.baremind.data.Account;
+import com.baremind.data.RightTransfer;
 
 import javax.persistence.*;
 import java.util.*;
@@ -44,6 +45,14 @@ public class JPAEntry {
         HashMap<String, Object> condition = new HashMap<>(1);
         condition.put(fieldName, fieldValue);
         return getList(type, condition);
+    }
+
+    public static <T> Integer getCount(String sql) {
+        EntityManager em = JPAEntry.getEntityManager();
+        Query query = em.createQuery(sql);
+        List list = query.getResultList();
+        Long rl = (Long)list.get(0);
+        return rl.intValue();
     }
 
     public static <T> List<T> getList(Class<T> type, Map<String, Object> conditions) {

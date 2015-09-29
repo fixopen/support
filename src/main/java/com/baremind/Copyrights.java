@@ -108,6 +108,10 @@ public class Copyrights {
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd H:m:s");
                 rt.setTimeStr(dateFormat.format(rt.getTime()));
 
+                String sql2 = "SELECT count(rt.id) FROM RightTransfer rt,Copyright cr,Resource r where cr.id = "+cc.getId()+" and rt.copyrightId=cr.id and cr.resourceId = r.id";
+
+                Integer count = JPAEntry.getCount(sql2);
+                cc.setCount(count+"");
 
                 user = JPAEntry.getObject(User.class, "id", rt.getOwnerId());
 
