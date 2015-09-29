@@ -106,16 +106,16 @@
 </body>
 </html>
 <script>
-    var newUrl="/api/copyrights/SPpage?page=1&pageSize=10";
+    var newUrl="/api/user/page?pageSize=10&page=1";
     var searchConditionVal = "all";
     window.addEventListener('load', function (e) {
-        queryData("/api/copyrights/SPpage?page=1&pageSize=10",1);
+        queryData("/api/user/page?pageSize=10&page=1",1);
 
         //type发生变化时 发请求
         $('#type').change(function(){
             var type  = $("#type").find("option:selected").val();
 
-            var cUrl="/api/copyrights/SPpage?page=1&pageSize=10" +'&type='+type;
+            var cUrl="/api/user/page?pageSize=10&page=1" +'&type='+type;
 
             console.log(cUrl)
             newUrl = cUrl;
