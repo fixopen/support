@@ -8,6 +8,7 @@ import com.baremind.utils.IdGenerator;
 import com.baremind.utils.JPAEntry;
 import com.google.gson.Gson;
 
+import javax.json.Json;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.servlet.http.HttpServletRequest;
@@ -70,8 +71,10 @@ public class Users {
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     public Response postUser(@CookieParam("sessionId") String sessionId, User user) {
+
         Response result = Response.status(401).build();
         if (JPAEntry.isLogining(sessionId)) {
+
             user.setId(IdGenerator.getNewId());
             EntityManager em = JPAEntry.getEntityManager();
             em.getTransaction().begin();
@@ -173,9 +176,9 @@ public class Users {
     @Path("create")
     @Consumes({MediaType.APPLICATION_JSON})
     @Produces(MediaType.APPLICATION_JSON)
-    public Response post(@Context HttpServletRequest request, @CookieParam("sessionId") String sessionId, User user) {
+    public Response post(@Context HttpServletRequest request, @CookieParam("sessionId") String sessionId, String json) {
 
-
+        User user = new Gson().fromJson(json,User.class);
 
         Response result = Response.status(401).build();
         Account account = JPAEntry.getAccount(sessionId);
