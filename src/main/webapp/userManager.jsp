@@ -15,23 +15,26 @@
 <div id="leftMenu"></div>
         <div class="col-lg-10" style="padding: 0; height: 100%; line-height: 200%">
             <div id="contentTitle" class="contentTitle">
+                <div style="float:right; margin-right:20px;"><a href="javascript:void(0);" onclick="openUrl('/userCreate.jsp', '创建用户', 600, 350);"><u>创建用户</u></a></div>
                 <div class="title">用户管理</div>
                 <div class="row">
-                    <div class="col-lg-3">
+                    <div class="col-lg-4">
                         <span>用户类型筛选：</span>
-                        <select id="type" style="height: 34px;width: 100px;">
+                        <select id="type" style="height: 34px;width: 150px;">
                             <option value="">全部</option>
-                            <option value="1">待审核</option>
-                            <option value="2">已通过</option>
-                            <option value="-1">不通过</option>
+                            <option value="0">普通用户</option>
+                            <option value="9">版权审核人员</option>
+                            <option value="2">版权登记(出版社)</option>
+                            <option value="-1">管理员</option>
                         </select>
                     </div>
                     <div class="col-lg-3">
                         <span>搜索：</span>
                         <select id="searchCondition" style="height: 34px;width: 100px;">
                             <option value="all">全部</option>
-                            <option value="name">登录名</option>
-                            <option value="author">用户ID</option>
+                            <option value="loginName">登录名</option>
+                            <option value="id">用户ID</option>
+                            <option value="name">真实姓名</option>
                         </select>
                     </div>
                     <div class="col-lg-4">
@@ -42,7 +45,6 @@
                           </span>
                         </div>
                     </div>
-                    <div style="float:right; margin-right:20px;"><a href="javascript:void(0);" onclick="openUrl('/userCreate.jsp', '创建用户', 600, 350);"><u>创建用户</u></a></div>
                 </div>
             </div>
             <div id="mainContainer" style="padding-top: 30px; padding-bottom: 60px; padding-left: 20px; padding-right: 20px;">
@@ -95,7 +97,7 @@
             $_{companyName}</td>
         <td style="text-align: center" class="" >
             <a href=javascript:void(0); onclick=deleteUser($_{id})>注销</a>
-            ／<a href=javascript:void(0); onclick=editUser($_{id})>修改</a></td>
+            ／<a href="javascript:void(0);" onclick="openUrl('/api/user/editHtml?uid=$_{id}', '创建用户', 600, 350);">修改</a></td>
 
     </tr>
 </template>
@@ -111,6 +113,7 @@
 <script>
     var newUrl="/api/user/page?pageSize=20&page=1";
     var searchConditionVal = "all";
+    var currentPage =1;
     window.addEventListener('load', function (e) {
         queryData("/api/user/page?pageSize=20&page=1",1);
 
@@ -120,7 +123,6 @@
 
             var cUrl="/api/user/page?pageSize=20&page=1" +'&type='+type;
 
-            console.log(cUrl)
             newUrl = cUrl;
             queryData(cUrl,1)
 
@@ -132,13 +134,10 @@
             var placeholder ="";
             switch (searchConditionVal){
                 case "name":
-                    placeholder = "例如：小学语文"
+                    placeholder = "例如：yonghu_123"
                     break;
-                case "no":
-                    placeholder = "例如：CB-2006044-15F-01-01"
-                    break;
-                case "author":
-                    placeholder = "例如：张三"
+                case "id":
+                    placeholder = "例如：27317"
                     break;
             }
             $("#searchInputVal").attr("placeholder",placeholder)
@@ -183,7 +182,7 @@
 
     function deleteUser(id){
         if(confirm("确认要删除吗？")){
-            g.getData("/api/copyrights/delete/"+id,[
+            g.getData("/api/user/delete?uid="+id,[
                 {name: 'Content-Type', value: 'application/json'},
                 {name: 'Accept', value: 'application/json'}
             ],function(result){

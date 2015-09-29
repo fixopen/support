@@ -114,6 +114,7 @@
 <script>
     var newUrl="/api/copyrights/SPpage?page=1&pageSize=10";
     var searchConditionVal = "all";
+    var currentPage =1;
     window.addEventListener('load', function (e) {
         queryData("/api/copyrights/SPpage?page=1&pageSize=10",1);
 

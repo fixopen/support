@@ -7,6 +7,8 @@ import com.baremind.utils.Hex;
 import com.baremind.utils.IdGenerator;
 import com.baremind.utils.JPAEntry;
 import com.google.gson.Gson;
+import org.glassfish.jersey.server.mvc.Template;
+import org.glassfish.jersey.server.mvc.Viewable;
 
 import javax.json.Json;
 import javax.persistence.EntityManager;
@@ -119,16 +121,23 @@ public class Users {
                 sql += " and a.type = "+type+"";
             }
             if(str!=null){
-                //数据格式 例如： name::小学语文
+                //数据格式 例如： name::zhangsan
                 String s = str.split("::")[0];
-                if(!"all".equals(s)){
-                    if(str.split("::").length ==2){
-                        String val = str.split("::")[1];
+                if(str.split("::").length ==2){
+                    String val = str.split("::")[1];
+
+                    if("loginName".equals(s)){
+                        sql += " and a."+ s+" like "+"'%"+val+"%'";
+                    }
+                    if("id".equals(s)){
+                        Long id= Long.parseLong(val);
+                        sql += " and u."+ s+"="+id;
+                    }
+                    if("name".equals(s)){
                         sql += " and u."+ s+" like "+"'%"+val+"%'";
-                    }else {
-                        sql += " and u."+ s+" like "+"''";
                     }
                 }
+
             }
             EntityManager em = JPAEntry.getEntityManager();
             TypedQuery query = em.createQuery(sql,User.class);
@@ -234,8 +243,6 @@ public class Users {
 
 
 
-
-
                 EntityManager em = JPAEntry.getEntityManager();
                 em.getTransaction().begin();
 
@@ -250,6 +257,131 @@ public class Users {
                 result = Response.ok(new Gson().toJson(map)).build();
             }
         }
+        return result;
+    }
+
+    @GET
+    @Path("editHtml")
+    @Template
+    @Produces(MediaType.TEXT_HTML)
+    public Viewable editHtml(@Context HttpServletRequest request,@CookieParam("sessionId") String sessionId, @QueryParam("uid") Long id) {
+        if (!JPAEntry.isLogining(sessionId)) {
+            return new Viewable("/login",null);
+        }
+        User user = JPAEntry.getObject(User.class, "id", id);
+        if(user == null){
+            return null;
+        }
+
+        Account account = JPAEntry.getObject(Account.class, "subjectId", user.getId());
+        if(account == null){
+            return null;
+        }
+
+        user.setAccount(account);
+
+        int userType = user.getAccount().getType(); //9版权审核人员，2版权登记(出版社)，-1管理员，0普通
+        String typeStr = "";
+        if(userType == 9){
+            typeStr = "版权审核人员";
+        }
+        if(userType == 2){
+            typeStr = "版权登记(出版社)";
+        }
+        if(userType == -1){
+            typeStr = "管理员";
+        }
+        if(userType == 0){
+            typeStr = "普通用户";
+        }
+        user.getAccount().setTypeStr(typeStr);
+
+        request.setAttribute("user",user);
+        return new Viewable("/userEdit", null);
+    }
+    @POST
+    @Path("editDo")
+    @Consumes({MediaType.APPLICATION_JSON})
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response editDo(@Context HttpServletRequest request, @CookieParam("sessionId") String sessionId,@QueryParam("uid") Long id,String json) {
+
+
+        Response result = Response.status(401).build();
+        if (JPAEntry.isLogining(sessionId)) {
+            result = Response.status(404).build();
+
+            User user = JPAEntry.getObject(User.class, "id", id);
+            if(user == null){
+                return null;
+            }
+
+            Account account = JPAEntry.getObject(Account.class, "subjectId", user.getId());
+            if(account == null){
+                return null;
+            }
+
+            User userData = new Gson().fromJson(json,User.class);
+
+            user.setCompanyName(userData.getCompanyName());
+            user.setName(userData.getName());
+
+
+
+            Account accountDate = new Gson().fromJson(json,Account.class);
+            account.setPassword(accountDate.getPassword());
+
+
+
+            EntityManager em = JPAEntry.getEntityManager();
+            em.getTransaction().begin();
+
+            em.merge(user);
+            em.merge(account);
+
+            em.getTransaction().commit();
+
+            Map map = new HashMap<>();
+            map.put("code", "200");
+
+            result = Response.ok(new Gson().toJson(map)).build();
+        }
+        return result;
+
+    }
+
+
+    @GET
+    @Path("delete/")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response delete(@Context HttpServletRequest request, @CookieParam("sessionId") String sessionId,  @QueryParam("uid") Long id) {
+        Response result = Response.status(401).build();
+        if (JPAEntry.isLogining(sessionId)) {
+            result = Response.status(404).build();
+
+            User user = JPAEntry.getObject(User.class, "id", id);
+            if(user == null){
+                return null;
+            }
+
+            Account Account = JPAEntry.getObject(Account.class, "subjectId", user.getId());
+            if(Account == null){
+                return null;
+            }
+
+
+            EntityManager em = JPAEntry.getEntityManager();
+            em.getTransaction().begin();
+
+            User userR = em.find(User.class, user.getId());
+            Account accountR = em.find(Account.class, Account.getId());
+            em.remove(userR);
+            em.remove(accountR);
+            em.getTransaction().commit();
+
+
+            result = Response.status(200).build();
+        }
+
         return result;
     }
 }
