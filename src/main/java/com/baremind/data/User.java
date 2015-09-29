@@ -1,9 +1,6 @@
 package com.baremind.data;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
  * Created by fixopen on 16/8/15.
@@ -41,6 +38,9 @@ public class User {
 
     @Column(name="address")
     private String address;
+
+    @Transient
+    private Account account;
 
     public Long getId() {
         return id;
@@ -120,5 +120,13 @@ public class User {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public Account getAccount() {
+        return account;
+    }
+
+    public void setAccount(Account account) {
+        this.account = account;
     }
 }
