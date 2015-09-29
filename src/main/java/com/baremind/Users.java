@@ -1,16 +1,26 @@
 package com.baremind;
 
+import com.baremind.algorithm.Securities;
 import com.baremind.data.*;
+import com.baremind.utils.DecodeObject;
+import com.baremind.utils.Hex;
 import com.baremind.utils.IdGenerator;
 import com.baremind.utils.JPAEntry;
 import com.google.gson.Gson;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -129,6 +139,23 @@ public class Users {
 
             for(User cc : list){
                 Account account = JPAEntry.getObject(Account.class,"subjectId", cc.getId());
+                cc.setAccount(account);
+
+                int userType = cc.getAccount().getType(); //9版权审核人员，2版权登记(出版社)，-1管理员，0普通
+                String typeStr = "";
+                if(userType == 9){
+                    typeStr = "版权审核人员";
+                }
+                if(userType == 2){
+                    typeStr = "版权登记(出版社)";
+                }
+                if(userType == -1){
+                    typeStr = "管理员";
+                }
+                if(userType == 0){
+                    typeStr = "普通用户";
+                }
+                cc.getAccount().setTypeStr(typeStr);
             }
 
             Map<String,Object> map = new HashMap<>();
@@ -138,6 +165,51 @@ public class Users {
             map.put("allPage",allPage);
 
             result = Response.ok(new Gson().toJson(map)).build();
+        }
+        return result;
+    }
+
+    @POST
+    @Path("create")
+    @Consumes({MediaType.APPLICATION_JSON})
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response post(@Context HttpServletRequest request, @CookieParam("sessionId") String sessionId, User user) {
+
+
+
+        Response result = Response.status(401).build();
+        Account account = JPAEntry.getAccount(sessionId);
+        request.getContextPath();
+        if (account != null) {
+            boolean isLogin = JPAEntry.isLogining(account);
+            if (isLogin) {
+
+                user = DecodeObject.decodeUTF8(user, User.class);
+                Long userId = IdGenerator.getNewId();
+                user.setId(userId);
+
+
+                Account newAccount =new Account();
+                newAccount.setId(IdGenerator.getNewId());
+                newAccount.setSubjectId(user.getId());
+                String t = request.getParameter("type.code");
+                newAccount.setType(Integer.valueOf(request.getParameter("type.code")));
+
+
+
+
+                EntityManager em = JPAEntry.getEntityManager();
+                em.getTransaction().begin();
+
+                em.persist(user);
+                em.persist(newAccount);
+
+                em.getTransaction().commit();
+
+
+
+                result = Response.status(200).build();
+            }
         }
         return result;
     }

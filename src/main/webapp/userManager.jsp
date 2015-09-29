@@ -42,7 +42,7 @@
                           </span>
                         </div>
                     </div>
-                    <div style="float:right; margin-right:20px;"><a href="javascript:void(0);" onclick="openUrl('/copyrightDJ.jsp', '创建用户', 600, 550);"><u>创建用户</u></a></div>
+                    <div style="float:right; margin-right:20px;"><a href="javascript:void(0);" onclick="openUrl('/userCreate.jsp', '创建用户', 500, 300);"><u>创建用户</u></a></div>
                 </div>
             </div>
             <div id="mainContainer" style="padding-top: 30px; padding-bottom: 60px; padding-left: 20px; padding-right: 20px;">
@@ -86,36 +86,39 @@
 
 <template id="permission-tr">
     <tr class="permission-tr">
-        <td style="text-align: center">$_{resource.no}</td>
-        <td style="text-align: center"><a href="javascript:void(0);" onclick="openUrl('/api/copyrights/infoJSP?copyrightId=$_{id}', '查看', 600, 550);">$_{resource.name}</a></td>
-        <td style="text-align: center">$_{resource.author}</td>
+        <td style="text-align: center">$_{id}</td>
+        <td style="text-align: center">$_{account.loginName}</td>
+        <td style="text-align: center">$_{name}</td>
         <td style="text-align: center">
-            $_{resource.version}</td>
+            $_{account.typeStr}</td>
         <td style="text-align: center">
-            $_{resource.user.name}</td>
-        <td style="text-align: center" class="" ><div id="handle$_{id}"></div></td>
+            $_{companyName}</td>
+        <td style="text-align: center" class="" >
+            <a href=javascript:void(0); onclick=deleteUser($_{id})>注销</a>
+            ／<a href=javascript:void(0); onclick=editUser($_{id})>修改</a></td>
+
     </tr>
 </template>
-<link rel="stylesheet" type="text/css" href="/css/kkpager_blue.css"/>
+<link rel="stylesheet" type="text/css" href="css/kkpager_blue.css"/>
 <script src="js/jquery-1.4.2.min.js"></script>
 <script src="js/util.js"></script>
-<script src="/js/kkpager.js"></script>
+<script src="js/kkpager.js"></script>
 <script src="js/common.js"></script>
 
 
 </body>
 </html>
 <script>
-    var newUrl="/api/user/page?pageSize=10&page=1";
+    var newUrl="/api/user/page?pageSize=20&page=1";
     var searchConditionVal = "all";
     window.addEventListener('load', function (e) {
-        queryData("/api/user/page?pageSize=10&page=1",1);
+        queryData("/api/user/page?pageSize=20&page=1",1);
 
         //type发生变化时 发请求
         $('#type').change(function(){
             var type  = $("#type").find("option:selected").val();
 
-            var cUrl="/api/user/page?pageSize=10&page=1" +'&type='+type;
+            var cUrl="/api/user/page?pageSize=20&page=1" +'&type='+type;
 
             console.log(cUrl)
             newUrl = cUrl;
@@ -174,13 +177,24 @@
             var body = document.getElementById('permission-tr').content.cloneNode(true).children[0]
             blind(body,datas[i])
             container.appendChild(body)
-            if(datas[i].statusStr == '待审核'){
-                $("#handle"+ datas[i].id).html("<a href=javascript:void(0); onclick=deleteCR("+datas[i].id+")>注销</a>／<a href=javascript:void(0); onclick=deleteCR("+datas[i].id+")>修改</a>");
-            }
+            $("#handle"+ datas[i].id).html("<a href=javascript:void(0); onclick=deleteUser("+datas[i].id+")>注销</a>／<a href=javascript:void(0); onclick=eidtUser("+datas[i].id+")>修改</a>");
         }
     }
 
-    function deleteCR(id){
+    function deleteUser(id){
+        if(confirm("确认要删除吗？")){
+            g.getData("/api/copyrights/delete/"+id,[
+                {name: 'Content-Type', value: 'application/json'},
+                {name: 'Accept', value: 'application/json'}
+            ],function(result){
+                if(result.meta.code == 200){
+                    alert("删除成功！");
+                    queryData(newUrl,currentPage);
+                }
+            }, true);
+        }
+    }
+    function editUser(id){
         if(confirm("确认要删除吗？")){
             g.getData("/api/copyrights/delete/"+id,[
                 {name: 'Content-Type', value: 'application/json'},

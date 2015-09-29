@@ -25,6 +25,9 @@ public class Account {
     @Column(name="type")
     private Integer type = 0;   //9版权审核人员，2版权登记(出版社)，-1管理员，0普通
 
+    @Transient
+    private String typeStr;
+
     @Column(name="begin")
     private Date begin;
 
@@ -117,6 +120,15 @@ public class Account {
     public void setType(Integer type) {
         this.type = type;
     }
+
+    public String getTypeStr() {
+        return typeStr;
+    }
+
+    public void setTypeStr(String typeStr) {
+        this.typeStr = typeStr;
+    }
+
 
     public Date getBegin() {
         return begin;
