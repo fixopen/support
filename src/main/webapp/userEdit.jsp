@@ -46,7 +46,7 @@
             </div>
 
             <div class="inputArea">
-                <strong>设置&nbsp;&nbsp;密码：</strong> <input type="password" value="${user.account.password}" name="password" id="password" />
+                <strong>设置密码：</strong> <input type="password" value="${user.account.password}" name="password" id="password" />
                 <div id="password_error" class="error" zd="password" yz="bt">请填写密码</div>
             </div>
             <div class="inputArea">
@@ -69,7 +69,7 @@
 </html>
 <script language="JavaScript">
     $("#tijiao").on("click", function(evt){
-        if(confirm("确认提交登记？")) {
+        if(confirm("确认提交修改？")) {
             var v = fei_check();
 
             if (v == 0) {
@@ -85,7 +85,7 @@
                 success: function (data) {
                     if (data.code == 200) {
                         alert('修改成功！');
-                        winClose();
+                        winClose(1);
                     } else {
 
                     }

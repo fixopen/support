@@ -121,7 +121,7 @@
 </template>
 <link rel="stylesheet" type="text/css" href="css/kkpager_blue.css"/>
 <script src="js/jquery-1.4.2.min.js"></script>
-<script type="text/javascript" src="My97DatePicker/WdatePicker.js"></script>
+<%--<script type="text/javascript" src="My97DatePicker/WdatePicker.js"></script>--%>
 <script src="js/util.js"></script>
 <script src="js/kkpager.js"></script>
 <script src="js/common.js"></script>

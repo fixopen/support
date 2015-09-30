@@ -6,7 +6,7 @@
     <title>支撑管理平台</title>
     <script src="js/jquery-1.7.2.min.js"></script>
     <script src="js/uploadFiles.js"></script>
-    <jsp:include page="tc_headers.jsp" />
+    <jsp:include page="/tc_headers.jsp" />
 </head>
 <body>
 
@@ -119,8 +119,8 @@
                 success: function (data) {
                     console.log(data.meta.status);
                     if (data.meta.status == 200) {
-                        console.log("成功！");
-
+                        alert("版权登记成功！");
+                        winClose(1);
                     } else {
 
                     }

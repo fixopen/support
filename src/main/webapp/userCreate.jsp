@@ -37,7 +37,7 @@
         <div class="col-lg-12">
             <div class="inputArea">
                 <strong>账号：</strong>
-                <input class="ipt" type="text" value="" id="loginName" name="loginName" onblur="checkText(this)"/>
+                <input class="ipt" type="text" value="" id="loginName" name="loginName"/>
                 <span id="loginName_error" class="error" zd="loginName" yz="bt">请填写登录名</span>
             </div>
             <div class="inputArea">
@@ -46,7 +46,7 @@
             </div>
 
             <div class="inputArea">
-                <strong>设置&nbsp;&nbsp;密码：</strong> <input type="password"  name="password" id="password" />
+                <strong>设置密码：</strong> <input type="password"  name="password" id="password" />
                 <div id="password_error" class="error" zd="password" yz="bt">请填写密码</div>
             </div>
             <div class="inputArea">
@@ -79,9 +79,16 @@
 
     $("#tijiao").on("click", function(evt){
         if(confirm("确认提交登记？")) {
+
             var v = fei_check();
 
             if (v == 0) {
+                return false;
+            }
+
+            var r = checkText("loginName");
+            if(r == 502){
+                alert("登录名已存在！");
                 return false;
             }
 
@@ -94,7 +101,7 @@
                 success: function (data) {
                     if (data.code == 200) {
                         alert('创建成功！');
-                        winClose();
+                        winClose(1);
                     } else {
 
                     }
@@ -109,11 +116,10 @@
     });
 
     //输入框失去焦点时检验输入内容是否有效
-    function checkText(obj) {
+    function checkText(id) {
         //获取输入框的id值
-        var id= obj.id;
         var loginName=document.getElementById(id).value;
-
+        var r = 0;
         //判断是否为空
         if(loginName.replace(/\s/g, "")=="") {
            return
@@ -124,12 +130,13 @@
                 {name: 'Accept', value: 'application/json'}
             ],function(result){
                 if(result.meta.code == 502){
-                    alert('账号已存在，请重新输入！');
+                    r = 502;
                 }
-            }, true);
+            }, false);
 
         }
 
+        return r;
     }
 
 

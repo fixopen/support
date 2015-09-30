@@ -18,10 +18,8 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
+import java.io.*;
+import java.net.URLDecoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -224,6 +222,11 @@ public class Users {
             boolean isLogin = JPAEntry.isLogining(account);
             if (isLogin) {
 
+                try {
+                    json = URLDecoder.decode(json,"UTF-8");
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
 
                 User user = new Gson().fromJson(json,User.class);
 
@@ -304,7 +307,11 @@ public class Users {
     @Consumes({MediaType.APPLICATION_JSON})
     @Produces(MediaType.APPLICATION_JSON)
     public Response editDo(@Context HttpServletRequest request, @CookieParam("sessionId") String sessionId,@QueryParam("uid") Long id,String json) {
-
+        try {
+            json = URLDecoder.decode(json,"UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
 
         Response result = Response.status(401).build();
         if (JPAEntry.isLogining(sessionId)) {

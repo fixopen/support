@@ -96,8 +96,7 @@
         <td style="text-align: center">
             $_{companyName}</td>
         <td style="text-align: center" class="" >
-            <a href=javascript:void(0); onclick=deleteUser($_{id})>注销</a>
-            ／<a href="javascript:void(0);" onclick="openUrl('/api/user/editHtml?uid=$_{id}', '创建用户', 600, 350);">修改</a></td>
+            <div id="handle$_{id}"></div>
 
     </tr>
 </template>
@@ -181,11 +180,19 @@
             var body = document.getElementById('permission-tr').content.cloneNode(true).children[0]
             blind(body,datas[i])
             container.appendChild(body)
-            $("#handle"+ datas[i].id).html("<a href=javascript:void(0); onclick=deleteUser("+datas[i].id+")>注销</a>／<a href=javascript:void(0); onclick=eidtUser("+datas[i].id+")>修改</a>");
+            if(datas[i].account.type != 0){
+
+                 $("#handle"+ datas[i].id).html("<a href=javascript:void(0); onclick=deleteUser("+datas[i].id+","+datas[i].account.type+")>注销</a>／<a href=javascript:void(0); onclick=modiUser("+datas[i].id+","+datas[i].account.type+")>修改</a>");
+
+            }
         }
     }
 
-    function deleteUser(id){
+    function deleteUser(id,type){
+        if(type == 0){
+            alert("不能删除普通用户！");
+            return false;
+        }
         if(confirm("确认要删除吗？")){
             g.getData("/api/user/delete?uid="+id,[
                 {name: 'Content-Type', value: 'application/json'},
@@ -199,7 +206,7 @@
         }
     }
     function editUser(id){
-        if(confirm("确认要删除吗？")){
+        /*if(confirm("确认要删除吗？")){
             g.getData("/api/copyrights/delete/"+id,[
                 {name: 'Content-Type', value: 'application/json'},
                 {name: 'Accept', value: 'application/json'}
@@ -209,7 +216,15 @@
                     queryData(newUrl,currentPage);
                 }
             }, true);
+        }*/
+    }
+
+    function modiUser(id,type){
+        if(type == 0){
+            alert("不能修改普通用户！");
+            return false;
         }
+        openUrl('/api/user/editHtml?uid='+id+'', '创建用户', 600, 350);
     }
 
 </script>
