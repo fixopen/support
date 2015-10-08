@@ -28,6 +28,9 @@
         <filter-name>CNFilter</filter-name>
         <url-pattern>/api/*</url-pattern>
     </filter-mapping>
+    <session-config>
+        <session-timeout>1</session-timeout>
+    </session-config>
     <welcome-file-list>
         <welcome-file>login.html</welcome-file>
     </welcome-file-list>
