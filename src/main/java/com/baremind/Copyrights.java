@@ -107,7 +107,9 @@ public class Copyrights {
 
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd H:m:s");
                 rt.setTimeStr(dateFormat.format(rt.getTime()));
-
+                if(null == rt.getAuthor()){
+                    rt.setAuthor("");
+                }
                 String sql2 = "SELECT count(rt.id) FROM RightTransfer rt,Copyright cr,Resource r where cr.id = "+cc.getId()+" and rt.copyrightId=cr.id and cr.resourceId = r.id";
 
                 Integer count = JPAEntry.getCount(sql2);
@@ -205,6 +207,9 @@ public class Copyrights {
 
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd H:m:s");
                 rt.setTimeStr(dateFormat.format(rt.getTime()));
+                if(null == rt.getAuthor()){
+                    rt.setAuthor("");
+                }
 
                 user = JPAEntry.getObject(User.class, "id", rt.getOwnerId());
 

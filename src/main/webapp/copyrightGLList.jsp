@@ -167,7 +167,7 @@
             }
             newUrl = delQueStr(cUrl,"page")+'&page=1';
             queryData(newUrl,1)
-            queryData(cUrl,1)
+            //queryData(cUrl,1)
 
         });
 

@@ -10,6 +10,10 @@ function blind(element, data) {
             var parts = variable.split('.')
             for (var p = 0; p < parts.length; ++p) {
                 r = r[parts[p]]
+                if(!r){
+                   r = "";
+                    return r;
+                }
             }
             return r; // data[variable];
         })
