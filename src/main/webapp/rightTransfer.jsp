@@ -48,9 +48,8 @@
                         <span>搜索：</span>
                         <select id="searchCondition" style="height: 34px;width: 100px;">
                             <option value="all">全部</option>
-                            <option value="name">书名</option>
-                            <option value="author">作者</option>
-                            <option value="no">编号</option>
+                            <option value="no">转移编号</option>
+                            <option value="resourceName">资源名称</option>
                         </select>
                     </div>
                     <div class="col-lg-4" style="margin-left: -20px;">

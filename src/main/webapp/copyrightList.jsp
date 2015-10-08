@@ -121,7 +121,7 @@
 </template>
 <link rel="stylesheet" type="text/css" href="css/kkpager_blue.css"/>
 <script src="js/jquery-1.4.2.min.js"></script>
-<%--<script type="text/javascript" src="My97DatePicker/WdatePicker.js"></script>--%>
+<script type="text/javascript" src="My97DatePicker/WdatePicker.js"></script>
 <script src="js/util.js"></script>
 <script src="js/kkpager.js"></script>
 <script src="js/common.js"></script>
@@ -133,7 +133,7 @@
     var newUrl="/api/copyrights/page?pageSize=10&page=1";
     var searchConditionVal = "all";
     window.addEventListener('load', function (e) {
-        queryData("/api/copyrights/page?page=1&pageSize=10",1);
+        queryData("/api/copyrights/page?pageSize=10&page=1",1);
 
         //输入框 查询
         $('#searchCondition').change(function(){
@@ -158,9 +158,9 @@
             var inputVal = $("#searchInputVal").val();
 
             var startTime = $("#sdate").val();
+
             if(startTime ==''){
-                alert("请选择入库开始时间！")
-                return;
+                startTime ="2014-09-08";
             }
 
             var endTime = $("#edate").val();

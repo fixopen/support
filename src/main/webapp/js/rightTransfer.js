@@ -7,14 +7,11 @@ window.addEventListener('load', function (e) {
 		searchConditionVal  = $("#searchCondition").find("option:selected").val();
 		var placeholder ="";
 		switch (searchConditionVal){
-			case "name":
+			case "resourceName":
 				placeholder = "例如：小学语文"
 				break;
 			case "no":
-				placeholder = "例如：CB-2006044-15F-01-01"
-				break;
-			case "author":
-				placeholder = "例如：张三"
+				placeholder = "例如：94477851492352"
 				break;
 		}
 		$("#searchInputVal").attr("placeholder",placeholder)
@@ -26,8 +23,7 @@ window.addEventListener('load', function (e) {
 
 		var startTime = $("#sdate").val();
 		if(startTime ==''){
-			alert("请选择入库开始时间！")
-			return;
+			startTime ="2014-09-08";
 		}
 
 		var endTime = $("#edate").val();

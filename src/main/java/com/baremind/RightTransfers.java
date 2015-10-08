@@ -101,14 +101,19 @@ public class RightTransfers {
                 sql += " and rt.time between cast('"+startDate+"' as timestamp) and cast('"+endDate+"' as timestamp)";
             }
             if(str!=null){
-                //数据格式 例如： name::小学语文
+                //数据格式 例如： resourceName::小学语文
                 String s = str.split("::")[0];
                 if(!"all".equals(s)){
-                    if(str.split("::").length ==2){
+                    if(str.split("::").length ==2) {
                         String val = str.split("::")[1];
-                        sql += " and r."+ s+" like "+"'"+val+"%'";
-                    }else {
-                        sql += " and r."+ s+" like "+"''";
+
+                        if ("resourceName".equals(s)) {
+                            sql += " and r.name" + " like " + "'%" + val + "%'";
+                        }
+                        if ("no".equals(s)) {
+                            Long id = Long.parseLong(val);
+                            sql += " and rt.no" + "=" + id;
+                        }
                     }
                 }
             }

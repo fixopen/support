@@ -165,8 +165,8 @@
             }else{
                 cUrl = delQueStr(newUrl,"str")+'&str='+str;
             }
-
-            newUrl = cUrl;
+            newUrl = delQueStr(cUrl,"page")+'&page=1';
+            queryData(newUrl,1)
             queryData(cUrl,1)
 
         });
