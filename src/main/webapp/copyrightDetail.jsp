@@ -4,23 +4,8 @@
 <head lang="en">
     <meta charset="UTF-8">
     <title>支撑管理平台</title>
-    <link href="css/bootstrap.min.css" rel="stylesheet">
-    <style type="text/css">
-        /* inputArea */
-        .inputArea {
-            width: 100%;
-            overflow: hidden;
-            line-height: 24px;
-            margin: 12px 0;
-        }
-        .inputArea strong {
-            position: relative;
-            float: left;
-            width: 100px;
-            font-weight: normal;
-            padding-left: 80px;
-        }
-    </style>
+    <%--<link href="css/bootstrap.min.css" rel="stylesheet">--%>
+    <jsp:include page="/tc_headers.jsp" />
 </head>
 <body>
 <div class="container">

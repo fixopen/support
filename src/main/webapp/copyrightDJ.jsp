@@ -28,6 +28,10 @@
                 <div id="quasiUseNo_error" class="error" zd="quasiUseNo" yz="bt">请填写准用号</div>
             </div>
             <div class="inputArea">
+                <strong>版&nbsp;&nbsp;本：</strong> <input type="text"  name="version" id="version" />
+                <div id="version_error" class="error" zd="version" yz="bt">请填写版本</div>
+            </div>
+            <div class="inputArea">
                 <strong>教材封面：</strong> <input type="file" name="cover-input" id="cover-input" />
                 <input type="hidden"  name="cover" id="cover" readonly />
                 <div id="cover_error" class="error" zd="cover" yz="bt">请上传教材封面</div>

@@ -115,7 +115,9 @@ public class Copyrights {
                 Integer count = JPAEntry.getCount(sql2);
                 cc.setCount(count+"");
 
-                user = JPAEntry.getObject(User.class, "id", rt.getOwnerId());
+                account = JPAEntry.getObject(Account.class,"id",rt.getOwnerId());
+
+                user = JPAEntry.getObject(User.class, "id", account.getSubjectId());
 
                 rt.setUser(user);
                 cc.setResource(rt);
@@ -211,7 +213,9 @@ public class Copyrights {
                     rt.setAuthor("");
                 }
 
-                user = JPAEntry.getObject(User.class, "id", rt.getOwnerId());
+                account = JPAEntry.getObject(Account.class,"id",rt.getOwnerId());
+
+                user = JPAEntry.getObject(User.class, "id", account.getSubjectId());
 
                 rt.setUser(user);
                 cc.setResource(rt);
