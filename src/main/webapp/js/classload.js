@@ -47,7 +47,7 @@ function leftMenu(type){
         "资源流转追溯|rightTransfer.jsp," +
         "用户管理|userManager.jsp";
 
-    var link_1=new Array(0,2,3,4);
+    var link_1=new Array(2,3,4);
 
     var link9=new Array(0,1,2);
 
