@@ -121,8 +121,8 @@
                 data: JSON.stringify(formDataToJson($('#form1').serialize())),
                 contentType: "application/json; charset=UTF-8",
                 success: function (data) {
-                    console.log(data.meta.status);
-                    if (data.meta.status == 200) {
+                    console.log(data.status);
+                    if (data.status == 200) {
                         alert("版权登记成功！");
                         winClose(1);
                     } else {

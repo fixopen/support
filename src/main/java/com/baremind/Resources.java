@@ -106,6 +106,7 @@ public class Resources {
 
                 Map map = new HashMap<>();
                 map.put("resourceId", resourceId+"");
+                map.put("status","200");
 
                 result = Response.ok(new Gson().toJson(map)).build();
             }
