@@ -7,6 +7,7 @@ import org.glassfish.jersey.server.mvc.Template;
 import org.glassfish.jersey.server.mvc.Viewable;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
@@ -75,11 +76,19 @@ public class Copyrights {
             if(str!=null){
                 //数据格式 例如： name::小学语文
                 String s = str.split("::")[0];
-                if(!"all".equals(s)){
-                    if(str.split("::").length ==2){
-                        String val = str.split("::")[1];
-                        sql += " and r."+ s+" like "+"'"+val+"%'";
-                    }else {
+                if(str.split("::").length ==2){
+                    String val = str.split("::")[1];
+                    if(!"all".equals(s)){
+                        sql += " and r."+ s+" like "+"'%"+val+"%'";
+                    }else{
+                        sql += " and (r.name like "+"'%"+val+"%'"
+                                +" or r.no like "+"'%"+val+"%'"
+                                +" or r.author like "+"'%"+val+"%'"
+                                +")";
+                    }
+
+                }else {
+                    if(!"all".equals(s)){
                         sql += " and r."+ s+" like "+"''";
                     }
                 }
@@ -91,6 +100,7 @@ public class Copyrights {
 
 
             EntityManager em = JPAEntry.getEntityManager();
+
             TypedQuery query = em.createQuery(sql, Copyright.class);
 
             int allNum = query.getResultList().size(); //总条数
@@ -175,16 +185,23 @@ public class Copyrights {
             if(type!=null){
                 sql += " and cr.status = "+type+"";
             }
+
             if(str!=null){
                 //数据格式 例如： name::小学语文
                 String s = str.split("::")[0];
-                if(!"all".equals(s)){
-                    if(str.split("::").length ==2){
-                        String val = str.split("::")[1];
-                        sql += " and r."+ s+" like "+"'"+val+"%'";
-                    }else {
-                        sql += " and r."+ s+" like "+"''";
+                if(str.split("::").length ==2){
+                    String val = str.split("::")[1];
+                    if(!"all".equals(s)){
+                        sql += " and r."+ s+" like "+"'%"+val+"%'";
+                    }else{
+                        sql += " and (r.name like "+"'%"+val+"%'"
+                                +" or r.no like "+"'%"+val+"%'"
+                                +" or r.author like "+"'%"+val+"%'"
+                                +")";
                     }
+
+                }else {
+                    sql += " and r."+ s+" like "+"''";
                 }
             }
 

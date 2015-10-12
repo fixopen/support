@@ -134,6 +134,14 @@ public class Users {
                     if("name".equals(s)){
                         sql += " and u."+ s+" like "+"'%"+val+"%'";
                     }
+
+                    if("all".equals(s)){
+                        sql += " and (u.name="+ "'"+val+"'"
+                                +" or u.companyName like "+ "'%"+val+"%'"
+                                +" or u.no like "+"'%"+val+"%'"
+                                +" or a.loginName like "+ "'%"+val+"%'"
+                                +")";
+                    }
                 }
 
             }

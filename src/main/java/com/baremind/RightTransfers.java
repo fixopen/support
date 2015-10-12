@@ -15,6 +15,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 /**
  * Created by Administrator on 2015/8/25 0025.
@@ -54,6 +55,11 @@ public class RightTransfers {
             result = Response.ok(new Gson().toJson(list)).build();
         }
         return result;
+    }
+
+    public static boolean isInteger(String str) {
+        Pattern pattern = Pattern.compile("^[-\\+]?[\\d]*$");
+        return pattern.matcher(str).matches();
     }
 
     @GET
@@ -100,13 +106,13 @@ public class RightTransfers {
 
                 sql += " and rt.time between cast('"+startDate+"' as timestamp) and cast('"+endDate+"' as timestamp)";
             }
+
             if(str!=null){
                 //数据格式 例如： resourceName::小学语文
                 String s = str.split("::")[0];
-                if(!"all".equals(s)){
-                    if(str.split("::").length ==2) {
-                        String val = str.split("::")[1];
-
+                if(str.split("::").length ==2){
+                    String val = str.split("::")[1];
+                    if(!"all".equals(s)){
                         if ("resourceName".equals(s)) {
                             sql += " and r.name" + " like " + "'%" + val + "%'";
                         }
@@ -114,9 +120,24 @@ public class RightTransfers {
                             Long id = Long.parseLong(val);
                             sql += " and rt.no" + "=" + id;
                         }
+                    }else{
+                        if(isInteger(val)==true){
+                            sql += " and (r.name like "+"'%"+val+"%'"
+                                    +" or rt.no like "+"'%"+val+"%'"
+                                    +")";
+                        }else {
+                            sql += " and (r.name like "+"'%"+val+"%'"
+                                    +")";
+                        }
+                    }
+
+                }else {
+                    if(!"all".equals(s)){
+                        sql += " and r."+ s+" like "+"''";
                     }
                 }
             }
+
 
             EntityManager em = JPAEntry.getEntityManager();
             TypedQuery query = em.createQuery(sql,RightTransfer.class);

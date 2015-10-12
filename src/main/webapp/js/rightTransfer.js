@@ -20,6 +20,12 @@ window.addEventListener('load', function (e) {
 	$('#searchBtn').click(function(){
 
 		var inputVal = $("#searchInputVal").val();
+		if(searchConditionVal != "all"){
+			if(inputVal ==''){
+				alert("请输入文字！")
+				return;
+			}
+		}
 
 		var startTime = $("#sdate").val();
 		if(startTime ==''){
