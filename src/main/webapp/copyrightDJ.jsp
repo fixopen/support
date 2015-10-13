@@ -7,6 +7,16 @@
     <script src="js/jquery-1.7.2.min.js"></script>
     <script src="js/uploadFiles.js"></script>
     <jsp:include page="/tc_headers.jsp" />
+    <style type="text/css">
+        .inputArea{
+            width:100%;
+        }
+        .inputArea strong{
+            width:80px;
+        }
+
+
+    </style>
 </head>
 <body>
 

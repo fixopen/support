@@ -45,7 +45,7 @@ public class Copyrights {
 
             Account currAccount= JPAEntry.getAccount(sessionId);
 
-            String sql = "SELECT cr FROM Copyright cr,Resource r where cr.resourceId = r.id and cr.status = 2";
+            String sql = "SELECT cr FROM Copyright cr,Resource r where cr.resourceId = r.id and cr.status = 2 ";
 
             if(currAccount.getType() == 2){
                 sql += " and r.ownerId = "+currAccount.getId()+"";
@@ -98,6 +98,7 @@ public class Copyrights {
                 sql = sql + " and rt.copyrightId="+copyrightId+"";
             }*/
 
+            sql += " order by r.time desc";
 
             EntityManager em = JPAEntry.getEntityManager();
 
@@ -209,7 +210,7 @@ public class Copyrights {
                 sql = sql + " and rt.copyrightId="+copyrightId+"";
             }*/
 
-
+            sql += " order by r.time desc";
             EntityManager em = JPAEntry.getEntityManager();
             TypedQuery query = em.createQuery(sql,Copyright.class);
 

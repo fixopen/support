@@ -6,6 +6,15 @@
     <title>支撑管理平台</title>
     <%--<link href="css/bootstrap.min.css" rel="stylesheet">--%>
     <jsp:include page="/tc_headers.jsp" />
+    <style type="text/css">
+        .inputArea{
+            width:100%;
+        }
+        .inputArea strong{
+            width:80px;
+        }
+
+    </style>
 </head>
 <body>
 <div class="container">
@@ -16,19 +25,19 @@
             </div>
 
             <div class="inputArea">
-                <strong>书名：</strong>${copyright.resource.name}
+                <strong>书&nbsp;&nbsp;名：</strong>${copyright.resource.name}
             </div>
             <div class="inputArea">
                 <strong>教材封面：</strong> <img src="/api/resources/${copyright.no}/cover" width="90px" height="120px"/>
             </div>
             <div class="inputArea">
-                <strong>学科：</strong> ${copyright.resource.subject}
+                <strong>学&nbsp;&nbsp;科：</strong> ${copyright.resource.subject}
             </div>
             <div class="inputArea">
-                <strong>作者：</strong> ${copyright.resource.author}
+                <strong>作&nbsp;&nbsp;者：</strong> ${copyright.resource.author}
             </div>
             <div class="inputArea">
-                <strong>出版社：</strong> ${copyright.resource.publisher}
+                <strong>出 版 社：</strong> ${copyright.resource.publisher}
             </div>
             <div class="inputArea">
                 <strong>适用年纪：</strong> ${copyright.resource.stage}

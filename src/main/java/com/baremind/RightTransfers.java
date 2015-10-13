@@ -138,6 +138,7 @@ public class RightTransfers {
                 }
             }
 
+            sql += " order by r.time desc";
 
             EntityManager em = JPAEntry.getEntityManager();
             TypedQuery query = em.createQuery(sql,RightTransfer.class);
