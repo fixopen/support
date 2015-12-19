@@ -278,7 +278,7 @@ public class Copyrights {
         }
         Account currAccount= JPAEntry.getAccount(sessionId);
         if(currAccount.getType() == 2){
-            if(currAccount.getId() != copyright.getOwnerId()){
+            if(currAccount.getId() != copyright.getOwnerId() && !currAccount.getId().equals(copyright.getOwnerId())){
                 return null;
             }
         }
@@ -294,6 +294,7 @@ public class Copyrights {
         User user = JPAEntry.getObject(User.class, "id", resource.getOwnerId());
         resource.setUser(user);
 
+        if(null == resource.getTime()) resource.setTime(new Date());
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd H:m:s");
         resource.setTimeStr(dateFormat.format(resource.getTime()));
