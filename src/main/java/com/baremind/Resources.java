@@ -208,12 +208,13 @@ public class Resources {
                 InputStream inputStream = new FileInputStream(Securities.config.BOOKS + resource.getFilePath());
                 String d = Hex.bytesToHex(Securities.digestor.digest(inputStream));
                 resource.setDigest(d);
+                resource.setOwnerId(uploadLog.getUploaderId());
                 Copyright copyright = new Copyright();
                 copyright.setId(IdGenerator.getNewId());
                 copyright.setNo(resource.getNo());
                 copyright.setResourceId(resource.getId());
-                copyright.setOwnerId(10000L);
-                copyright.setAuthorId(10000L);
+                copyright.setOwnerId(uploadLog.getUploaderId());
+                copyright.setAuthorId(uploadLog.getUploaderId());
                 copyright.setStatus(1);
                 em.getTransaction().begin();
 //                if( JPAEntry.getList(Resource.class,"no",resource.getNo()).size() == 0) {
@@ -260,13 +261,17 @@ public class Resources {
                 //insert record to table[id, time, uploader_id, file_path, status: 0(received) 1(processing) 2(processed)]
                 EntityManager em = JPAEntry.getEntityManager();
                 em.getTransaction().begin();
+
+                Account currAccount= JPAEntry.getAccount(sessionId);
                 UploadLog uploadLog = new UploadLog();
                 uploadLog.setId(IdGenerator.getNewId());
                 uploadLog.setTime(new Date());
                 uploadLog.setFilePath(zipFile.getPath());
                 uploadLog.setState(0);
+                uploadLog.setUploaderId(currAccount.getId());
                 em.persist(uploadLog);
                 em.getTransaction().commit();
+
 
                 //{"metaInfo":{"message":"upload success","code":0},"data":"15"}
                 result = Response.ok("{\"metaInfo\":{\"message\":\"upload success\",\"code\":0},\"data\":\"" + uploadLog.getId() + "\"}").build(); //new Gson().toJson(uploadLog)
