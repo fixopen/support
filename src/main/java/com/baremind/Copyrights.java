@@ -224,6 +224,11 @@ public class Copyrights {
             UploadLog uploadLog = null;
             for(Copyright cc : list){
                 Resource rt = JPAEntry.getObject(Resource.class,"id",cc.getResourceId());
+                if(null == rt) {
+                    System.out.println("resourceId:" + cc.getResourceId());
+                    continue;
+                }
+                if(null == rt.getTime()) rt.setTime(new Date());
 
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd H:m:s");
                 rt.setTimeStr(dateFormat.format(rt.getTime()));

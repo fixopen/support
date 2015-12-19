@@ -209,6 +209,7 @@ public class Resources {
                 String d = Hex.bytesToHex(Securities.digestor.digest(inputStream));
                 resource.setDigest(d);
                 resource.setOwnerId(uploadLog.getUploaderId());
+                resource.setTime(new Date());
                 Copyright copyright = new Copyright();
                 copyright.setId(IdGenerator.getNewId());
                 copyright.setNo(resource.getNo());
