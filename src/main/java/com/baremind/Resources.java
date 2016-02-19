@@ -173,16 +173,17 @@ public class Resources {
             em.getTransaction().commit();
 
             File file = new File(uploadLog.getFilePath());
-            File fileZip = new File(Securities.config.ZIP_TEMPORARY);
+            String fileTempZipPath = Securities.config.ZIP_TEMPORARY + "/" + uploadLog.getId() + "/";
+            File fileZip = new File(fileTempZipPath);
             Securities.zip.uncompress(file, fileZip);
             try {
-                Reader reader = new InputStreamReader(new FileInputStream(Securities.config.ZIP_TEMPORARY + "__meta.json"));
+                Reader reader = new InputStreamReader(new FileInputStream(fileTempZipPath + "__meta.json"));
                 Gson json = new Gson();
                 UploadMeta meta = json.fromJson(reader, UploadMeta.class);
                 Resource resource = new Resource(meta);
 //                Resource r = JPAEntry.getObject(Resource.class,"no",resource.getNo());
                 resource.setId(IdGenerator.getNewId());
-                File metaFile = new File(Securities.config.ZIP_TEMPORARY + "__meta.json");
+                File metaFile = new File(fileTempZipPath + "__meta.json");
                 metaFile.deleteOnExit();
 
 //                CopyOption[] options = new CopyOption[]{
@@ -192,8 +193,8 @@ public class Resources {
 //                Files.move(Paths.get("D:\\var\\zipFiles\\"+resource.getFilePath()), Paths.get("D:\\var\\zipFilesSave\\"+resource.getFilePath()),options);
 //                Files.move(Paths.get("D:\\var\\zipFiles\\"+resource.getCover()), Paths.get("D:\\var\\zipFilesSave\\"+resource.getCover()),options);
 
-                File source = new File(Securities.config.ZIP_TEMPORARY + resource.getFilePath());
-                File desc = new File(Securities.config.ZIP_TEMPORARY + resource.getCover());
+                File source = new File(fileTempZipPath + resource.getFilePath());
+                File desc = new File(fileTempZipPath + resource.getCover());
 
                 if (source.renameTo(new File(Securities.config.BOOKS + resource.getFilePath()))) {
                     if (desc.renameTo(new File(Securities.config.COVERS + resource.getCover()))) {
